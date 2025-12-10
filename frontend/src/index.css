@@ -1,0 +1,23 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-dark-bg text-white font-sans antialiased;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display text-white;
+  }
+}
+
+@layer components {
+    .btn-primary {
+        @apply bg-prime-500 hover:bg-prime-600 text-white font-bold py-2 px-4 rounded-lg transition-all transform hover:scale-105;
+    }
+    .card-hover {
+        @apply transition-transform duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-prime-500/20;
+    }
+}

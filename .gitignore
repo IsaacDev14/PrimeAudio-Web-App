@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+backend/venv/
+backend/.venv/
+
+# Node
+frontend/node_modules/
+frontend/dist/
+
+# Env - explicitly implementing user request to NOT ignore .env so I can read it
+# .env 
+
+# IDE
+.vscode/
+.idea/
