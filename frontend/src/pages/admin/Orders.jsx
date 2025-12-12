@@ -5,8 +5,10 @@ import { Badge } from "../../components/ui/badge";
 import { Button } from "../../components/ui/button";
 import { Loader2, RefreshCcw, CheckCircle, Copy, Eye } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "../../components/ui/dialog";
+import { useToast } from "../../context/ToastContext";
 
 const AdminOrders = () => {
+    const toast = useToast();
     const [orders, setOrders] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [statusFilter, setStatusFilter] = useState('all');
@@ -54,15 +56,14 @@ const AdminOrders = () => {
             if (response.ok) {
                 const updatedOrder = await response.json();
                 setOrders(prev => prev.map(o => o.id === orderId ? updatedOrder : o));
-
-                // Show success with tracking ID
-                alert(`Order approved! Tracking ID: ${updatedOrder.tracking_id}`);
+                toast.success(`Order approved! Tracking ID: ${updatedOrder.tracking_id}`);
             } else {
                 const error = await response.json();
-                alert(error.detail || 'Failed to approve order');
+                toast.error(error.detail || 'Failed to approve order');
             }
         } catch (error) {
             console.error("Failed to approve order:", error);
+            toast.error('Failed to approve order');
         } finally {
             setIsApproving(null);
         }
@@ -78,15 +79,19 @@ const AdminOrders = () => {
 
             if (response.ok) {
                 setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
+                toast.success(`Order status updated to ${newStatus}`);
+            } else {
+                toast.error('Failed to update status');
             }
         } catch (error) {
             console.error("Failed to update status:", error);
+            toast.error('Failed to update status');
         }
     };
 
     const copyTrackingId = (trackingId) => {
         navigator.clipboard.writeText(trackingId);
-        alert(`Copied: ${trackingId}`);
+        toast.success(`Copied: ${trackingId}`);
     };
 
     const getStatusVariant = (status) => {

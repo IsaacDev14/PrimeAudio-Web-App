@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { CartProvider } from './context/CartContext';
 import { AuthProvider } from './context/AuthContext';
+import { ToastProvider } from './context/ToastContext';
 import PublicLayout from './layouts/PublicLayout';
 import AdminLayout from './layouts/AdminLayout';
 
@@ -28,42 +29,44 @@ import AdminSettings from './pages/admin/Settings';
 
 function App() {
   return (
-    <AuthProvider>
-      <CartProvider>
-        <Router>
-          <Routes>
-            {/* Public Routes */}
-            <Route element={<PublicLayout />}>
-              <Route path="/" element={<Home />} />
-              <Route path="/shop" element={<Shop />} />
-              <Route path="/shop/:id" element={<ProductDetails />} />
-              <Route path="/cart" element={<Cart />} />
-              <Route path="/checkout" element={<Checkout />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/track-order" element={<OrderTracking />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-            </Route>
+    <ToastProvider>
+      <AuthProvider>
+        <CartProvider>
+          <Router>
+            <Routes>
+              {/* Public Routes */}
+              <Route element={<PublicLayout />}>
+                <Route path="/" element={<Home />} />
+                <Route path="/shop" element={<Shop />} />
+                <Route path="/shop/:id" element={<ProductDetails />} />
+                <Route path="/cart" element={<Cart />} />
+                <Route path="/checkout" element={<Checkout />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/track-order" element={<OrderTracking />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+              </Route>
 
-            {/* Admin Routes */}
-            <Route path="/admin" element={<AdminLayout />}>
-              <Route index element={<Dashboard />} />
-              <Route path="products" element={<AdminProducts />} />
-              <Route path="content" element={<AdminContent />} />
-              <Route path="orders" element={<AdminOrders />} />
-              <Route path="users" element={<AdminUsers />} />
-              <Route path="media" element={<AdminMedia />} />
-              <Route path="ai-tools" element={<AdminAITools />} />
-              <Route path="settings" element={<AdminSettings />} />
-            </Route>
+              {/* Admin Routes */}
+              <Route path="/admin" element={<AdminLayout />}>
+                <Route index element={<Dashboard />} />
+                <Route path="products" element={<AdminProducts />} />
+                <Route path="content" element={<AdminContent />} />
+                <Route path="orders" element={<AdminOrders />} />
+                <Route path="users" element={<AdminUsers />} />
+                <Route path="media" element={<AdminMedia />} />
+                <Route path="ai-tools" element={<AdminAITools />} />
+                <Route path="settings" element={<AdminSettings />} />
+              </Route>
 
-            {/* 404 Fallback */}
-            <Route path="*" element={<div className="p-20 text-center">404 - Page Not Found</div>} />
-          </Routes>
-        </Router>
-      </CartProvider>
-    </AuthProvider>
+              {/* 404 Fallback */}
+              <Route path="*" element={<div className="p-20 text-center">404 - Page Not Found</div>} />
+            </Routes>
+          </Router>
+        </CartProvider>
+      </AuthProvider>
+    </ToastProvider>
   );
 }
 

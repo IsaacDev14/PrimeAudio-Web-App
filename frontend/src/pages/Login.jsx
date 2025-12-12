@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 import { useNavigate, Link } from 'react-router-dom';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -31,6 +32,7 @@ const Login = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
     const { login, user } = useAuth();
+    const toast = useToast();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -48,8 +50,10 @@ const Login = () => {
         const result = await login(email, password);
 
         if (result.success) {
+            toast.success('Login successful! Welcome back.');
             navigate('/');
         } else {
+            toast.error(result.message || 'Login failed. Please check your credentials.');
             setError(result.message);
         }
         setIsLoading(false);
@@ -59,18 +63,17 @@ const Login = () => {
         const creds = DEMO_CREDENTIALS[type];
         setEmail(creds.email);
         setPassword(creds.password);
-        setError('');
+        toast.info(`${creds.label} credentials filled`);
     };
 
     return (
-        <div className="flex items-center justify-center min-h-[calc(100vh-200px)] py-12 px-4">
+        <div className="min-h-screen flex items-center justify-center bg-slate-50 py-12 px-4">
             <Card className="w-full max-w-md">
-                <CardHeader className="space-y-1">
-                    <CardTitle className="text-2xl font-bold text-center">Sign in</CardTitle>
-                    <CardDescription className="text-center">
-                        Enter your email and password to access your account
-                    </CardDescription>
+                <CardHeader className="text-center">
+                    <CardTitle className="text-2xl font-bold">Welcome Back</CardTitle>
+                    <CardDescription>Sign in to your Prime Audio account</CardDescription>
                 </CardHeader>
+
                 <CardContent>
                     {/* Quick Login Buttons */}
                     <div className="mb-6">
@@ -99,12 +102,12 @@ const Login = () => {
                         </div>
                     </div>
 
-                    <div className="relative my-6">
+                    <div className="relative mb-6">
                         <div className="absolute inset-0 flex items-center">
                             <span className="w-full border-t" />
                         </div>
                         <div className="relative flex justify-center text-xs uppercase">
-                            <span className="bg-white px-2 text-muted-foreground">Or continue with</span>
+                            <span className="bg-white px-2 text-muted-foreground">Or continue with email</span>
                         </div>
                     </div>
 
@@ -114,17 +117,19 @@ const Login = () => {
                             <Input
                                 id="email"
                                 type="email"
-                                placeholder="m@example.com"
+                                placeholder="name@example.com"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 required
                             />
                         </div>
+
                         <div className="space-y-2">
                             <Label htmlFor="password">Password</Label>
                             <Input
                                 id="password"
                                 type="password"
+                                placeholder="••••••••"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 required
@@ -132,20 +137,30 @@ const Login = () => {
                         </div>
 
                         {error && (
-                            <div className="text-sm text-destructive text-center font-medium">
+                            <div className="p-3 bg-red-50 text-red-600 rounded-lg text-sm">
                                 {error}
                             </div>
                         )}
 
-                        <Button className="w-full" type="submit" disabled={isLoading}>
-                            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                            Sign In
+                        <Button type="submit" className="w-full" disabled={isLoading}>
+                            {isLoading ? (
+                                <>
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                    Signing in...
+                                </>
+                            ) : (
+                                'Sign In'
+                            )}
                         </Button>
                     </form>
                 </CardContent>
+
                 <CardFooter className="flex flex-col gap-4">
-                    <div className="text-sm text-muted-foreground text-center">
-                        Don't have an account? <Link to="/register" className="text-primary hover:underline">Sign up</Link>
+                    <div className="text-sm text-center text-muted-foreground">
+                        Don't have an account?{' '}
+                        <Link to="/register" className="text-blue-600 hover:underline font-medium">
+                            Sign up
+                        </Link>
                     </div>
                 </CardFooter>
             </Card>

@@ -7,6 +7,7 @@ import { Plus, Pencil, Trash2, Search, Loader2, Image as ImageIcon, X, Upload } 
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "../../components/ui/alert-dialog";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "../../components/ui/dialog";
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
+import { useToast } from "../../context/ToastContext";
 
 const CATEGORIES = [
     "Guitars", "Keyboards", "Drums", "Microphones", "Speakers",
@@ -16,6 +17,7 @@ const CATEGORIES = [
 const CONDITIONS = ["New", "Used - Like New", "Used - Excellent", "Used - Good"];
 
 const AdminProducts = () => {
+    const toast = useToast();
     const [products, setProducts] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState("");
@@ -125,12 +127,14 @@ const AdminProducts = () => {
                 fetchProducts();
                 setIsDialogOpen(false);
                 resetForm();
+                toast.success(currentProduct ? 'Product updated successfully' : 'Product created successfully');
             } else {
                 const error = await response.json();
-                alert(error.detail || 'Failed to save product');
+                toast.error(error.detail || 'Failed to save product');
             }
         } catch (error) {
             console.error("Error saving product:", error);
+            toast.error('An error occurred while saving');
         } finally {
             setIsSubmitting(false);
         }
@@ -150,9 +154,13 @@ const AdminProducts = () => {
                 setProducts(prev => prev.filter(p => p.id !== currentProduct.id));
                 setIsDeleteDialogOpen(false);
                 setCurrentProduct(null);
+                toast.success('Product deleted successfully');
+            } else {
+                toast.error('Failed to delete product');
             }
         } catch (error) {
             console.error("Failed to delete product:", error);
+            toast.error('An error occurred while deleting');
         }
     };
 
