@@ -34,9 +34,12 @@ const Sidebar = () => {
             <div className="h-screen w-64 bg-white text-gray-700 border-r border-gray-200 flex flex-col sticky top-0 shadow-sm">
                 {/* Logo */}
                 <div className="p-6 border-b border-gray-200">
-                    <Link to="/" className="text-xl font-bold flex items-center gap-2">
-                        <span className="text-gray-900">Prime Audio</span>
-                        <span className="text-blue-600">Admin</span>
+                    <Link to="/" className="flex items-center gap-3">
+                        <img src="/logo.png" alt="Prime Audio" className="h-10 w-auto" />
+                        <div>
+                            <span className="text-lg font-bold text-gray-900">Prime Audio</span>
+                            <span className="ml-1 text-blue-600 font-semibold">Admin</span>
+                        </div>
                     </Link>
                 </div>
 

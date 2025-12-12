@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { CheckCircle } from 'lucide-react';
+import { CheckCircle, Truck, Package } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { Link } from 'react-router-dom';
 
@@ -19,7 +19,6 @@ const Checkout = () => {
         e.preventDefault();
         setStep(2);
         clearCart();
-        // In real app, send data to backend here
     };
 
     const handleInputChange = (e) => {
@@ -28,7 +27,7 @@ const Checkout = () => {
 
     if (step === 2) {
         return (
-            <div className="pt-32 pb-20 container mx-auto px-4 text-center">
+            <div className="pt-32 pb-20 container mx-auto px-4 text-center bg-gray-50 min-h-screen">
                 <motion.div
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
@@ -36,15 +35,15 @@ const Checkout = () => {
                 >
                     <CheckCircle size={50} />
                 </motion.div>
-                <h1 className="text-3xl font-bold mb-4">Order Placed Successfully!</h1>
-                <p className="text-gray-400 mb-8 max-w-md mx-auto">
+                <h1 className="text-3xl font-bold text-gray-900 mb-4">Order Placed Successfully!</h1>
+                <p className="text-gray-500 mb-8 max-w-md mx-auto">
                     Thank you for shopping with Prime Audio Solutions. Your order #ORD-{Math.floor(Math.random() * 10000)} has been received and is being processed.
                 </p>
                 <div className="flex justify-center gap-4">
-                    <Link to="/track-order" className="bg-dark-card border border-white/20 px-6 py-3 rounded-lg hover:bg-white/10 transition-colors">
+                    <Link to="/track-order" className="bg-white border border-gray-300 px-6 py-3 rounded-lg hover:bg-gray-50 transition-colors text-gray-700 font-medium">
                         Track Order
                     </Link>
-                    <Link to="/" className="btn-primary px-6 py-3 rounded-lg">
+                    <Link to="/" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors">
                         Return Home
                     </Link>
                 </div>
@@ -53,80 +52,103 @@ const Checkout = () => {
     }
 
     return (
-        <div className="pt-24 pb-20 container mx-auto px-4 max-w-4xl">
-            <h1 className="text-3xl font-bold mb-8">Checkout</h1>
+        <div className="pt-24 pb-20 bg-gray-50 min-h-screen">
+            <div className="container mx-auto px-4 max-w-4xl">
+                <h1 className="text-3xl font-bold text-gray-900 mb-8">Checkout</h1>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-                {/* Form */}
-                <div className="bg-dark-card p-6 rounded-xl border border-white/5">
-                    <h2 className="text-xl font-bold mb-6">Shipping Information</h2>
-                    <form onSubmit={handleSubmit} className="space-y-4">
-                        <div>
-                            <label className="block text-gray-400 mb-1 text-sm">Full Name</label>
-                            <input
-                                required
-                                type="text"
-                                name="name"
-                                value={formData.name}
-                                onChange={handleInputChange}
-                                className="w-full bg-dark-bg border border-white/10 rounded-lg px-4 py-2 focus:border-prime-blue focus:outline-none"
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-gray-400 mb-1 text-sm">Email Address</label>
-                            <input
-                                required
-                                type="email"
-                                name="email"
-                                value={formData.email}
-                                onChange={handleInputChange}
-                                className="w-full bg-dark-bg border border-white/10 rounded-lg px-4 py-2 focus:border-prime-blue focus:outline-none"
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-gray-400 mb-1 text-sm">Phone Number</label>
-                            <input
-                                required
-                                type="tel"
-                                name="phone"
-                                value={formData.phone}
-                                onChange={handleInputChange}
-                                className="w-full bg-dark-bg border border-white/10 rounded-lg px-4 py-2 focus:border-prime-blue focus:outline-none"
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-gray-400 mb-1 text-sm">Delivery Address</label>
-                            <textarea
-                                required
-                                name="address"
-                                value={formData.address}
-                                onChange={handleInputChange}
-                                rows="3"
-                                className="w-full bg-dark-bg border border-white/10 rounded-lg px-4 py-2 focus:border-prime-blue focus:outline-none"
-                            ></textarea>
-                        </div>
-                        <button type="submit" className="w-full btn-primary py-3 rounded-lg font-bold mt-4">
-                            Complete Order
-                        </button>
-                    </form>
-                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    {/* Form */}
+                    <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                        <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+                            <Truck className="w-5 h-5 text-blue-600" />
+                            Shipping Information
+                        </h2>
+                        <form onSubmit={handleSubmit} className="space-y-4">
+                            <div>
+                                <label className="block text-gray-700 mb-1 text-sm font-medium">Full Name</label>
+                                <input
+                                    required
+                                    type="text"
+                                    name="name"
+                                    value={formData.name}
+                                    onChange={handleInputChange}
+                                    className="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none text-gray-900 transition-all"
+                                    placeholder="Enter your full name"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-gray-700 mb-1 text-sm font-medium">Email Address</label>
+                                <input
+                                    required
+                                    type="email"
+                                    name="email"
+                                    value={formData.email}
+                                    onChange={handleInputChange}
+                                    className="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none text-gray-900 transition-all"
+                                    placeholder="your@email.com"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-gray-700 mb-1 text-sm font-medium">Phone Number</label>
+                                <input
+                                    required
+                                    type="tel"
+                                    name="phone"
+                                    value={formData.phone}
+                                    onChange={handleInputChange}
+                                    className="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none text-gray-900 transition-all"
+                                    placeholder="+254 700 000 000"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-gray-700 mb-1 text-sm font-medium">Delivery Address</label>
+                                <textarea
+                                    required
+                                    name="address"
+                                    value={formData.address}
+                                    onChange={handleInputChange}
+                                    rows="3"
+                                    className="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none text-gray-900 transition-all resize-none"
+                                    placeholder="Street address, building, floor..."
+                                ></textarea>
+                            </div>
+                            <button
+                                type="submit"
+                                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-bold mt-4 transition-colors"
+                            >
+                                Complete Order
+                            </button>
+                        </form>
+                    </div>
 
-                {/* Order Info */}
-                <div>
-                    <div className="bg-dark-bg p-6 rounded-xl border border-white/10">
-                        <h2 className="text-xl font-bold mb-6">Order Total</h2>
-                        <div className="flex justify-between items-center mb-4">
-                            <span className="text-gray-400">Subtotal</span>
-                            <span className="font-bold">KSh {cartTotal.toLocaleString()}</span>
+                    {/* Order Info */}
+                    <div>
+                        <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                            <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+                                <Package className="w-5 h-5 text-blue-600" />
+                                Order Summary
+                            </h2>
+                            <div className="space-y-4">
+                                <div className="flex justify-between items-center">
+                                    <span className="text-gray-600">Subtotal</span>
+                                    <span className="font-medium text-gray-900">KSh {cartTotal.toLocaleString()}</span>
+                                </div>
+                                <div className="flex justify-between items-center">
+                                    <span className="text-gray-600">Delivery Fee</span>
+                                    <span className="text-green-600 font-medium">Free</span>
+                                </div>
+                                <div className="h-px bg-gray-200"></div>
+                                <div className="flex justify-between items-center text-xl">
+                                    <span className="font-bold text-gray-900">Total</span>
+                                    <span className="font-bold text-blue-600">KSh {cartTotal.toLocaleString()}</span>
+                                </div>
+                            </div>
                         </div>
-                        <div className="flex justify-between items-center mb-6">
-                            <span className="text-gray-400">Delivery Fee</span>
-                            <span className="text-green-400">Free</span>
-                        </div>
-                        <div className="h-px bg-white/10 mb-6"></div>
-                        <div className="flex justify-between items-center text-2xl font-bold">
-                            <span>Total</span>
-                            <span className="text-prime-blue">KSh {cartTotal.toLocaleString()}</span>
+
+                        <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-100">
+                            <p className="text-sm text-blue-700">
+                                🔒 Your payment and personal information are secure. Free delivery for orders over KSh 5,000.
+                            </p>
                         </div>
                     </div>
                 </div>
