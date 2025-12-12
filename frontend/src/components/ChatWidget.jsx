@@ -73,8 +73,8 @@ const ChatWidget = () => {
                             {messages.map((msg) => (
                                 <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
                                     <div className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm ${msg.sender === 'user'
-                                            ? 'bg-prime-blue text-white rounded-tr-sm'
-                                            : 'bg-dark-surface border border-white/5 text-gray-200 rounded-tl-sm'
+                                        ? 'bg-prime-blue text-white rounded-tr-sm'
+                                        : 'bg-dark-surface border border-white/5 text-gray-200 rounded-tl-sm'
                                         }`}>
                                         {msg.text}
                                     </div>
@@ -120,7 +120,7 @@ const ChatWidget = () => {
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={() => setIsOpen(!isOpen)}
-                className="bg-prime-blue hover:bg-blue-600 text-white p-4 rounded-full shadow-lg shadow-prime-blue/20 transition-colors"
+                className="bg-prime-blue hover:bg-blue-600 text-white p-4 rounded-full shadow-[0_0_20px_rgba(59,130,246,0.5)] transition-all z-[100] relative"
             >
                 {isOpen ? <X size={24} /> : <MessageSquare size={24} />}
             </motion.button>

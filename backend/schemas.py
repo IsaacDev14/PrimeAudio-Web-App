@@ -25,11 +25,15 @@ class UserResponse(UserBase):
 # Product Schemas
 class ProductBase(BaseModel):
     name: str
-    description: str
+    description: Optional[str] = None
     price: float
-    category: str
-    image_url: str
-    stock: int
+    category: Optional[str] = None
+    brand: Optional[str] = None
+    condition: Optional[str] = None
+    image_url: Optional[str] = None
+    images: Optional[List[str]] = []  # Multiple image URLs
+    stock: Optional[int] = 0
+    is_featured: Optional[bool] = False
 
 class ProductCreate(ProductBase):
     pass
@@ -60,9 +64,22 @@ class OrderResponse(BaseModel):
     id: int
     user_id: int
     status: str
-    total_amount: float
-    items: List[OrderItemResponse]
+    total_amount: Optional[float] = None
+    tracking_id: Optional[str] = None
+    approved_at: Optional[datetime] = None
+    approved_by: Optional[int] = None
+    items: List[OrderItemResponse] = []
     created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+# Order Tracking (Public)
+class OrderTrackingResponse(BaseModel):
+    tracking_id: str
+    status: str
+    created_at: datetime
+    approved_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True
@@ -78,3 +95,19 @@ class ChatResponse(ChatMessageBase):
 
     class Config:
         from_attributes = True
+
+# Analytics Schemas
+class AnalyticsDateFilter(BaseModel):
+    start_date: Optional[datetime] = None
+    end_date: Optional[datetime] = None
+    period: Optional[str] = "all"  # "day", "week", "month", "year", "all"
+
+class DashboardStats(BaseModel):
+    total_revenue: float
+    total_orders: int
+    products_in_stock: int
+    active_users: int
+    pending_orders: int
+    approved_orders: int
+    shipped_orders: int
+    delivered_orders: int

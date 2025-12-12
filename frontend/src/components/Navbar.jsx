@@ -1,73 +1,139 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+import { Search, ShoppingCart, User, Menu, X } from 'lucide-react';
+import { useCart } from '../context/CartContext';
 
 const Navbar = () => {
-    const [isOpen, setIsOpen] = useState(false);
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const { cart } = useCart();
+    const location = useLocation();
+
+    const cartItemsCount = cart.reduce((total, item) => total + item.quantity, 0);
+
+    const navLinks = [
+        { name: "Home", path: "/" },
+        { name: "Shop", path: "/shop" },
+        { name: "About", path: "/about" },
+        { name: "Contact", path: "/contact" },
+        { name: "Track Order", path: "/track-order" },
+    ];
+
+    const isActive = (path) => location.pathname === path;
 
     return (
-        <nav className="bg-dark-surface/90 backdrop-blur-md border-b border-white/10 sticky top-0 z-50">
-            <div className="container mx-auto px-4 py-3">
-                <div className="flex justify-between items-center">
+        <nav className="bg-white border-b border-gray-100 fixed top-0 left-0 w-full z-[100]">
+            <div className="container mx-auto px-2">
+                <div className="flex items-center justify-between h-20">
                     {/* Logo */}
-                    <Link to="/" className="flex items-center gap-2 group">
-                        <img src="/logo.png" alt="Prime Audio Solutions" className="h-12 w-auto object-contain transition-transform duration-300 group-hover:scale-105" />
+                    <Link to="/" className="flex items-center gap-2">
+                        <img src="/logo.png" alt="Prime Audio" className="h-10 w-auto object-contain" />
+                        <span className="font-bold text-xl tracking-tight text-slate-900 hidden sm:block">
+                            Prime<span className="text-blue-600">Audio</span>
+                        </span>
                     </Link>
 
-                    {/* Desktop Menu */}
-                    <div className="hidden md:flex items-center gap-8">
-                        <Link to="/" className="text-gray-300 hover:text-prime-blue transition-colors font-medium">Home</Link>
-                        <Link to="/shop" className="text-gray-300 hover:text-prime-blue transition-colors font-medium">Shop</Link>
-                        <Link to="/services" className="text-gray-300 hover:text-prime-blue transition-colors font-medium">Services</Link>
-                        <Link to="/track-order" className="text-gray-300 hover:text-prime-blue transition-colors font-medium">Track Order</Link>
-                        <Link to="/contact" className="text-gray-300 hover:text-prime-blue transition-colors font-medium">Contact</Link>
+                    {/* Desktop Navigation */}
+                    <div className="hidden lg:flex items-center gap-1">
+                        {navLinks.map((link) => (
+                            <Link
+                                key={link.name}
+                                to={link.path}
+                                className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${isActive(link.path)
+                                    ? "bg-slate-100 text-blue-600"
+                                    : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
+                                    }`}
+                            >
+                                {link.name}
+                            </Link>
+                        ))}
                     </div>
 
-                    {/* Actions */}
-                    <div className="hidden md:flex items-center gap-4">
-                        <button className="text-gray-300 hover:text-prime-red transition-colors">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                            </svg>
-                        </button>
-                        <Link to="/cart" className="relative text-gray-300 hover:text-prime-blue transition-colors">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                            </svg>
-                            <span className="absolute -top-2 -right-2 bg-prime-red text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">0</span>
-                        </Link>
-                        <Link to="/login" className="bg-prime-blue hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-medium transition-all">
-                            Login
-                        </Link>
-                    </div>
-
-                    {/* Mobile Menu Button */}
-                    <button onClick={() => setIsOpen(!isOpen)} className="md:hidden text-gray-300">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            {isOpen ? (
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                            ) : (
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                            )}
-                        </svg>
-                    </button>
-                </div>
-
-                {/* Mobile Menu */}
-                {isOpen && (
-                    <div className="md:hidden mt-4 pb-4 border-t border-white/10 pt-4 space-y-4">
-                        <Link to="/" className="block text-gray-300 hover:text-prime-blue font-medium">Home</Link>
-                        <Link to="/shop" className="block text-gray-300 hover:text-prime-blue font-medium">Shop</Link>
-                        <Link to="/services" className="block text-gray-300 hover:text-prime-blue font-medium">Services</Link>
-                        <Link to="/track-order" className="block text-gray-300 hover:text-prime-blue font-medium">Track Order</Link>
-                        <Link to="/contact" className="block text-gray-300 hover:text-prime-blue font-medium">Contact</Link>
-                        <div className="flex items-center gap-4 pt-4 border-t border-white/10">
-                            <Link to="/login" className="flex-1 bg-prime-blue text-center py-2 rounded-lg text-white font-medium">Login</Link>
+                    {/* Search Bar - Desktop */}
+                    <div className="hidden lg:flex flex-1 max-w-sm mx-8">
+                        <div className="relative w-full group">
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors w-4 h-4" />
+                            <input
+                                type="text"
+                                placeholder="Search instruments..."
+                                className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all placeholder:text-slate-400"
+                            />
                         </div>
                     </div>
-                )}
+
+                    {/* Right Actions */}
+                    <div className="flex items-center gap-2">
+                        {/* Cart */}
+                        <Link to="/cart" className="relative p-3 hover:bg-slate-100 rounded-full transition-colors group">
+                            <ShoppingCart className="w-5 h-5 text-slate-600 group-hover:text-blue-600 transition-colors" />
+                            {cartItemsCount > 0 && (
+                                <span className="absolute top-1 right-1 bg-blue-600 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold ring-2 ring-white">
+                                    {cartItemsCount}
+                                </span>
+                            )}
+                        </Link>
+
+                        {/* Login - More balanced, less aggressive */}
+                        <Link
+                            to="/login"
+                            className="hidden lg:flex items-center gap-2 px-5 py-2.5 rounded-full font-medium text-sm transition-all bg-prime-red text-white hover:bg-red-600 shadow-sm hover:shadow active:scale-95"
+                        >
+                            <User className="w-4 h-4" />
+                            <span>Login</span>
+                        </Link>
+
+                        {/* Mobile Menu Button */}
+                        <button
+                            className="lg:hidden p-2 hover:bg-slate-100 rounded-md transition-colors"
+                            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                        >
+                            {mobileMenuOpen ? (
+                                <X className="w-6 h-6 text-slate-700" />
+                            ) : (
+                                <Menu className="w-6 h-6 text-slate-700" />
+                            )}
+                        </button>
+                    </div>
+                </div>
             </div>
+
+            {/* Mobile Menu */}
+            {mobileMenuOpen && (
+                <div className="lg:hidden border-t border-gray-100 bg-white absolute w-full shadow-lg">
+                    <div className="container mx-auto px-4 py-4 space-y-4">
+                        <div className="relative">
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" />
+                            <input
+                                type="text"
+                                placeholder="Search products..."
+                                className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500"
+                            />
+                        </div>
+                        <div className="flex flex-col gap-1">
+                            {navLinks.map((link) => (
+                                <Link
+                                    key={link.name}
+                                    to={link.path}
+                                    className="px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 font-medium transition-colors"
+                                    onClick={() => setMobileMenuOpen(false)}
+                                >
+                                    {link.name}
+                                </Link>
+                            ))}
+                            <Link
+                                to="/login"
+                                className="mt-2 flex items-center justify-center gap-2 bg-slate-900 text-white px-4 py-3 rounded-lg font-medium"
+                                onClick={() => setMobileMenuOpen(false)}
+                            >
+                                <User className="w-4 h-4" />
+                                Login
+                            </Link>
+                        </div>
+                    </div>
+                </div>
+            )}
         </nav>
     );
 };
 
 export default Navbar;
+

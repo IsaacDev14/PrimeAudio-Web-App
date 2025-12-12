@@ -1,49 +1,104 @@
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { ShoppingCart, Eye } from 'lucide-react';
+import { Star, Heart, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useState, useEffect } from 'react';
 
 const ProductCard = ({ product }) => {
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const [isHovered, setIsHovered] = useState(false);
+
+    // Define images with fallback
+    const images = product.images || [product.image_url];
+
+    // Navigation handlers
+    const nextImage = (e) => {
+        e.preventDefault();
+        setCurrentImageIndex((prev) => (prev + 1) % images.length);
+    };
+
+    const prevImage = (e) => {
+        e.preventDefault();
+        setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length);
+    };
+
     return (
         <motion.div
-            className="bg-dark-card rounded-xl overflow-hidden border border-white/5 group hover:border-prime-blue/50 transition-colors"
-            whileHover={{ y: -5 }}
+            className="group block bg-white rounded-xl overflow-hidden cursor-pointer"
+            onHoverStart={() => setIsHovered(true)}
+            onHoverEnd={() => setIsHovered(false)}
         >
-            <div className="relative h-64 overflow-hidden">
-                <img
-                    src={product.image_url}
-                    alt={product.name}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                />
-                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4">
-                    <Link to={`/shop/${product.id}`} className="p-3 bg-white text-dark-bg rounded-full hover:bg-prime-blue hover:text-white transition-colors">
-                        <Eye size={20} />
-                    </Link>
-                    <button className="p-3 bg-prime-red text-white rounded-full hover:bg-red-600 transition-colors">
-                        <ShoppingCart size={20} />
-                    </button>
-                </div>
-                {product.stock < 5 && product.stock > 0 && (
-                    <span className="absolute top-2 right-2 bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded">
-                        Low Stock
-                    </span>
+            <div className="relative h-64 overflow-hidden bg-gray-100 rounded-xl">
+                <Link to={`/shop/${product.id}`}>
+                    <AnimatePresence mode="wait">
+                        <motion.img
+                            key={currentImageIndex}
+                            src={images[currentImageIndex]}
+                            alt={product.name}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.3 }}
+                            className="absolute inset-0 w-full h-full object-cover"
+                        />
+                    </AnimatePresence>
+                </Link>
+
+                {/* Top Badges */}
+                {product.rating >= 4.8 && (
+                    <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full shadow-sm z-10 text-xs font-bold text-slate-900 border border-black/5">
+                        Guest favorite
+                    </div>
                 )}
-                {product.stock === 0 && (
-                    <span className="absolute top-2 right-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded">
-                        Out of Stock
-                    </span>
+
+                <button className="absolute top-3 right-3 p-2 bg-black/50 hover:bg-black/70 backdrop-blur-md rounded-full text-white transition-colors z-10">
+                    <Heart className="w-4 h-4 text-white stroke-2" />
+                </button>
+
+                {/* Navigation Buttons (Visible on Hover) */}
+                {images.length > 1 && (
+                    <>
+                        <button
+                            onClick={prevImage}
+                            className="absolute top-1/2 left-2 -translate-y-1/2 p-1.5 bg-white/90 hover:bg-white rounded-full text-slate-900 shadow-md opacity-0 group-hover:opacity-100 transition-opacity z-20 disabled:opacity-50"
+                        >
+                            <ChevronLeft className="w-4 h-4" />
+                        </button>
+                        <button
+                            onClick={nextImage}
+                            className="absolute top-1/2 right-2 -translate-y-1/2 p-1.5 bg-white/90 hover:bg-white rounded-full text-slate-900 shadow-md opacity-0 group-hover:opacity-100 transition-opacity z-20"
+                        >
+                            <ChevronRight className="w-4 h-4" />
+                        </button>
+                    </>
+                )}
+
+                {/* Carousel Dots */}
+                {images.length > 1 && (
+                    <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
+                        {images.map((_, idx) => (
+                            <div
+                                key={idx}
+                                className={`w-1.5 h-1.5 rounded-full shadow-sm transition-all ${idx === currentImageIndex ? 'bg-white scale-125' : 'bg-white/50'}`}
+                            />
+                        ))}
+                    </div>
                 )}
             </div>
 
-            <div className="p-4">
-                <p className="text-sm text-gray-400 mb-1">{product.category}</p>
-                <Link to={`/shop/${product.id}`}>
-                    <h3 className="text-lg font-bold mb-2 group-hover:text-prime-blue transition-colors line-clamp-1">{product.name}</h3>
-                </Link>
-                <div className="flex justify-between items-center">
-                    <span className="text-xl font-bold text-prime-blue">KSh {product.price.toLocaleString()}</span>
-                    <div className="flex items-center gap-1">
-                        {/* Placeholder stars */}
-                        {[1, 2, 3, 4, 5].map(s => <div key={s} className="w-1 h-1 rounded-full bg-gray-600" />)}
+            <div className="mt-3">
+                <div className="flex justify-between items-start">
+                    <h3 className="font-bold text-slate-900 text-[15px] leading-tight line-clamp-2">{product.name}</h3>
+                    <div className="flex items-center gap-1 shrink-0">
+                        <Star className="w-3.5 h-3.5 fill-black text-black" />
+                        <span className="text-sm font-light text-slate-900">{product.rating}</span>
+                    </div>
+                </div>
+                <p className="text-slate-500 text-sm font-light mt-0.5">{product.condition || "In Stock"}</p>
+                <div className="flex flex-col mt-1">
+                    <p className="text-slate-500 text-sm line-clamp-2 font-light">{product.description || "Professional audio equipment"}</p>
+                    <div className="flex items-baseline gap-1 mt-1.5">
+                        <span className="font-bold text-slate-900">KSh {product.price.toLocaleString()}</span>
+                        <span className="text-slate-500 text-sm font-light">total</span>
                     </div>
                 </div>
             </div>

@@ -30,3 +30,22 @@ async def chat_with_ai(request: ChatRequest):
         return {"response": response.text}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+class DescriptionRequest(BaseModel):
+    product_name: str
+    category: str
+    features: str
+
+@router.post("/generate-description")
+async def generate_description(request: DescriptionRequest):
+    if not model:
+         raise HTTPException(status_code=503, detail="AI Service not configured")
+    
+    prompt = f"Write a professional and engaging e-commerce product description for a {request.product_name} in the category {request.category}. Key features: {request.features}. Use HTML formatting for bolding key terms."
+    
+    try:
+        response = model.generate_content(prompt)
+        return {"description": response.text}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
