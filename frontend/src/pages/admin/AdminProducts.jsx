@@ -257,8 +257,8 @@ const AdminProducts = () => {
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                             {filteredProducts.slice(0, 50).map((product) => (
-                                <div key={product.id} className="border rounded-lg overflow-hidden bg-white hover:shadow-lg transition-shadow">
-                                    <div className="aspect-square bg-slate-100 relative">
+                                <div key={product.id} className="border border-slate-700 rounded-lg overflow-hidden bg-slate-800 hover:bg-slate-750 hover:border-slate-600 transition-all">
+                                    <div className="aspect-square bg-slate-900 relative">
                                         {product.image_url ? (
                                             <img
                                                 src={product.image_url}
@@ -268,7 +268,7 @@ const AdminProducts = () => {
                                             />
                                         ) : (
                                             <div className="w-full h-full flex items-center justify-center">
-                                                <ImageIcon className="w-12 h-12 text-slate-300" />
+                                                <ImageIcon className="w-12 h-12 text-slate-600" />
                                             </div>
                                         )}
                                         {product.is_featured && (
@@ -277,26 +277,26 @@ const AdminProducts = () => {
                                             </span>
                                         )}
                                         {product.images?.length > 0 && (
-                                            <span className="absolute top-2 right-2 bg-black/50 text-white text-xs px-2 py-1 rounded">
+                                            <span className="absolute top-2 right-2 bg-blue-500/80 text-white text-xs px-2 py-1 rounded">
                                                 +{product.images.length} images
                                             </span>
                                         )}
                                     </div>
                                     <div className="p-4">
-                                        <h3 className="font-semibold text-sm line-clamp-2">{product.name}</h3>
-                                        <p className="text-xs text-muted-foreground mt-1">{product.category}</p>
+                                        <h3 className="font-semibold text-sm line-clamp-2 text-slate-100">{product.name}</h3>
+                                        <p className="text-xs text-slate-400 mt-1">{product.category}</p>
                                         <div className="flex items-center justify-between mt-2">
-                                            <span className="font-bold text-primary">KES {product.price?.toLocaleString()}</span>
-                                            <span className="text-xs text-muted-foreground">Stock: {product.stock}</span>
+                                            <span className="font-bold text-blue-400">KES {product.price?.toLocaleString()}</span>
+                                            <span className="text-xs text-slate-500">Stock: {product.stock}</span>
                                         </div>
                                         <div className="flex gap-2 mt-3">
-                                            <Button size="sm" variant="outline" className="flex-1" onClick={() => openEdit(product)}>
+                                            <Button size="sm" variant="outline" className="flex-1 border-slate-600 hover:bg-slate-700" onClick={() => openEdit(product)}>
                                                 <Pencil className="w-3 h-3 mr-1" /> Edit
                                             </Button>
                                             <Button
                                                 size="sm"
                                                 variant="outline"
-                                                className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                                className="text-red-400 border-slate-600 hover:text-red-300 hover:bg-red-500/10 hover:border-red-500/50"
                                                 onClick={() => { setCurrentProduct(product); setIsDeleteDialogOpen(true); }}
                                             >
                                                 <Trash2 className="w-3 h-3" />

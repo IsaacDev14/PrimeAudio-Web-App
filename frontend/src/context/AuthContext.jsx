@@ -1,18 +1,56 @@
-import { createContext, useState, useContext, useEffect } from 'react';
+import { createContext, useState, useContext, useEffect, useCallback, useRef } from 'react';
 
 const AuthContext = createContext();
 
 export const useAuth = () => useContext(AuthContext);
 
+// Idle timeout in milliseconds (15 minutes)
+const IDLE_TIMEOUT = 15 * 60 * 1000;
+
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [lastActivity, setLastActivity] = useState(Date.now());
+    const idleTimerRef = useRef(null);
+
+    // Check for idle timeout
+    const checkIdleTimeout = useCallback(() => {
+        if (user && Date.now() - lastActivity > IDLE_TIMEOUT) {
+            console.log('Session expired due to inactivity');
+            logout('Your session has expired due to inactivity.');
+        }
+    }, [user, lastActivity]);
+
+    // Reset activity timer on user interaction
+    const resetActivityTimer = useCallback(() => {
+        setLastActivity(Date.now());
+    }, []);
+
+    // Set up event listeners for user activity
+    useEffect(() => {
+        if (user) {
+            const events = ['mousedown', 'mousemove', 'keydown', 'scroll', 'touchstart', 'click'];
+
+            events.forEach(event => {
+                document.addEventListener(event, resetActivityTimer);
+            });
+
+            // Check idle timeout every minute
+            idleTimerRef.current = setInterval(checkIdleTimeout, 60000);
+
+            return () => {
+                events.forEach(event => {
+                    document.removeEventListener(event, resetActivityTimer);
+                });
+                if (idleTimerRef.current) {
+                    clearInterval(idleTimerRef.current);
+                }
+            };
+        }
+    }, [user, resetActivityTimer, checkIdleTimeout]);
 
     useEffect(() => {
-        // Dev Bypass: Auto-login as admin
-        setUser({ full_name: "Admin User", email: "admin@primeaudio.co.ke", is_admin: true });
-        setLoading(false);
-        // checkUser();
+        checkUser();
     }, []);
 
     const checkUser = async () => {
@@ -27,6 +65,7 @@ export const AuthProvider = ({ children }) => {
                 if (response.ok) {
                     const userData = await response.json();
                     setUser(userData);
+                    setLastActivity(Date.now());
                 } else {
                     localStorage.removeItem('token');
                 }
@@ -44,8 +83,6 @@ export const AuthProvider = ({ children }) => {
             formData.append('username', email);
             formData.append('password', password);
 
-            console.log("Attempting login for:", email);
-
             const response = await fetch('http://localhost:8000/auth/token', {
                 method: 'POST',
                 headers: {
@@ -54,13 +91,12 @@ export const AuthProvider = ({ children }) => {
                 body: formData,
             });
 
-            console.log("Login response status:", response.status);
             const data = await response.json();
-            console.log("Login response data:", data);
 
             if (response.ok) {
                 localStorage.setItem('token', data.access_token);
                 await checkUser();
+                setLastActivity(Date.now());
                 return { success: true };
             } else {
                 return { success: false, message: data.detail || 'Login failed' };
@@ -81,7 +117,6 @@ export const AuthProvider = ({ children }) => {
         });
 
         if (response.ok) {
-            // Auto login after register
             return login(email, password);
         } else {
             const errorData = await response.json();
@@ -89,14 +124,21 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    const logout = () => {
+    const logout = (message = null) => {
         localStorage.removeItem('token');
         setUser(null);
+        if (idleTimerRef.current) {
+            clearInterval(idleTimerRef.current);
+        }
+        // Store message for login page to show
+        if (message) {
+            sessionStorage.setItem('logoutMessage', message);
+        }
         window.location.href = '/login';
     };
 
     return (
-        <AuthContext.Provider value={{ user, login, logout, register, loading }}>
+        <AuthContext.Provider value={{ user, login, logout, register, loading, lastActivity }}>
             {!loading && children}
         </AuthContext.Provider>
     );
