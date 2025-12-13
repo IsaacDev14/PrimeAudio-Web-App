@@ -2,6 +2,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Play, Award, Truck, Headphones, Shield, Star, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
+import SEO from '../components/SEO';
 
 const HeroProductCard = ({ product, rotateDuration }) => {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -131,6 +132,11 @@ const Home = () => {
 
     return (
         <div className="bg-white">
+            <SEO
+                title="Premium Audio Gear Store"
+                description="Shop the best in premium audio gear. Headphones, speakers, microphones, and more at Prime Audio."
+                keywords="audio, headphones, speakers, sound gear, nairobi audio store"
+            />
             {/* Quantum Hero Section */}
             <section className="relative min-h-[95vh] flex items-center overflow-hidden bg-slate-950">
                 {/* Animated Background - Orbits & Rotations */}

@@ -8,8 +8,10 @@ import { Link } from 'react-router-dom';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '../components/ui/dialog';
 import { Button } from '../components/ui/button';
 import ProductReviews from '../components/ProductReviews';
+import SEO from '../components/SEO';
 
 const ProductDetails = () => {
+    // ... existing hook calls ...
     const { id } = useParams();
     const { addToCart } = useCart();
     const toast = useToast();
@@ -85,6 +87,12 @@ const ProductDetails = () => {
 
     return (
         <div className="pt-24 pb-20 bg-gray-50 min-h-screen">
+            <SEO
+                title={product.name}
+                description={product.description || `Buy ${product.name} at Prime Audio.`}
+                image={product.image_url}
+                keywords={`${product.name}, ${product.category}, buy audio gear`}
+            />
             <div className="container mx-auto px-4">
                 {/* Breadcrumb */}
                 <Link to="/shop" className="text-blue-600 hover:underline flex items-center gap-2 mb-8">

@@ -20,16 +20,17 @@ class MpesaService:
     def __init__(self):
         self.consumer_key = os.getenv("MPESA_CONSUMER_KEY", "YOUR_CONSUMER_KEY")
         self.consumer_secret = os.getenv("MPESA_CONSUMER_SECRET", "YOUR_CONSUMER_SECRET")
-        self.shortcode = os.getenv("MPESA_SHORTCODE", "174379")  # Sandbox shortcode
+        self.shortcode = os.getenv("MPESA_SHORTCODE", "174379")
         self.passkey = os.getenv("MPESA_PASSKEY", "YOUR_PASSKEY")
         self.callback_url = os.getenv("MPESA_CALLBACK_URL", "https://yourdomain.com/api/mpesa/callback")
         
         # Use sandbox for development
         self.base_url = os.getenv("MPESA_BASE_URL", "https://sandbox.safaricom.co.ke")
-    
+
     def _get_access_token(self) -> str:
         """Get OAuth access token from Safaricom"""
         url = f"{self.base_url}/oauth/v1/generate?grant_type=client_credentials"
+        
         credentials = base64.b64encode(
             f"{self.consumer_key}:{self.consumer_secret}".encode()
         ).decode()
@@ -73,10 +74,20 @@ class MpesaService:
         password, timestamp = self._get_password()
         
         # Format phone number
-        if phone.startswith("0"):
+        # Format phone number
+        # Remove any non-digit characters (whitespace, +, etc)
+        phone = "".join(filter(str.isdigit, phone))
+        
+        # Normalize to 254 format
+        if phone.startswith("254"):
+            pass
+        elif phone.startswith("0"):
             phone = "254" + phone[1:]
-        elif phone.startswith("+"):
-            phone = phone[1:]
+        elif len(phone) == 9: # Case like 712345678
+            phone = "254" + phone
+        else:
+            # Fallback for international format without +, or unexpected formats
+            pass
         
         url = f"{self.base_url}/mpesa/stkpush/v1/processrequest"
         
@@ -100,7 +111,7 @@ class MpesaService:
         }
         
         try:
-            async with httpx.AsyncClient() as client:
+            async with httpx.AsyncClient(timeout=30.0) as client:
                 response = await client.post(url, headers=headers, json=payload)
                 result = response.json()
                 
@@ -117,7 +128,8 @@ class MpesaService:
                         "error": result.get("errorMessage", "STK Push failed")
                     }
         except Exception as e:
-            return {"success": False, "error": str(e)}
+            print(f"STK Push Error: {e}")
+            return {"success": False, "error": f"Payment provider error: {str(e)}"}
     
     async def verify_payment(self, checkout_request_id: str) -> dict:
         """
@@ -150,7 +162,7 @@ class MpesaService:
         }
         
         try:
-            async with httpx.AsyncClient() as client:
+            async with httpx.AsyncClient(timeout=30.0) as client:
                 response = await client.post(url, headers=headers, json=payload)
                 result = response.json()
                 

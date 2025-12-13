@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { ShoppingCart, User, Menu, X, Sun, Moon } from 'lucide-react';
+import { ShoppingCart, User, Menu, X, Sun, Moon, Search } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useTheme } from '../context/ThemeContext';
 import SearchAutocomplete from './SearchAutocomplete';

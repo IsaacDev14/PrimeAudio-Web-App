@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { Search, ChevronRight, Music, Speaker, Mic, Guitar, Radio, Filter, X, Loader2, Package } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
 import { ProductGridSkeleton } from '../components/Skeleton';
+import SEO from '../components/SEO';
 
 // Category icon mapping
 const CATEGORY_ICONS = {
@@ -239,6 +240,11 @@ const Shop = () => {
 
     return (
         <div className="min-h-screen bg-slate-50">
+            <SEO
+                title="Shop Audio Equipment"
+                description="Browse our extensive collection of high-quality headphones, speakers, and audio accessories."
+                keywords="buy audio gear, online audio shop, headphones sale"
+            />
             {/* Page Header */}
             <div className="bg-white border-b border-slate-200 py-6">
                 <div className="container mx-auto px-4">
