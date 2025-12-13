@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useSearchParams, Navigate } from 'react-router-dom';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
@@ -31,16 +31,28 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
-    const { login, user } = useAuth();
+    const { login, user, loading } = useAuth();
     const toast = useToast();
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
 
-    useEffect(() => {
-        if (user) {
-            if (user.is_admin) navigate('/admin');
-            else navigate('/');
-        }
-    }, [user, navigate]);
+    // Get redirect URL from query params - default to /dashboard for customers
+    const redirectTo = searchParams.get('redirect') || '/dashboard';
+
+    // Show loading while auth is being checked
+    if (loading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-slate-50">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            </div>
+        );
+    }
+
+    // If user is already logged in, redirect immediately using Navigate component
+    if (user) {
+        const destination = user.is_admin ? '/admin' : redirectTo;
+        return <Navigate to={destination} replace />;
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -51,7 +63,9 @@ const Login = () => {
 
         if (result.success) {
             toast.success('Login successful! Welcome back.');
-            navigate('/');
+            // The login function calls checkUser which updates the user state
+            // We need to navigate manually since the component won't re-render with Navigate
+            // because we're inside handleSubmit, not during render
         } else {
             toast.error(result.message || 'Login failed. Please check your credentials.');
             setError(result.message);

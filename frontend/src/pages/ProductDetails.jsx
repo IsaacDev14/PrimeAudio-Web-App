@@ -7,6 +7,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '../components/ui/dialog';
 import { Button } from '../components/ui/button';
+import ProductReviews from '../components/ProductReviews';
 
 const ProductDetails = () => {
     const { id } = useParams();
@@ -201,10 +202,10 @@ const ProductDetails = () => {
                                 onClick={handleAddToCartClick}
                                 disabled={product.stock === 0}
                                 className={`flex-1 py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-all transform hover:scale-[1.02] active:scale-95 ${added
-                                        ? 'bg-green-600 text-white'
-                                        : product.stock === 0
-                                            ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                                            : 'bg-blue-600 hover:bg-blue-700 text-white'
+                                    ? 'bg-green-600 text-white'
+                                    : product.stock === 0
+                                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                        : 'bg-blue-600 hover:bg-blue-700 text-white'
                                     }`}
                             >
                                 {added ? (
@@ -266,6 +267,9 @@ const ProductDetails = () => {
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
+
+            {/* Product Reviews Section */}
+            {product && <ProductReviews productId={product.id} />}
         </div>
     );
 };

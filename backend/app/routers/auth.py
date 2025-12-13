@@ -37,6 +37,15 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
+
+def verify_token(token: str) -> Optional[dict]:
+    """Verify a token and return the payload (for WebSocket auth)"""
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        return {"user_id": payload.get("user_id"), "email": payload.get("sub")}
+    except JWTError:
+        return None
+
 async def get_current_user(token: str = Depends(oauth2_scheme), db: AsyncSession = Depends(database.get_db)):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -83,10 +92,50 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
         )
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
-        data={"sub": user.email}, expires_delta=access_token_expires
+        data={"sub": user.email, "user_id": user.id}, expires_delta=access_token_expires
     )
     return {"access_token": access_token, "token_type": "bearer"}
 
 @router.get("/me", response_model=schemas.UserResponse)
 async def read_users_me(current_user: models.User = Depends(get_current_user)):
     return current_user
+
+
+@router.get("/users")
+async def get_users_by_role(
+    role: str = None,
+    current_user: models.User = Depends(get_current_user),
+    db: AsyncSession = Depends(database.get_db)
+):
+    """Get users filtered by role. Customers see admins, admins see customers."""
+    try:
+        if current_user.is_admin:
+            # Admins can see all customers
+            if role == "admin":
+                result = await db.execute(
+                    select(models.User).where(models.User.is_admin == True)
+                )
+            else:
+                result = await db.execute(
+                    select(models.User).where(models.User.is_admin == False)
+                )
+        else:
+            # Customers can only see admins (support staff)
+            result = await db.execute(
+                select(models.User).where(models.User.is_admin == True)
+            )
+        
+        users = result.scalars().all()
+        return [
+            {
+                "id": u.id,
+                "email": u.email,
+                "full_name": u.full_name or u.email,
+                "is_admin": u.is_admin,
+                "avatar_url": u.avatar_url
+            }
+            for u in users
+        ]
+    except Exception as e:
+        print(f"Error fetching users: {e}")
+        return []

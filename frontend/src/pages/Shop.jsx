@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Search, ChevronRight, Music, Speaker, Mic, Guitar, Radio, Filter, X, Loader2, Package } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
+import { ProductGridSkeleton } from '../components/Skeleton';
 
 // Category icon mapping
 const CATEGORY_ICONS = {
@@ -31,7 +32,7 @@ const Shop = () => {
     const [categories, setCategories] = useState([]);
     const [brands, setBrands] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-    
+
     const [activeCategory, setActiveCategory] = useState(null);
     const [searchTerm, setSearchTerm] = useState("");
     const [priceRange, setPriceRange] = useState(null);
@@ -88,7 +89,7 @@ const Shop = () => {
         setIsLoading(true);
         try {
             let url = 'http://localhost:8000/products/?limit=100';
-            
+
             if (activeCategory) {
                 url += `&category=${encodeURIComponent(activeCategory)}`;
             }
@@ -98,7 +99,7 @@ const Shop = () => {
                     url += `&max_price=${priceRange.max}`;
                 }
             }
-            
+
             const res = await fetch(url);
             if (res.ok) {
                 const data = await res.json();
@@ -344,9 +345,7 @@ const Shop = () => {
                         </div>
 
                         {isLoading ? (
-                            <div className="flex items-center justify-center py-20">
-                                <Loader2 className="w-10 h-10 text-blue-600 animate-spin" />
-                            </div>
+                            <ProductGridSkeleton count={8} />
                         ) : filteredProducts.length === 0 ? (
                             <div className="text-center py-20">
                                 <Package className="w-16 h-16 text-slate-300 mx-auto mb-4" />

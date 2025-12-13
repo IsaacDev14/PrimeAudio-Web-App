@@ -1,11 +1,14 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Search, ShoppingCart, User, Menu, X } from 'lucide-react';
+import { ShoppingCart, User, Menu, X, Sun, Moon } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import { useTheme } from '../context/ThemeContext';
+import SearchAutocomplete from './SearchAutocomplete';
 
 const Navbar = () => {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const { cart } = useCart();
+    const { isDark, toggleTheme } = useTheme();
     const location = useLocation();
 
     const cartItemsCount = cart.reduce((total, item) => total + item.quantity, 0);
@@ -48,23 +51,29 @@ const Navbar = () => {
                         ))}
                     </div>
 
-                    {/* Search Bar - Desktop */}
+                    {/* Search Bar - Desktop with Autocomplete */}
                     <div className="hidden lg:flex flex-1 max-w-sm mx-8">
-                        <div className="relative w-full group">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors w-4 h-4" />
-                            <input
-                                type="text"
-                                placeholder="Search instruments..."
-                                className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all placeholder:text-slate-400"
-                            />
-                        </div>
+                        <SearchAutocomplete className="w-full" />
                     </div>
 
                     {/* Right Actions */}
                     <div className="flex items-center gap-2">
+                        {/* Dark Mode Toggle */}
+                        <button
+                            onClick={toggleTheme}
+                            className="p-3 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-full transition-colors"
+                            aria-label="Toggle dark mode"
+                        >
+                            {isDark ? (
+                                <Sun className="w-5 h-5 text-yellow-500" />
+                            ) : (
+                                <Moon className="w-5 h-5 text-slate-600" />
+                            )}
+                        </button>
+
                         {/* Cart */}
-                        <Link to="/cart" className="relative p-3 hover:bg-slate-100 rounded-full transition-colors group">
-                            <ShoppingCart className="w-5 h-5 text-slate-600 group-hover:text-blue-600 transition-colors" />
+                        <Link to="/cart" id="cart-icon" className="relative p-3 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-full transition-colors group">
+                            <ShoppingCart className="w-5 h-5 text-slate-600 dark:text-slate-300 group-hover:text-blue-600 transition-colors" />
                             {cartItemsCount > 0 && (
                                 <span className="absolute top-1 right-1 bg-blue-600 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold ring-2 ring-white">
                                     {cartItemsCount}

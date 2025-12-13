@@ -2,13 +2,75 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Star, Heart, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { useAuth } from '../context/AuthContext';
 
 const ProductCard = ({ product }) => {
+    const { isAuthenticated } = useAuth();
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [isHovered, setIsHovered] = useState(false);
+    const [isInWishlist, setIsInWishlist] = useState(false);
+    const [isWishlistLoading, setIsWishlistLoading] = useState(false);
 
     // Define images with fallback
     const images = product.images || [product.image_url];
+
+    // Check if product is in wishlist
+    useEffect(() => {
+        if (isAuthenticated) {
+            checkWishlist();
+        }
+    }, [isAuthenticated, product.id]);
+
+    const checkWishlist = async () => {
+        const token = localStorage.getItem('token');
+        if (!token) return;
+
+        try {
+            const res = await fetch(`http://localhost:8000/wishlist/check/${product.id}`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const data = await res.json();
+            setIsInWishlist(data.in_wishlist);
+        } catch (error) {
+            console.error('Error checking wishlist:', error);
+        }
+    };
+
+    const toggleWishlist = async (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const token = localStorage.getItem('token');
+        if (!token) {
+            // Redirect to login or show message
+            window.location.href = '/login?redirect=' + window.location.pathname;
+            return;
+        }
+
+        setIsWishlistLoading(true);
+
+        try {
+            if (isInWishlist) {
+                // Remove from wishlist
+                await fetch(`http://localhost:8000/wishlist/${product.id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                setIsInWishlist(false);
+            } else {
+                // Add to wishlist
+                await fetch(`http://localhost:8000/wishlist/${product.id}`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                setIsInWishlist(true);
+            }
+        } catch (error) {
+            console.error('Error toggling wishlist:', error);
+        } finally {
+            setIsWishlistLoading(false);
+        }
+    };
 
     // Navigation handlers
     const nextImage = (e) => {
@@ -50,8 +112,15 @@ const ProductCard = ({ product }) => {
                     </div>
                 )}
 
-                <button className="absolute top-3 right-3 p-2 bg-black/50 hover:bg-black/70 backdrop-blur-md rounded-full text-white transition-colors z-10">
-                    <Heart className="w-4 h-4 text-white stroke-2" />
+                <button
+                    onClick={toggleWishlist}
+                    disabled={isWishlistLoading}
+                    className={`absolute top-3 right-3 p-2 backdrop-blur-md rounded-full transition-all z-10 ${isInWishlist
+                        ? 'bg-red-500 hover:bg-red-600 text-white'
+                        : 'bg-black/50 hover:bg-black/70 text-white'
+                        } ${isWishlistLoading ? 'opacity-50' : ''}`}
+                >
+                    <Heart className={`w-4 h-4 stroke-2 ${isInWishlist ? 'fill-white' : ''}`} />
                 </button>
 
                 {/* Navigation Buttons (Visible on Hover) */}
@@ -90,7 +159,7 @@ const ProductCard = ({ product }) => {
                     <h3 className="font-bold text-slate-900 text-[15px] leading-tight line-clamp-2">{product.name}</h3>
                     <div className="flex items-center gap-1 shrink-0">
                         <Star className="w-3.5 h-3.5 fill-black text-black" />
-                        <span className="text-sm font-light text-slate-900">{product.rating}</span>
+                        <span className="text-sm font-light text-slate-900">{product.rating || 0}</span>
                     </div>
                 </div>
                 <p className="text-slate-500 text-sm font-light mt-0.5">{product.condition || "In Stock"}</p>

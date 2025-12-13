@@ -119,11 +119,35 @@ async def get_order_stats(
         "end_date": end.isoformat() if end else None
     }
 
-@router.get("/user", response_model=List[schemas.OrderResponse])
-async def get_my_orders(current_user: models.User = Depends(get_current_user), db: AsyncSession = Depends(database.get_db)):
-    result = await db.execute(select(models.Order).where(models.Order.user_id == current_user.id))
-    orders = result.scalars().all()
-    return orders
+@router.get("/user")
+async def get_my_orders_user(current_user: models.User = Depends(get_current_user), db: AsyncSession = Depends(database.get_db)):
+    """Get orders for the current user"""
+    try:
+        result = await db.execute(
+            select(models.Order)
+            .where(models.Order.user_id == current_user.id)
+            .order_by(models.Order.created_at.desc())
+        )
+        orders = result.scalars().all()
+        
+        return [
+            {
+                "id": order.id,
+                "user_id": order.user_id,
+                "status": order.status,
+                "total_amount": order.total_amount,
+                "tracking_id": order.tracking_id,
+                "payment_method": order.payment_method,
+                "payment_status": order.payment_status,
+                "customer_name": order.customer_name,
+                "delivery_address": order.delivery_address,
+                "created_at": order.created_at.isoformat() if order.created_at else None
+            }
+            for order in orders
+        ]
+    except Exception as e:
+        print(f"Error fetching orders: {e}")
+        return []
 
 @router.get("/track/{tracking_id}", response_model=schemas.OrderTrackingResponse)
 async def track_order(tracking_id: str, db: AsyncSession = Depends(database.get_db)):
@@ -185,48 +209,146 @@ async def update_order_status(order_id: int, status: str, current_user: models.U
     await db.refresh(order)
     return order
 
-@router.post("/", response_model=schemas.OrderResponse, status_code=status.HTTP_201_CREATED)
+@router.post("/", status_code=status.HTTP_201_CREATED)
 async def create_order(
     order_data: schemas.OrderCreate,
     current_user: models.User = Depends(get_current_user),
     db: AsyncSession = Depends(database.get_db)
 ):
     """Create a new order"""
-    # Calculate total and create order items
-    total = 0
-    order_items = []
-    
-    for item in order_data.items:
-        result = await db.execute(select(models.Product).where(models.Product.id == item.product_id))
-        product = result.scalars().first()
-        if not product:
-            raise HTTPException(status_code=404, detail=f"Product {item.product_id} not found")
+    try:
+        # Calculate total and create order items
+        total = order_data.total_amount if order_data.total_amount else 0
+        order_items = []
         
-        item_total = product.price * item.quantity
-        total += item_total
-        order_items.append({
-            "product_id": item.product_id,
-            "quantity": item.quantity,
-            "price": product.price
-        })
-    
-    # Create order
-    new_order = models.Order(
-        user_id=current_user.id,
-        status="pending",
-        total_amount=total
-    )
-    db.add(new_order)
-    await db.flush()
-    
-    # Create order items
-    for item_data in order_items:
-        order_item = models.OrderItem(
-            order_id=new_order.id,
-            **item_data
+        for item in order_data.items:
+            result = await db.execute(select(models.Product).where(models.Product.id == item.product_id))
+            product = result.scalars().first()
+            if not product:
+                raise HTTPException(status_code=404, detail=f"Product {item.product_id} not found")
+            
+            item_price = item.price if item.price else product.price
+            item_total = item_price * item.quantity
+            if not order_data.total_amount:
+                total += item_total
+            order_items.append({
+                "product_id": item.product_id,
+                "quantity": item.quantity,
+                "price": item_price
+            })
+        
+        # Generate tracking ID on creation
+        tracking_id = generate_tracking_id()
+        
+        # Create order
+        new_order = models.Order(
+            user_id=current_user.id,
+            status="pending",
+            total_amount=total,
+            tracking_id=tracking_id,
+            payment_method=getattr(order_data, 'payment_method', None),
+            customer_name=getattr(order_data, 'customer_name', None),
+            customer_email=getattr(order_data, 'customer_email', current_user.email),
+            customer_phone=getattr(order_data, 'customer_phone', None),
+            delivery_address=getattr(order_data, 'delivery_address', None),
+            notes=getattr(order_data, 'notes', None)
         )
-        db.add(order_item)
+        db.add(new_order)
+        await db.flush()
+        
+        # Create order items
+        for item_data in order_items:
+            order_item = models.OrderItem(
+                order_id=new_order.id,
+                **item_data
+            )
+            db.add(order_item)
+        
+        await db.commit()
+        await db.refresh(new_order)
+        
+        # Return dict directly to avoid response_model serialization issues
+        return {
+            "id": new_order.id,
+            "user_id": new_order.user_id,
+            "status": new_order.status,
+            "total_amount": new_order.total_amount,
+            "tracking_id": new_order.tracking_id,
+            "payment_method": new_order.payment_method,
+            "payment_status": new_order.payment_status,
+            "customer_name": new_order.customer_name,
+            "customer_email": new_order.customer_email,
+            "customer_phone": new_order.customer_phone,
+            "delivery_address": new_order.delivery_address,
+            "created_at": new_order.created_at.isoformat() if new_order.created_at else None
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        await db.rollback()
+        print(f"Error creating order: {e}")
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/my-orders")
+async def get_my_orders(
+    current_user: models.User = Depends(get_current_user), 
+    db: AsyncSession = Depends(database.get_db)
+):
+    """Get orders for the current logged-in user"""
+    try:
+        result = await db.execute(
+            select(models.Order)
+            .where(models.Order.user_id == current_user.id)
+            .order_by(models.Order.created_at.desc())
+        )
+        orders = result.scalars().all()
+        
+        response = []
+        for order in orders:
+            response.append({
+                "id": order.id,
+                "user_id": order.user_id,
+                "status": order.status,
+                "total_amount": order.total_amount,
+                "tracking_id": order.tracking_id,
+                "payment_method": order.payment_method,
+                "payment_status": order.payment_status,
+                "customer_name": order.customer_name,
+                "delivery_address": order.delivery_address,
+                "created_at": order.created_at.isoformat() if order.created_at else None
+            })
+        
+        return response
+    except Exception as e:
+        print(f"Error fetching orders: {e}")
+        return []
+
+
+@router.delete("/{order_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def cancel_order(
+    order_id: int, 
+    current_user: models.User = Depends(get_current_user), 
+    db: AsyncSession = Depends(database.get_db)
+):
+    """Cancel an order (customer can cancel pending, admin can cancel any)"""
+    result = await db.execute(select(models.Order).where(models.Order.id == order_id))
+    order = result.scalars().first()
     
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found")
+    
+    # Check authorization
+    if not current_user.is_admin and order.user_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Not authorized")
+    
+    # Customers can only cancel pending orders
+    if not current_user.is_admin and order.status != "pending":
+        raise HTTPException(status_code=400, detail="Only pending orders can be cancelled")
+    
+    order.status = "cancelled"
     await db.commit()
-    await db.refresh(new_order)
-    return new_order
+    
+    return None

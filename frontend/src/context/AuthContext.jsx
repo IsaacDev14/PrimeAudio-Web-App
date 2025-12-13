@@ -67,12 +67,18 @@ export const AuthProvider = ({ children }) => {
                     setUser(userData);
                     setLastActivity(Date.now());
                 } else {
+                    // Token invalid - clear everything
                     localStorage.removeItem('token');
+                    setUser(null);
                 }
             } catch (error) {
                 console.error("Auth check failed:", error);
                 localStorage.removeItem('token');
+                setUser(null);
             }
+        } else {
+            // No token - ensure user is null
+            setUser(null);
         }
         setLoading(false);
     };
