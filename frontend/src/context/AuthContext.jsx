@@ -101,9 +101,9 @@ export const AuthProvider = ({ children }) => {
 
             if (response.ok) {
                 localStorage.setItem('token', data.access_token);
-                await checkUser();
+                const user = await checkUser();
                 setLastActivity(Date.now());
-                return { success: true };
+                return { success: true, user };
             } else {
                 return { success: false, message: data.detail || 'Login failed' };
             }

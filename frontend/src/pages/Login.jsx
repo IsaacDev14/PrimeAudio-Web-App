@@ -66,9 +66,10 @@ const Login = () => {
 
         if (result.success) {
             toast.success('Login successful! Welcome back.');
-            // The login function calls checkUser which updates the user state
-            // We need to navigate manually since the component won't re-render with Navigate
-            // because we're inside handleSubmit, not during render
+
+            // Redirect based on role or return URL
+            const destination = result.user.is_admin ? '/admin' : redirectTo;
+            navigate(destination);
         } else {
             toast.error(result.message || 'Login failed. Please check your credentials.');
             setError(result.message);

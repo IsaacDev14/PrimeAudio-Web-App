@@ -212,7 +212,7 @@ const CustomerMessages = () => {
                                 <button
                                     key={conv.id}
                                     onClick={() => setSelectedConversation(conv)}
-                                    className={`w-full p-4 text-left border-b border-gray-100 hover:bg-gray-50 transition-colors ${selectedConversation?.id === conv.id ? 'bg-blue-50' : ''
+                                    className={`w-full p-4 text-left border-b border-gray-100 hover:bg-gray-50 transition-colors cursor-pointer relative z-10 ${selectedConversation?.id === conv.id ? 'bg-blue-50' : ''
                                         }`}
                                 >
                                     <div className="flex items-center justify-between">
