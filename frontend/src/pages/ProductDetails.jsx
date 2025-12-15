@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { Button } from '../components/ui/button';
 import ProductReviews from '../components/ProductReviews';
 import SEO from '../components/SEO';
+import { ProductDetailsSkeleton } from '../components/ui/skeleton';
 
 const ProductDetails = () => {
     // ... existing hook calls ...
@@ -68,8 +69,10 @@ const ProductDetails = () => {
 
     if (isLoading) {
         return (
-            <div className="pt-24 pb-20 flex items-center justify-center min-h-screen bg-gray-50">
-                <Loader2 className="w-10 h-10 text-blue-600 animate-spin" />
+            <div className="pt-24 pb-20 bg-gray-50 min-h-screen">
+                <div className="container mx-auto px-4">
+                    <ProductDetailsSkeleton />
+                </div>
             </div>
         );
     }

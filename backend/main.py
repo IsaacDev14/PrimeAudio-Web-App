@@ -10,7 +10,13 @@ import os
 
 load_dotenv()
 
-app = FastAPI(title="Prime Audio Solutions API - Firebase")
+# Import caching
+from cache import (
+    products_cache, meta_cache, offers_cache, settings_cache,
+    invalidate_products_cache, invalidate_offers_cache, get_cache_stats
+)
+
+app = FastAPI(title="Prime Audio Solutions API - Firebase (Cached)")
 
 origins = [
     "http://localhost:5173",
@@ -38,7 +44,12 @@ app.mount("/static", StaticFiles(directory="uploads"), name="static")
 
 @app.get("/")
 def read_root():
-    return {"message": "Welcome to Prime Audio Solutions API - Firebase Version"}
+    return {"message": "Welcome to Prime Audio Solutions API - Firebase Version (Cached)"}
+
+@app.get("/cache/stats")
+def cache_stats():
+    """Get cache statistics to monitor cache performance"""
+    return get_cache_stats()
 
 # Firebase-powered routers
 from app.routers import auth_firebase, products_firebase, orders_firebase
@@ -220,18 +231,41 @@ offers_router = APIRouter(prefix="/offers", tags=["Offers"])
 
 @offers_router.get("/")
 async def get_all_offers():
+    # Check cache first
+    cached = offers_cache.get("all_offers")
+    if cached is not None:
+        return cached
+    
     db = get_firestore_client()
     docs = db.collection('offers').stream()
-    return [{"id": doc.id, **doc.to_dict()} for doc in docs]
+    result = [{"id": doc.id, **doc.to_dict()} for doc in docs]
+    
+    # Cache for 5 minutes
+    offers_cache.set("all_offers", result)
+    return result
 
 @offers_router.get("/active")
 async def get_active_offers():
+    # Check cache first
+    cached = offers_cache.get("active_offers")
+    if cached is not None:
+        return cached
+    
     db = get_firestore_client()
     docs = db.collection('offers').where('is_active', '==', True).stream()
-    return [{"id": doc.id, **doc.to_dict()} for doc in docs]
+    result = [{"id": doc.id, **doc.to_dict()} for doc in docs]
+    
+    # Cache for 5 minutes
+    offers_cache.set("active_offers", result)
+    return result
 
 @offers_router.get("/products-on-sale")
 async def get_products_on_sale():
+    # Check cache first
+    cached = products_cache.get("products_on_sale")
+    if cached is not None:
+        return cached
+    
     db = get_firestore_client()
     # Get products with discount
     docs = db.collection('products').stream()
@@ -241,7 +275,11 @@ async def get_products_on_sale():
         if p.get('original_price') and p.get('price') and p['original_price'] > p['price']:
             p['id'] = doc.id
             products.append(p)
-    return products[:20]  # Limit to 20
+    result = products[:20]  # Limit to 20
+    
+    # Cache for 10 minutes
+    products_cache.set("products_on_sale", result)
+    return result
 
 @offers_router.post("/")
 async def create_offer(data: dict, current_user: dict = Depends(get_current_user)):
@@ -261,6 +299,7 @@ async def create_offer(data: dict, current_user: dict = Depends(get_current_user
         "created_at": datetime.utcnow().isoformat()
     }
     doc_ref.set(offer)
+    invalidate_offers_cache()  # Clear cache
     return offer
 
 @offers_router.put("/{offer_id}")
@@ -272,6 +311,7 @@ async def update_offer(offer_id: str, data: dict, current_user: dict = Depends(g
     if not doc_ref.get().exists:
         raise HTTPException(status_code=404, detail="Offer not found")
     doc_ref.update(data)
+    invalidate_offers_cache()  # Clear cache
     return {"id": offer_id, **doc_ref.get().to_dict()}
 
 @offers_router.delete("/{offer_id}")
@@ -280,6 +320,7 @@ async def delete_offer(offer_id: str, current_user: dict = Depends(get_current_u
         raise HTTPException(status_code=403, detail="Admin only")
     db = get_firestore_client()
     db.collection('offers').document(offer_id).delete()
+    invalidate_offers_cache()  # Clear cache
     return {"message": "Deleted"}
 
 app.include_router(offers_router)
@@ -410,6 +451,24 @@ async def send_message(data: dict, current_user: dict = Depends(get_current_user
     message = {
         "id": doc_ref.id,
         "conversation_id": data.get('conversation_id'),
+        "sender_id": current_user['id'],
+        "sender_name": current_user.get('full_name'),
+        "content": data.get('content'),
+        "is_admin": current_user.get('is_admin', False),
+        "created_at": datetime.utcnow().isoformat()
+    }
+    doc_ref.set(message)
+    return message
+
+@messages_router.post("/conversations/{conv_id}/messages")
+async def send_message_to_conversation(conv_id: str, data: dict, current_user: dict = Depends(get_current_user)):
+    """Send a message to a specific conversation"""
+    db = get_firestore_client()
+    doc_ref = db.collection('messages').document()
+    from datetime import datetime
+    message = {
+        "id": doc_ref.id,
+        "conversation_id": conv_id,
         "sender_id": current_user['id'],
         "sender_name": current_user.get('full_name'),
         "content": data.get('content'),

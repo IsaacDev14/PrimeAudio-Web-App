@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Search, ChevronRight, Music, Speaker, Mic, Guitar, Radio, Filter, X, Loader2, Package } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
-import { ProductGridSkeleton } from '../components/Skeleton';
+import { ProductGridSkeleton } from '../components/ui/skeleton';
 import SEO from '../components/SEO';
 import HotDeals from '../components/HotDeals';
 

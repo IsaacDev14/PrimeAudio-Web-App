@@ -13,8 +13,16 @@ const HotDeals = ({ limit = 4 }) => {
 
     useEffect(() => {
         fetchActiveOffer();
-        fetchDeals();
     }, []);
+
+    // Only fetch deals if there's an active offer
+    useEffect(() => {
+        if (activeOffer) {
+            fetchDeals();
+        } else {
+            setLoading(false);
+        }
+    }, [activeOffer]);
 
     const fetchActiveOffer = async () => {
         try {
@@ -23,10 +31,16 @@ const HotDeals = ({ limit = 4 }) => {
                 const offers = await response.json();
                 if (offers.length > 0) {
                     setActiveOffer(offers[0]);
+                } else {
+                    setActiveOffer(null);
+                    setLoading(false);
                 }
+            } else {
+                setLoading(false);
             }
         } catch (error) {
             console.error('Error fetching active offer:', error);
+            setLoading(false);
         }
     };
 
@@ -51,7 +65,8 @@ const HotDeals = ({ limit = 4 }) => {
         }
     };
 
-    if (loading || deals.length === 0) return null;
+    // Only show if we have an active offer AND deals
+    if (loading || !activeOffer || deals.length === 0) return null;
 
     return (
         <motion.div
