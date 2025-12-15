@@ -9,7 +9,7 @@ import { useToast } from '../../context/ToastContext';
 const API_URL = 'http://localhost:8000';
 
 const AdminOffers = () => {
-    const { showToast } = useToast();
+    const toast = useToast();
     const [offers, setOffers] = useState([]);
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -19,6 +19,7 @@ const AdminOffers = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [deleteConfirm, setDeleteConfirm] = useState({ show: false, offerId: null, offerTitle: '' });
     const [showClearAllConfirm, setShowClearAllConfirm] = useState(false);
+    const [expandedOfferId, setExpandedOfferId] = useState(null);
 
     const [formData, setFormData] = useState({
         title: '',
@@ -109,18 +110,18 @@ const AdminOffers = () => {
             console.log('Response status:', response.status);
 
             if (response.ok) {
-                showToast(editingOffer ? 'Offer updated!' : 'Offer created!', 'success');
+                toast.success(editingOffer ? 'Offer updated!' : 'Offer created!');
                 setShowModal(false);
                 resetForm();
                 fetchOffers();
             } else {
-                const error = await response.json();
-                console.error('Server error:', error);
-                showToast(error.detail || 'Failed to save offer', 'error');
+                const errorData = await response.json();
+                console.error('Server error:', errorData);
+                toast.error(errorData.detail || 'Failed to save offer');
             }
-        } catch (error) {
-            console.error('Network/JS error:', error);
-            showToast('Error saving offer: ' + error.message, 'error');
+        } catch (err) {
+            console.error('Network/JS error:', err);
+            toast.error('Error saving offer: ' + err.message);
         }
     };
 
@@ -134,15 +135,15 @@ const AdminOffers = () => {
             });
 
             if (response.ok) {
-                showToast('Offer deleted successfully', 'success');
+                toast.success('Offer deleted successfully');
                 fetchOffers();
             } else {
                 const errorData = await response.json();
-                showToast(errorData.detail || 'Failed to delete offer', 'error');
+                toast.error(errorData.detail || 'Failed to delete offer');
             }
         } catch (err) {
             console.error('Delete error:', err);
-            showToast('Error deleting offer', 'error');
+            toast.error('Error deleting offer');
         } finally {
             setDeleteConfirm({ show: false, offerId: null, offerTitle: '' });
         }
@@ -159,11 +160,11 @@ const AdminOffers = () => {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
             }
-            showToast('All offers cleared', 'success');
+            toast.success('All offers cleared');
             fetchOffers();
         } catch (err) {
             console.error('Clear all error:', err);
-            showToast('Error clearing offers', 'error');
+            toast.error('Error clearing offers');
         } finally {
             setShowClearAllConfirm(false);
         }
@@ -231,27 +232,27 @@ const AdminOffers = () => {
     return (
         <div className="p-6">
             {/* Header */}
-            <div className="flex justify-between items-center mb-6">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
                 <div>
-                    <h1 className="text-2xl font-bold text-gray-900">Promotional Offers</h1>
+                    <h1 className="text-xl md:text-2xl font-bold text-gray-900">Promotional Offers</h1>
                     <p className="text-gray-500 text-sm mt-1">Create and manage sales & discounts</p>
                 </div>
                 <div className="flex gap-2">
                     {offers.length > 0 && (
                         <button
                             onClick={() => setShowClearAllConfirm(true)}
-                            className="flex items-center gap-2 bg-red-100 text-red-600 px-4 py-2 rounded-lg hover:bg-red-200 transition-colors"
+                            className="flex items-center gap-1 md:gap-2 bg-red-100 text-red-600 px-3 md:px-4 py-2 rounded-lg hover:bg-red-200 transition-colors text-sm"
                         >
-                            <Trash2 size={18} />
-                            Clear All
+                            <Trash2 size={16} />
+                            <span className="hidden sm:inline">Clear All</span>
                         </button>
                     )}
                     <button
                         onClick={() => { resetForm(); setShowModal(true); }}
-                        className="flex items-center gap-2 bg-prime-blue text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors"
+                        className="flex items-center gap-1 md:gap-2 bg-prime-blue text-white px-3 md:px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors text-sm"
                     >
-                        <Plus size={20} />
-                        New Offer
+                        <Plus size={18} />
+                        <span>New Offer</span>
                     </button>
                 </div>
             </div>
@@ -309,20 +310,76 @@ const AdminOffers = () => {
                                     </span>
                                 </div>
 
-                                <div className="flex items-center gap-2 text-xs mb-3">
-                                    <Package size={14} className="text-gray-400" />
-                                    <span className="text-gray-600">
-                                        {offer.products?.length || 0} products
-                                    </span>
-                                    {isOfferActive(offer) ? (
-                                        <span className="ml-auto bg-green-100 text-green-700 px-2 py-0.5 rounded-full text-xs font-medium">
-                                            Active
+                                {/* Clickable Products Section */}
+                                <div className="mb-3">
+                                    <button
+                                        onClick={() => setExpandedOfferId(expandedOfferId === offer.id ? null : offer.id)}
+                                        className="flex items-center gap-2 text-xs w-full py-2 px-2 -mx-2 rounded-lg hover:bg-gray-50 transition-colors"
+                                    >
+                                        <Package size={14} className="text-gray-400" />
+                                        <span className="text-gray-600 font-medium">
+                                            {offer.products?.length || 0} products
                                         </span>
-                                    ) : (
-                                        <span className="ml-auto bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full text-xs font-medium">
-                                            Inactive
-                                        </span>
-                                    )}
+                                        <ChevronDown
+                                            size={14}
+                                            className={`text-gray-400 transition-transform ${expandedOfferId === offer.id ? 'rotate-180' : ''}`}
+                                        />
+                                        {isOfferActive(offer) ? (
+                                            <span className="ml-auto bg-green-100 text-green-700 px-2 py-0.5 rounded-full text-xs font-medium">
+                                                Active
+                                            </span>
+                                        ) : (
+                                            <span className="ml-auto bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full text-xs font-medium">
+                                                Inactive
+                                            </span>
+                                        )}
+                                    </button>
+
+                                    {/* Expanded Products List */}
+                                    <AnimatePresence>
+                                        {expandedOfferId === offer.id && offer.products?.length > 0 && (
+                                            <motion.div
+                                                initial={{ height: 0, opacity: 0 }}
+                                                animate={{ height: 'auto', opacity: 1 }}
+                                                exit={{ height: 0, opacity: 0 }}
+                                                className="overflow-hidden"
+                                            >
+                                                <div className="mt-2 bg-gray-50 rounded-lg p-2 space-y-2 max-h-40 overflow-y-auto">
+                                                    {offer.products.map(product => (
+                                                        <div
+                                                            key={product.id}
+                                                            className="flex items-center gap-2 bg-white rounded-lg p-2"
+                                                        >
+                                                            <img
+                                                                src={product.product_image || '/placeholder.jpg'}
+                                                                alt={product.product_name}
+                                                                className="w-10 h-10 object-cover rounded-lg"
+                                                            />
+                                                            <div className="flex-1 min-w-0">
+                                                                <p className="text-sm font-medium text-gray-900 truncate">
+                                                                    {product.product_name}
+                                                                </p>
+                                                                <div className="flex items-center gap-2">
+                                                                    {product.product_price ? (
+                                                                        <>
+                                                                            <span className="text-xs text-red-600 font-bold">
+                                                                                KSh {(product.product_price * (1 - offer.discount_percentage / 100)).toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                                                                            </span>
+                                                                            <span className="text-xs text-gray-400 line-through">
+                                                                                KSh {product.product_price?.toLocaleString()}
+                                                                            </span>
+                                                                        </>
+                                                                    ) : (
+                                                                        <span className="text-xs text-gray-500">Price not set</span>
+                                                                    )}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
                                 </div>
 
                                 {/* Actions */}

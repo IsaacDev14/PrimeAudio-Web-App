@@ -36,6 +36,7 @@ import AdminOffers from './pages/admin/AdminOffers';
 // Customer Dashboard Pages
 import CustomerDashboard from './pages/customer/Dashboard';
 import CustomerOrders from './pages/customer/Orders';
+import OrderDetails from './pages/customer/OrderDetails';
 import CustomerMessages from './pages/customer/Messages';
 import CustomerProfile from './pages/customer/Profile';
 import CustomerAddresses from './pages/customer/Addresses';
@@ -72,7 +73,7 @@ function App() {
                     <Route path="/dashboard" element={<CustomerLayout />}>
                       <Route index element={<CustomerDashboard />} />
                       <Route path="orders" element={<CustomerOrders />} />
-                      <Route path="orders/:id" element={<CustomerOrders />} />
+                      <Route path="orders/:id" element={<OrderDetails />} />
                       <Route path="messages" element={<CustomerMessages />} />
                       <Route path="messages/:id" element={<CustomerMessages />} />
                       <Route path="wishlist" element={<CustomerWishlist />} />

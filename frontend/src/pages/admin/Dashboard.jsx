@@ -188,7 +188,7 @@ const Dashboard = () => {
             </div>
 
             {/* Order Status Cards */}
-            <div className="grid gap-4 md:grid-cols-4">
+            <div className="grid grid-cols-2 gap-3 md:gap-4 md:grid-cols-4">
                 {orderStatCards.map((stat, index) => {
                     const Icon = stat.icon;
                     return (
@@ -223,38 +223,40 @@ const Dashboard = () => {
                             No orders found for this period.
                         </div>
                     ) : (
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead>Order ID</TableHead>
-                                    <TableHead>Tracking ID</TableHead>
-                                    <TableHead>Date</TableHead>
-                                    <TableHead>Status</TableHead>
-                                    <TableHead className="text-right">Amount</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {recentOrders.map((order) => (
-                                    <TableRow key={order.id}>
-                                        <TableCell className="font-medium">#{order.id}</TableCell>
-                                        <TableCell className="font-mono text-xs">
-                                            {order.tracking_id || '-'}
-                                        </TableCell>
-                                        <TableCell>
-                                            {order.created_at ? new Date(order.created_at).toLocaleDateString() : 'N/A'}
-                                        </TableCell>
-                                        <TableCell>
-                                            <Badge variant={getStatusVariant(order.status)}>
-                                                {order.status}
-                                            </Badge>
-                                        </TableCell>
-                                        <TableCell className="text-right">
-                                            {formatCurrency(order.total_amount)}
-                                        </TableCell>
+                        <div className="overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0">
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead>Order ID</TableHead>
+                                        <TableHead>Tracking ID</TableHead>
+                                        <TableHead>Date</TableHead>
+                                        <TableHead>Status</TableHead>
+                                        <TableHead className="text-right">Amount</TableHead>
                                     </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
+                                </TableHeader>
+                                <TableBody>
+                                    {recentOrders.map((order) => (
+                                        <TableRow key={order.id}>
+                                            <TableCell className="font-medium">#{order.id}</TableCell>
+                                            <TableCell className="font-mono text-xs">
+                                                {order.tracking_id || '-'}
+                                            </TableCell>
+                                            <TableCell>
+                                                {order.created_at ? new Date(order.created_at).toLocaleDateString() : 'N/A'}
+                                            </TableCell>
+                                            <TableCell>
+                                                <Badge variant={getStatusVariant(order.status)}>
+                                                    {order.status}
+                                                </Badge>
+                                            </TableCell>
+                                            <TableCell className="text-right">
+                                                {formatCurrency(order.total_amount)}
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </div>
                     )}
                 </CardContent>
             </Card>

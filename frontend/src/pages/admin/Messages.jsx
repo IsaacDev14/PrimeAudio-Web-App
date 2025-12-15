@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
     MessageSquare,
     Send,
@@ -8,7 +9,9 @@ import {
     X,
     Search,
     RefreshCw,
-    Users
+    Users,
+    Plus,
+    ArrowLeft
 } from 'lucide-react';
 
 const AdminMessages = () => {
@@ -20,14 +23,22 @@ const AdminMessages = () => {
     const [isSending, setIsSending] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [customers, setCustomers] = useState([]);
+    const [showUserList, setShowUserList] = useState(false);
+    const [userSearchTerm, setUserSearchTerm] = useState('');
     const messagesEndRef = useRef(null);
+    const pollIntervalRef = useRef(null);
 
     useEffect(() => {
         fetchConversations();
         fetchCustomers();
-        // Poll for new messages every 10 seconds
-        const interval = setInterval(fetchConversations, 10000);
-        return () => clearInterval(interval);
+        // Poll for new messages every 5 seconds for real-time feel
+        pollIntervalRef.current = setInterval(() => {
+            fetchConversations();
+            if (selectedConversation) {
+                fetchMessages(selectedConversation.id);
+            }
+        }, 5000);
+        return () => clearInterval(pollIntervalRef.current);
     }, []);
 
     useEffect(() => {
@@ -76,6 +87,7 @@ const AdminMessages = () => {
             console.error('Error fetching customers:', error);
         }
     };
+
     const fetchMessages = async (conversationId) => {
         const token = localStorage.getItem('token');
 
@@ -135,10 +147,53 @@ const AdminMessages = () => {
         }
     };
 
+    const handleStartConversation = async (customer) => {
+        const token = localStorage.getItem('token');
+
+        // Check if conversation already exists with this customer
+        const existingConv = conversations.find(c =>
+            c.customer_id === customer.id || c.customer_email === customer.email
+        );
+
+        if (existingConv) {
+            setSelectedConversation(existingConv);
+            setShowUserList(false);
+            return;
+        }
+
+        try {
+            const res = await fetch('http://localhost:8000/messages/conversations', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    subject: `Chat with ${customer.full_name || customer.email}`,
+                    customer_id: customer.id
+                })
+            });
+
+            if (res.ok) {
+                const data = await res.json();
+                setShowUserList(false);
+                fetchConversations();
+                setSelectedConversation(data);
+            }
+        } catch (error) {
+            console.error('Error creating conversation:', error);
+        }
+    };
+
     const filteredConversations = conversations.filter(conv =>
         conv.customer_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         conv.customer_email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         conv.subject?.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    const filteredCustomers = customers.filter(customer =>
+        customer.full_name?.toLowerCase().includes(userSearchTerm.toLowerCase()) ||
+        customer.email?.toLowerCase().includes(userSearchTerm.toLowerCase())
     );
 
     const openConversations = filteredConversations.filter(c => c.status === 'open');
@@ -146,25 +201,34 @@ const AdminMessages = () => {
 
     return (
         <div className="space-y-6">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between flex-wrap gap-4">
                 <div>
-                    <h1 className="text-2xl font-bold text-gray-900">Customer Messages</h1>
-                    <p className="text-gray-500 mt-1">
+                    <h1 className="text-xl md:text-2xl font-bold text-gray-900">Customer Messages</h1>
+                    <p className="text-gray-500 text-sm mt-1">
                         {openConversations.length} open conversation{openConversations.length !== 1 ? 's' : ''}
                     </p>
                 </div>
-                <button
-                    onClick={fetchConversations}
-                    className="flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
-                >
-                    <RefreshCw className="w-4 h-4" />
-                    Refresh
-                </button>
+                <div className="flex items-center gap-2">
+                    <button
+                        onClick={() => setShowUserList(true)}
+                        className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                    >
+                        <Plus className="w-4 h-4" />
+                        <span className="hidden sm:inline">New Chat</span>
+                    </button>
+                    <button
+                        onClick={fetchConversations}
+                        className="flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                    >
+                        <RefreshCw className="w-4 h-4" />
+                        <span className="hidden sm:inline">Refresh</span>
+                    </button>
+                </div>
             </div>
 
             <div className="flex bg-white rounded-xl border border-gray-200 overflow-hidden" style={{ height: 'calc(100vh - 220px)' }}>
                 {/* Conversations Sidebar */}
-                <div className="w-80 border-r border-gray-200 flex flex-col">
+                <div className="w-full md:w-80 border-r border-gray-200 flex flex-col">
                     {/* Search */}
                     <div className="p-3 border-b border-gray-200">
                         <div className="relative">
@@ -179,32 +243,23 @@ const AdminMessages = () => {
                         </div>
                     </div>
 
-                    {/* Registered Customers Section */}
-                    <div className="p-3 border-b border-gray-200 bg-green-50">
-                        <div className="flex items-center gap-2 mb-2">
-                            <Users className="w-4 h-4 text-green-600" />
-                            <span className="font-semibold text-gray-900 text-sm">Registered Customers ({customers.length})</span>
-                        </div>
-                        <div className="flex flex-wrap gap-1 max-h-24 overflow-y-auto">
-                            {customers.map((customer) => (
-                                <div key={customer.id} className="flex items-center gap-1 bg-white px-2 py-1 rounded-full border border-gray-200 text-xs">
-                                    <div className="w-4 h-4 bg-green-600 rounded-full flex items-center justify-center">
-                                        <User className="w-2 h-2 text-white" />
-                                    </div>
-                                    <span className="text-gray-700 truncate max-w-[100px]">{customer.full_name}</span>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-
                     {/* Conversation List */}
                     <div className="flex-1 overflow-y-auto">
                         {isLoading ? (
-                            <div className="p-4 text-center text-gray-400">Loading...</div>
+                            <div className="p-4 text-center text-gray-400">
+                                <div className="animate-spin w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full mx-auto mb-2"></div>
+                                Loading...
+                            </div>
                         ) : filteredConversations.length === 0 ? (
                             <div className="p-8 text-center">
                                 <MessageSquare className="w-12 h-12 mx-auto text-gray-300 mb-3" />
                                 <p className="text-gray-500 text-sm">No conversations</p>
+                                <button
+                                    onClick={() => setShowUserList(true)}
+                                    className="text-blue-600 text-sm hover:underline mt-2"
+                                >
+                                    Start a new chat
+                                </button>
                             </div>
                         ) : (
                             <>
@@ -218,7 +273,7 @@ const AdminMessages = () => {
                                             <button
                                                 key={conv.id}
                                                 onClick={() => setSelectedConversation(conv)}
-                                                className={`w-full p-4 text-left border-b border-gray-100 hover:bg-gray-50 transition-colors cursor-pointer relative z-10 ${selectedConversation?.id === conv.id ? 'bg-blue-50 border-l-4 border-l-blue-600' : ''
+                                                className={`w-full p-3 text-left border-b border-gray-100 hover:bg-gray-50 transition-colors ${selectedConversation?.id === conv.id ? 'bg-blue-50 border-l-4 border-l-blue-600' : ''
                                                     }`}
                                             >
                                                 <div className="flex items-center justify-between mb-1">
@@ -231,7 +286,7 @@ const AdminMessages = () => {
                                                         </span>
                                                     )}
                                                 </div>
-                                                <p className="text-sm text-gray-600 truncate">{conv.subject}</p>
+                                                <p className="text-xs text-gray-500 truncate">{conv.subject}</p>
                                                 <p className="text-xs text-gray-400 truncate mt-1">
                                                     {conv.last_message || 'No messages yet'}
                                                 </p>
@@ -250,7 +305,7 @@ const AdminMessages = () => {
                                             <button
                                                 key={conv.id}
                                                 onClick={() => setSelectedConversation(conv)}
-                                                className={`w-full p-4 text-left border-b border-gray-100 hover:bg-gray-50 transition-colors opacity-60 ${selectedConversation?.id === conv.id ? 'bg-gray-100' : ''
+                                                className={`w-full p-3 text-left border-b border-gray-100 hover:bg-gray-50 transition-colors opacity-60 ${selectedConversation?.id === conv.id ? 'bg-gray-100' : ''
                                                     }`}
                                             >
                                                 <div className="flex items-center justify-between mb-1">
@@ -259,7 +314,7 @@ const AdminMessages = () => {
                                                     </span>
                                                     <CheckCircle className="w-4 h-4 text-green-500" />
                                                 </div>
-                                                <p className="text-sm text-gray-500 truncate">{conv.subject}</p>
+                                                <p className="text-xs text-gray-500 truncate">{conv.subject}</p>
                                             </button>
                                         ))}
                                     </div>
@@ -270,16 +325,19 @@ const AdminMessages = () => {
                 </div>
 
                 {/* Messages Area */}
-                <div className="flex-1 flex flex-col">
+                <div className="hidden md:flex flex-1 flex-col">
                     {selectedConversation ? (
                         <>
                             {/* Header */}
                             <div className="p-4 border-b border-gray-200 bg-gray-50 flex items-center justify-between">
-                                <div>
-                                    <h3 className="font-semibold text-gray-900">{selectedConversation.subject}</h3>
-                                    <p className="text-sm text-gray-500">
-                                        {selectedConversation.customer_name} ({selectedConversation.customer_email})
-                                    </p>
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                                        <User className="w-5 h-5 text-white" />
+                                    </div>
+                                    <div>
+                                        <h3 className="font-semibold text-gray-900">{selectedConversation.customer_name || 'Customer'}</h3>
+                                        <p className="text-xs text-gray-500">{selectedConversation.customer_email}</p>
+                                    </div>
                                 </div>
                                 <div className="flex items-center gap-2">
                                     {selectedConversation.status === 'open' && (
@@ -299,7 +357,7 @@ const AdminMessages = () => {
                                 {messages.length === 0 ? (
                                     <div className="text-center py-12 text-gray-400">
                                         <MessageSquare className="w-12 h-12 mx-auto mb-3" />
-                                        <p>No messages yet</p>
+                                        <p>No messages yet. Start the conversation!</p>
                                     </div>
                                 ) : (
                                     messages.map((msg) => (
@@ -313,18 +371,14 @@ const AdminMessages = () => {
                                                 } rounded-2xl px-4 py-3 shadow-sm`}>
                                                 {!msg.sender_is_admin && (
                                                     <div className="flex items-center gap-2 mb-1">
-                                                        <div className="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center">
-                                                            <User className="w-3 h-3 text-gray-600" />
-                                                        </div>
                                                         <span className="text-xs font-medium text-gray-500">
                                                             {msg.sender_name}
                                                         </span>
                                                     </div>
                                                 )}
                                                 <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
-                                                <p className={`text-xs mt-1 flex items-center gap-1 ${msg.sender_is_admin ? 'text-blue-200' : 'text-gray-400'
+                                                <p className={`text-xs mt-1 ${msg.sender_is_admin ? 'text-blue-200' : 'text-gray-400'
                                                     }`}>
-                                                    <Clock className="w-3 h-3" />
                                                     {new Date(msg.created_at).toLocaleTimeString([], {
                                                         hour: '2-digit',
                                                         minute: '2-digit'
@@ -368,12 +422,108 @@ const AdminMessages = () => {
                         <div className="flex-1 flex items-center justify-center bg-gray-50">
                             <div className="text-center">
                                 <MessageSquare className="w-16 h-16 mx-auto text-gray-300 mb-4" />
-                                <p className="text-gray-500">Select a conversation to view messages</p>
+                                <p className="text-gray-500 mb-4">Select a conversation to view messages</p>
+                                <button
+                                    onClick={() => setShowUserList(true)}
+                                    className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                                >
+                                    <Plus className="w-4 h-4" />
+                                    Start New Chat
+                                </button>
                             </div>
                         </div>
                     )}
                 </div>
             </div>
+
+            {/* User List Modal */}
+            <AnimatePresence>
+                {showUserList && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+                        onClick={() => setShowUserList(false)}
+                    >
+                        <motion.div
+                            initial={{ scale: 0.95, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0.95, opacity: 0 }}
+                            className="bg-white rounded-xl w-full max-w-md max-h-[80vh] flex flex-col"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            {/* Modal Header */}
+                            <div className="p-4 border-b border-gray-200 flex items-center justify-between">
+                                <h3 className="text-lg font-semibold text-gray-900">Start New Chat</h3>
+                                <button
+                                    onClick={() => setShowUserList(false)}
+                                    className="p-1 hover:bg-gray-100 rounded-lg"
+                                >
+                                    <X className="w-5 h-5 text-gray-500" />
+                                </button>
+                            </div>
+
+                            {/* Search */}
+                            <div className="p-4 border-b border-gray-100">
+                                <div className="relative">
+                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                                    <input
+                                        type="text"
+                                        placeholder="Search customers..."
+                                        value={userSearchTerm}
+                                        onChange={(e) => setUserSearchTerm(e.target.value)}
+                                        className="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500"
+                                        autoFocus
+                                    />
+                                </div>
+                            </div>
+
+                            {/* User List */}
+                            <div className="flex-1 overflow-y-auto p-2">
+                                {filteredCustomers.length === 0 ? (
+                                    <div className="text-center py-8 text-gray-500">
+                                        No customers found
+                                    </div>
+                                ) : (
+                                    <div className="space-y-1">
+                                        {filteredCustomers.map((customer) => {
+                                            const hasConversation = conversations.some(c =>
+                                                c.customer_id === customer.id || c.customer_email === customer.email
+                                            );
+                                            return (
+                                                <button
+                                                    key={customer.id}
+                                                    onClick={() => handleStartConversation(customer)}
+                                                    className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-blue-50 transition-colors"
+                                                >
+                                                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+                                                        <User className="w-5 h-5 text-white" />
+                                                    </div>
+                                                    <div className="flex-1 text-left">
+                                                        <p className="font-medium text-gray-900">
+                                                            {customer.full_name || 'Customer'}
+                                                        </p>
+                                                        <p className="text-xs text-gray-500">{customer.email}</p>
+                                                    </div>
+                                                    <div className="flex items-center gap-2">
+                                                        {hasConversation && (
+                                                            <span className="text-xs text-blue-600 bg-blue-100 px-2 py-0.5 rounded-full">
+                                                                Active
+                                                            </span>
+                                                        )}
+                                                        <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                                                    </div>
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
+                                )}
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 };

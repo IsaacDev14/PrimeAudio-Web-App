@@ -4,7 +4,8 @@ import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
 import { Label } from "../../components/ui/label";
 import { Textarea } from "../../components/ui/textarea";
-import { Wand2, Copy, Sparkles, Loader2 } from "lucide-react";
+import { Wand2, Copy, Sparkles, Loader2, Check } from "lucide-react";
+import ReactMarkdown from "react-markdown";
 
 const AdminAITools = () => {
     const [formData, setFormData] = useState({
@@ -14,6 +15,7 @@ const AdminAITools = () => {
     });
     const [generatedDescription, setGeneratedDescription] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+    const [copied, setCopied] = useState(false);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -46,24 +48,25 @@ const AdminAITools = () => {
 
     const copyToClipboard = () => {
         navigator.clipboard.writeText(generatedDescription);
-        // Optional: Show toast
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
     };
 
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between">
                 <div>
-                    <h2 className="text-3xl font-bold tracking-tight">AI Tools</h2>
-                    <p className="text-muted-foreground">Boost your productivity with AI-powered generators</p>
+                    <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-gray-900">AI Tools</h2>
+                    <p className="text-gray-500 text-sm mt-1">Boost your productivity with AI-powered generators</p>
                 </div>
             </div>
 
-            <div className="grid gap-6 md:grid-cols-2">
+            <div className="grid gap-6 lg:grid-cols-2">
                 {/* Input Section */}
                 <Card>
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
-                            <Sparkles className="h-5 w-5 text-primary" />
+                            <Sparkles className="h-5 w-5 text-blue-600" />
                             Description Generator
                         </CardTitle>
                         <CardDescription>
@@ -106,7 +109,7 @@ const AdminAITools = () => {
                                     rows={4}
                                 />
                             </div>
-                            <Button type="submit" className="w-full" disabled={isLoading}>
+                            <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700" disabled={isLoading}>
                                 {isLoading ? (
                                     <>
                                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -124,29 +127,48 @@ const AdminAITools = () => {
                 </Card>
 
                 {/* Output Section */}
-                <Card className="h-full flex flex-col">
+                <Card className="flex flex-col">
                     <CardHeader>
-                        <CardTitle>Result</CardTitle>
-                        <CardDescription>Generated content will appear here.</CardDescription>
-                    </CardHeader>
-                    <CardContent className="flex-1">
-                        <div className="relative h-full min-h-[300px] rounded-md border bg-muted/50 p-4 overflow-y-auto whitespace-pre-wrap">
-                            {generatedDescription ? (
-                                <div dangerouslySetInnerHTML={{ __html: generatedDescription }} />
-                            ) : (
-                                <p className="text-muted-foreground text-center pt-20">Fill the form to generate content...</p>
-                            )}
-
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <CardTitle>Result</CardTitle>
+                                <CardDescription>Generated content will appear here.</CardDescription>
+                            </div>
                             {generatedDescription && (
                                 <Button
-                                    variant="secondary"
+                                    variant="outline"
                                     size="sm"
-                                    className="absolute top-2 right-2"
                                     onClick={copyToClipboard}
+                                    className="shrink-0"
                                 >
-                                    <Copy className="h-4 w-4 mr-2" />
-                                    Copy
+                                    {copied ? (
+                                        <>
+                                            <Check className="h-4 w-4 mr-2 text-green-600" />
+                                            Copied!
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Copy className="h-4 w-4 mr-2" />
+                                            Copy
+                                        </>
+                                    )}
                                 </Button>
+                            )}
+                        </div>
+                    </CardHeader>
+                    <CardContent className="flex-1">
+                        <div className="h-full min-h-[400px] max-h-[600px] rounded-lg border bg-gray-50 p-6 overflow-y-auto">
+                            {generatedDescription ? (
+                                <article className="prose prose-sm max-w-none prose-headings:text-gray-900 prose-p:text-gray-700 prose-strong:text-gray-900 prose-ul:text-gray-700 prose-li:marker:text-blue-600">
+                                    <ReactMarkdown>{generatedDescription}</ReactMarkdown>
+                                </article>
+                            ) : (
+                                <div className="h-full flex items-center justify-center">
+                                    <div className="text-center">
+                                        <Sparkles className="w-12 h-12 mx-auto text-gray-300 mb-4" />
+                                        <p className="text-gray-500">Fill the form and click Generate to create content...</p>
+                                    </div>
+                                </div>
                             )}
                         </div>
                     </CardContent>

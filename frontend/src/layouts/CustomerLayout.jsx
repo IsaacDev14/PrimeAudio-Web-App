@@ -67,7 +67,7 @@ const CustomerLayout = () => {
             {/* Sidebar */}
             <aside className={`
                 fixed top-0 left-0 h-full w-72 bg-white border-r border-gray-200 z-50
-                transform transition-transform duration-300
+                transform transition-transform duration-300 flex flex-col
                 lg:translate-x-0 
                 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
             `}>
@@ -103,7 +103,7 @@ const CustomerLayout = () => {
                 </div>
 
                 {/* Navigation */}
-                <nav className="p-4 flex-1">
+                <nav className="p-4 flex-1 overflow-y-auto">
                     <ul className="space-y-1">
                         {navItems.map((item) => (
                             <li key={item.to}>
