@@ -117,18 +117,21 @@ async def get_users_by_role(
     current_user: models.User = Depends(get_current_user),
     db: AsyncSession = Depends(database.get_db)
 ):
-    """Get users filtered by role. Customers see admins, admins see customers."""
+    """Get users filtered by role. Admins can see all users."""
     try:
         if current_user.is_admin:
-            # Admins can see all customers
+            # Admins can filter by role or see all
             if role == "admin":
                 result = await db.execute(
                     select(models.User).where(models.User.is_admin == True)
                 )
-            else:
+            elif role == "customer":
                 result = await db.execute(
                     select(models.User).where(models.User.is_admin == False)
                 )
+            else:
+                # No role filter - return all users
+                result = await db.execute(select(models.User))
         else:
             # Customers can only see admins (support staff)
             result = await db.execute(
@@ -142,7 +145,9 @@ async def get_users_by_role(
                 "email": u.email,
                 "full_name": u.full_name or u.email,
                 "is_admin": u.is_admin,
-                "avatar_url": u.avatar_url
+                "is_active": u.is_active,
+                "avatar_url": u.avatar_url,
+                "created_at": u.created_at
             }
             for u in users
         ]

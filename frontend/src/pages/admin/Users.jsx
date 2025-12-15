@@ -42,13 +42,13 @@ const AdminUsers = () => {
             user.email?.toLowerCase().includes(searchTerm.toLowerCase());
 
         if (activeTab === "all") return matchesSearch;
-        if (activeTab === "customers") return matchesSearch && user.role === "customer";
-        if (activeTab === "admins") return matchesSearch && user.role === "admin";
+        if (activeTab === "customers") return matchesSearch && !user.is_admin;
+        if (activeTab === "admins") return matchesSearch && user.is_admin;
         return matchesSearch;
     });
 
-    const customerCount = users.filter(u => u.role === "customer").length;
-    const adminCount = users.filter(u => u.role === "admin").length;
+    const customerCount = users.filter(u => !u.is_admin).length;
+    const adminCount = users.filter(u => u.is_admin).length;
 
     const tabs = [
         { id: "all", label: "All Users", count: users.length },
@@ -81,14 +81,14 @@ const AdminUsers = () => {
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id)}
                         className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${activeTab === tab.id
-                                ? 'bg-white text-gray-900 shadow-sm'
-                                : 'text-gray-600 hover:text-gray-900'
+                            ? 'bg-white text-gray-900 shadow-sm'
+                            : 'text-gray-600 hover:text-gray-900'
                             }`}
                     >
                         {tab.label}
                         <span className={`ml-2 px-2 py-0.5 rounded-full text-xs ${activeTab === tab.id
-                                ? 'bg-blue-100 text-blue-700'
-                                : 'bg-gray-200 text-gray-600'
+                            ? 'bg-blue-100 text-blue-700'
+                            : 'bg-gray-200 text-gray-600'
                             }`}>
                             {tab.count}
                         </span>
@@ -137,9 +137,9 @@ const AdminUsers = () => {
                                     <tr key={user.id} className="hover:bg-gray-50 transition-colors">
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-3">
-                                                <div className={`h-10 w-10 rounded-full flex items-center justify-center text-white font-bold ${user.role === 'admin'
-                                                        ? 'bg-gradient-to-br from-purple-500 to-blue-600'
-                                                        : 'bg-gradient-to-br from-blue-500 to-cyan-500'
+                                                <div className={`h-10 w-10 rounded-full flex items-center justify-center text-white font-bold ${user.is_admin
+                                                    ? 'bg-gradient-to-br from-purple-500 to-blue-600'
+                                                    : 'bg-gradient-to-br from-blue-500 to-cyan-500'
                                                     }`}>
                                                     {user.full_name?.charAt(0).toUpperCase() || user.email?.charAt(0).toUpperCase() || 'U'}
                                                 </div>
@@ -154,12 +154,12 @@ const AdminUsers = () => {
                                         </td>
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-2 text-gray-700">
-                                                {user.role === "admin" ? (
+                                                {user.is_admin ? (
                                                     <ShieldAlert className="h-4 w-4 text-purple-600" />
                                                 ) : (
                                                     <User className="h-4 w-4 text-blue-500" />
                                                 )}
-                                                <span className="capitalize">{user.role}</span>
+                                                <span className="capitalize">{user.is_admin ? 'Admin' : 'Customer'}</span>
                                             </div>
                                         </td>
                                         <td className="px-6 py-4">
@@ -178,7 +178,7 @@ const AdminUsers = () => {
                                         </td>
                                         <td className="px-6 py-4">
                                             <div className="flex items-center justify-end gap-2">
-                                                {user.role === 'customer' && (
+                                                {!user.is_admin && (
                                                     <button
                                                         onClick={() => handleMessageUser(user)}
                                                         className="text-blue-600 hover:text-blue-700 p-2 hover:bg-blue-50 rounded-lg transition-colors"
