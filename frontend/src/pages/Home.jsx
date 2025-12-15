@@ -97,8 +97,16 @@ const Home = () => {
     const [isLoading, setIsLoading] = useState(true);
 
     const brands = [
-        'Yamaha', 'Fender', 'Gibson', 'Roland', 'Korg', 'Behringer',
-        'Shure', 'Pioneer', 'Audio-Technica', 'JBL'
+        { name: 'Yamaha', domain: 'yamaha.com' },
+        { name: 'Fender', domain: 'fender.com' },
+        { name: 'Gibson', domain: 'gibson.com' },
+        { name: 'Roland', domain: 'roland.com' },
+        { name: 'Korg', domain: 'korg.com' },
+        { name: 'Behringer', domain: 'behringer.com' },
+        { name: 'Shure', domain: 'shure.com' },
+        { name: 'Pioneer DJ', domain: 'pioneerdj.com' },
+        { name: 'Audio-Technica', domain: 'audio-technica.com' },
+        { name: 'JBL', domain: 'jbl.com' }
     ];
 
     useEffect(() => {
@@ -298,15 +306,28 @@ const Home = () => {
             {/* Trusted Brands Marquee */}
             <div className="py-12 border-y border-gray-200 bg-gray-50 overflow-hidden">
                 <div className="container mx-auto px-4">
-                    <p className="text-center text-sm font-semibold text-gray-600 mb-8 uppercase tracking-widest">
-                        Authorized Dealer For
+                    <p className="text-center text-sm font-bold text-gray-500 mb-8 uppercase tracking-[0.2em]">
+                        Official Brand Partners
                     </p>
                     <div className="relative flex overflow-hidden">
                         <div className="flex animate-marquee whitespace-nowrap gap-16 items-center">
                             {[...brands, ...brands, ...brands].map((brand, i) => (
-                                <span key={i} className="text-3xl font-bold text-gray-400 hover:text-gray-900 transition-colors">
-                                    {brand}
-                                </span>
+                                <div
+                                    key={i}
+                                    className="flex items-center gap-3 px-6 group min-w-[140px]"
+                                >
+                                    <img
+                                        src={`https://www.google.com/s2/favicons?domain=${brand.domain}&sz=64`}
+                                        alt={brand.name}
+                                        className="w-8 h-8 object-contain opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300"
+                                        onError={(e) => {
+                                            e.target.style.display = 'none';
+                                        }}
+                                    />
+                                    <span className="text-base font-bold text-gray-400 group-hover:text-gray-900 transition-colors whitespace-nowrap">
+                                        {brand.name}
+                                    </span>
+                                </div>
                             ))}
                         </div>
                         <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-gray-50 to-transparent z-10" />

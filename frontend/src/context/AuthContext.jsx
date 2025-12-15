@@ -54,46 +54,53 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     const checkUser = async () => {
-        const token = localStorage.getItem('token');
-        if (token) {
-            try {
-                const response = await fetch('http://localhost:8000/auth/me', {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
+        try {
+            const token = localStorage.getItem('token');
+            if (token) {
+                try {
+                    const response = await fetch('http://localhost:8000/auth/me', {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    if (response.ok) {
+                        const userData = await response.json();
+                        setUser(userData);
+                        setLastActivity(Date.now());
+                        return userData;
+                    } else {
+                        // Token invalid - clear everything
+                        localStorage.removeItem('token');
+                        setUser(null);
+                        return null;
                     }
-                });
-                if (response.ok) {
-                    const userData = await response.json();
-                    setUser(userData);
-                    setLastActivity(Date.now());
-                } else {
-                    // Token invalid - clear everything
+                } catch (error) {
+                    console.error("Auth check failed:", error);
                     localStorage.removeItem('token');
                     setUser(null);
+                    return null;
                 }
-            } catch (error) {
-                console.error("Auth check failed:", error);
-                localStorage.removeItem('token');
+            } else {
+                // No token - ensure user is null
                 setUser(null);
+                return null;
             }
-        } else {
-            // No token - ensure user is null
-            setUser(null);
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
     };
 
     const login = async (email, password) => {
         try {
+            console.log('Attempting login with:', email, password); // Debug log
+
             const formData = new URLSearchParams();
-            formData.append('username', email);
-            formData.append('password', password);
+            formData.append('username', email.trim());
+            formData.append('password', password.trim());
 
             const response = await fetch('http://localhost:8000/auth/token', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
+                // Content-Type is set automatically by fetch when using URLSearchParams
                 body: formData,
             });
 

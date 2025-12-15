@@ -27,16 +27,39 @@ const ChatWidget = () => {
         setInputText("");
         setIsTyping(true);
 
-        // Simulate AI delay - In real app, this would hit the backend API
-        setTimeout(() => {
+        // Send to backend
+        try {
+            const response = await fetch('http://localhost:8000/chat/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ message: inputText }),
+            });
+
+            const data = await response.json();
             setIsTyping(false);
-            const aiMsg = {
+
+            if (response.ok) {
+                const aiMsg = {
+                    id: Date.now() + 1,
+                    text: data.response,
+                    sender: 'ai'
+                };
+                setMessages(prev => [...prev, aiMsg]);
+            } else {
+                throw new Error(data.detail || 'Failed to get response');
+            }
+        } catch (error) {
+            console.error('Chat error:', error);
+            setIsTyping(false);
+            const errorMsg = {
                 id: Date.now() + 1,
-                text: "I'm a demo AI for now. I can help recommend guitars, keyboards, or studio gear once connected to the backend!",
+                text: "I'm having trouble connecting to the server. Please try again later.",
                 sender: 'ai'
             };
-            setMessages(prev => [...prev, aiMsg]);
-        }, 1500);
+            setMessages(prev => [...prev, errorMsg]);
+        }
     };
 
     return (

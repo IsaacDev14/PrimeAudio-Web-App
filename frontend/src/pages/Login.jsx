@@ -68,7 +68,7 @@ const Login = () => {
             toast.success('Login successful! Welcome back.');
 
             // Redirect based on role or return URL
-            const destination = result.user.is_admin ? '/admin' : redirectTo;
+            const destination = result.user?.is_admin ? '/admin' : redirectTo;
             navigate(destination);
         } else {
             toast.error(result.message || 'Login failed. Please check your credentials.');
