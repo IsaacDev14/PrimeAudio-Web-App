@@ -17,6 +17,8 @@ const AdminOffers = () => {
     const [editingOffer, setEditingOffer] = useState(null);
     const [showProductSelector, setShowProductSelector] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
+    const [deleteConfirm, setDeleteConfirm] = useState({ show: false, offerId: null, offerTitle: '' });
+    const [showClearAllConfirm, setShowClearAllConfirm] = useState(false);
 
     const [formData, setFormData] = useState({
         title: '',
@@ -77,6 +79,8 @@ const AdminOffers = () => {
         e.preventDefault();
         const token = localStorage.getItem('token');
 
+        console.log('Submitting offer with data:', formData);
+
         try {
             const url = editingOffer
                 ? `${API_URL}/offers/${editingOffer.id}`
@@ -84,18 +88,25 @@ const AdminOffers = () => {
 
             const method = editingOffer ? 'PUT' : 'POST';
 
+            const payload = {
+                ...formData,
+                start_date: new Date(formData.start_date).toISOString(),
+                end_date: new Date(formData.end_date).toISOString()
+            };
+
+            console.log('Sending payload:', payload);
+            console.log('Using token:', token ? 'Present' : 'MISSING');
+
             const response = await fetch(url, {
                 method,
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify({
-                    ...formData,
-                    start_date: new Date(formData.start_date).toISOString(),
-                    end_date: new Date(formData.end_date).toISOString()
-                })
+                body: JSON.stringify(payload)
             });
+
+            console.log('Response status:', response.status);
 
             if (response.ok) {
                 showToast(editingOffer ? 'Offer updated!' : 'Offer created!', 'success');
@@ -104,28 +115,57 @@ const AdminOffers = () => {
                 fetchOffers();
             } else {
                 const error = await response.json();
+                console.error('Server error:', error);
                 showToast(error.detail || 'Failed to save offer', 'error');
             }
         } catch (error) {
-            showToast('Error saving offer', 'error');
+            console.error('Network/JS error:', error);
+            showToast('Error saving offer: ' + error.message, 'error');
         }
     };
 
     const handleDelete = async (offerId) => {
-        if (!confirm('Delete this offer?')) return;
-
         const token = localStorage.getItem('token');
+
         try {
             const response = await fetch(`${API_URL}/offers/${offerId}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
+
             if (response.ok) {
-                showToast('Offer deleted', 'success');
+                showToast('Offer deleted successfully', 'success');
                 fetchOffers();
+            } else {
+                const errorData = await response.json();
+                showToast(errorData.detail || 'Failed to delete offer', 'error');
             }
-        } catch (error) {
+        } catch (err) {
+            console.error('Delete error:', err);
             showToast('Error deleting offer', 'error');
+        } finally {
+            setDeleteConfirm({ show: false, offerId: null, offerTitle: '' });
+        }
+    };
+
+    const handleClearAll = async () => {
+        const token = localStorage.getItem('token');
+
+        try {
+            // Delete all offers one by one
+            for (const offer of offers) {
+                await fetch(`${API_URL}/offers/${offer.id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+            }
+            showToast('All offers cleared', 'success');
+            fetchOffers();
+        } catch (err) {
+            console.error('Clear all error:', err);
+            showToast('Error clearing offers', 'error');
+        } finally {
+            setShowClearAllConfirm(false);
         }
     };
 
@@ -196,13 +236,24 @@ const AdminOffers = () => {
                     <h1 className="text-2xl font-bold text-gray-900">Promotional Offers</h1>
                     <p className="text-gray-500 text-sm mt-1">Create and manage sales & discounts</p>
                 </div>
-                <button
-                    onClick={() => { resetForm(); setShowModal(true); }}
-                    className="flex items-center gap-2 bg-prime-blue text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors"
-                >
-                    <Plus size={20} />
-                    New Offer
-                </button>
+                <div className="flex gap-2">
+                    {offers.length > 0 && (
+                        <button
+                            onClick={() => setShowClearAllConfirm(true)}
+                            className="flex items-center gap-2 bg-red-100 text-red-600 px-4 py-2 rounded-lg hover:bg-red-200 transition-colors"
+                        >
+                            <Trash2 size={18} />
+                            Clear All
+                        </button>
+                    )}
+                    <button
+                        onClick={() => { resetForm(); setShowModal(true); }}
+                        className="flex items-center gap-2 bg-prime-blue text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors"
+                    >
+                        <Plus size={20} />
+                        New Offer
+                    </button>
+                </div>
             </div>
 
             {/* Offers Grid */}
@@ -284,7 +335,7 @@ const AdminOffers = () => {
                                         Edit
                                     </button>
                                     <button
-                                        onClick={() => handleDelete(offer.id)}
+                                        onClick={() => setDeleteConfirm({ show: true, offerId: offer.id, offerTitle: offer.title })}
                                         className="flex-1 flex items-center justify-center gap-1 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                                     >
                                         <Trash2 size={14} />
@@ -391,8 +442,8 @@ const AdminOffers = () => {
                                                     type="button"
                                                     onClick={() => setFormData({ ...formData, banner_color: color.value })}
                                                     className={`w-8 h-8 rounded-full border-2 transition-all ${formData.banner_color === color.value
-                                                            ? 'border-gray-900 scale-110'
-                                                            : 'border-transparent'
+                                                        ? 'border-gray-900 scale-110'
+                                                        : 'border-transparent'
                                                         }`}
                                                     style={{ backgroundColor: color.value }}
                                                     title={color.name}
@@ -527,6 +578,102 @@ const AdminOffers = () => {
                                     </button>
                                 </div>
                             </form>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            {/* Delete Confirmation Modal */}
+            <AnimatePresence>
+                {deleteConfirm.show && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+                        onClick={() => setDeleteConfirm({ show: false, offerId: null, offerTitle: '' })}
+                    >
+                        <motion.div
+                            initial={{ scale: 0.95, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0.95, opacity: 0 }}
+                            className="bg-white rounded-2xl w-full max-w-md p-6"
+                            onClick={e => e.stopPropagation()}
+                        >
+                            <div className="text-center">
+                                <div className="mx-auto w-14 h-14 bg-red-100 rounded-full flex items-center justify-center mb-4">
+                                    <Trash2 className="w-7 h-7 text-red-600" />
+                                </div>
+                                <h3 className="text-xl font-bold text-gray-900 mb-2">Delete Offer?</h3>
+                                <p className="text-gray-500 mb-6">
+                                    Are you sure you want to delete "<span className="font-semibold text-gray-700">{deleteConfirm.offerTitle}</span>"?
+                                    This action cannot be undone.
+                                </p>
+                                <div className="flex gap-3">
+                                    <button
+                                        onClick={() => setDeleteConfirm({ show: false, offerId: null, offerTitle: '' })}
+                                        className="flex-1 py-3 text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 font-medium transition-colors"
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        onClick={() => handleDelete(deleteConfirm.offerId)}
+                                        className="flex-1 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 font-medium transition-colors flex items-center justify-center gap-2"
+                                    >
+                                        <Trash2 size={18} />
+                                        Delete
+                                    </button>
+                                </div>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            {/* Clear All Confirmation Modal */}
+            <AnimatePresence>
+                {showClearAllConfirm && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+                        onClick={() => setShowClearAllConfirm(false)}
+                    >
+                        <motion.div
+                            initial={{ scale: 0.95, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0.95, opacity: 0 }}
+                            className="bg-white rounded-2xl w-full max-w-md p-6"
+                            onClick={e => e.stopPropagation()}
+                        >
+                            <div className="text-center">
+                                <div className="mx-auto w-14 h-14 bg-red-100 rounded-full flex items-center justify-center mb-4">
+                                    <Trash2 className="w-7 h-7 text-red-600" />
+                                </div>
+                                <h3 className="text-xl font-bold text-gray-900 mb-2">Clear All Offers?</h3>
+                                <p className="text-gray-500 mb-2">
+                                    This will permanently delete <span className="font-bold text-red-600">{offers.length}</span> offer{offers.length !== 1 ? 's' : ''}.
+                                </p>
+                                <p className="text-sm text-red-500 mb-6 font-medium">
+                                    ⚠️ This action cannot be undone!
+                                </p>
+                                <div className="flex gap-3">
+                                    <button
+                                        onClick={() => setShowClearAllConfirm(false)}
+                                        className="flex-1 py-3 text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 font-medium transition-colors"
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        onClick={handleClearAll}
+                                        className="flex-1 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 font-medium transition-colors flex items-center justify-center gap-2"
+                                    >
+                                        <Trash2 size={18} />
+                                        Clear All
+                                    </button>
+                                </div>
+                            </div>
                         </motion.div>
                     </motion.div>
                 )}
