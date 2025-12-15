@@ -137,6 +137,7 @@ class Product(Base):
     reviews = relationship("Review", back_populates="product")
     wishlist_items = relationship("WishlistItem", back_populates="product")
     cart_items = relationship("CartItem", back_populates="product")
+    offer_products = relationship("OfferProduct", back_populates="product")
 
 
 def generate_tracking_id():
@@ -264,3 +265,36 @@ class SiteSettings(Base):
     instagram_url = Column(String, nullable=True)
     twitter_url = Column(String, nullable=True)
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+
+
+class Offer(Base):
+    """Promotional offers/deals that can be applied to products"""
+    __tablename__ = "offers"
+
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String, nullable=False)  # "Christmas Sale 🎄"
+    description = Column(Text, nullable=True)  # "Up to 50% off on select items!"
+    discount_percentage = Column(Integer, default=10)  # Default discount %
+    banner_color = Column(String, default="#EF4444")  # Banner background color
+    badge_text = Column(String, default="SALE")  # Text on product badges
+    start_date = Column(DateTime(timezone=True), nullable=False)
+    end_date = Column(DateTime(timezone=True), nullable=False)
+    is_active = Column(Boolean, default=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    # Relationship to products through junction table
+    offer_products = relationship("OfferProduct", back_populates="offer", cascade="all, delete-orphan")
+
+
+class OfferProduct(Base):
+    """Junction table linking offers to products with optional custom discount"""
+    __tablename__ = "offer_products"
+
+    id = Column(Integer, primary_key=True, index=True)
+    offer_id = Column(Integer, ForeignKey("offers.id"), nullable=False)
+    product_id = Column(Integer, ForeignKey("products.id"), nullable=False)
+    custom_discount = Column(Integer, nullable=True)  # Override offer's default discount
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    offer = relationship("Offer", back_populates="offer_products")
+    product = relationship("Product", back_populates="offer_products")

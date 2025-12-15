@@ -4,7 +4,7 @@ import { AuthProvider } from './context/AuthContext';
 import { ToastProvider } from './context/ToastContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { FlyingCartProvider } from './components/FlyingCart';
-import FloatingChatButton from './components/FloatingChatButton';
+// import FloatingChatButton from './components/FloatingChatButton';
 import PublicLayout from './layouts/PublicLayout';
 import AdminLayout from './layouts/AdminLayout';
 import CustomerLayout from './layouts/CustomerLayout';
@@ -31,6 +31,7 @@ import AdminUsers from './pages/admin/Users';
 import AdminMedia from './pages/admin/Media';
 import AdminMessages from './pages/admin/Messages';
 import AdminSettings from './pages/admin/Settings';
+import AdminOffers from './pages/admin/AdminOffers';
 
 // Customer Dashboard Pages
 import CustomerDashboard from './pages/customer/Dashboard';
@@ -91,14 +92,14 @@ function App() {
                       <Route path="messages/:id" element={<AdminMessages />} />
                       <Route path="ai-tools" element={<AdminAITools />} />
                       <Route path="settings" element={<AdminSettings />} />
+                      <Route path="offers" element={<AdminOffers />} />
                     </Route>
 
                     {/* 404 Fallback */}
                     <Route path="*" element={<div className="p-20 text-center">404 - Page Not Found</div>} />
                   </Routes>
 
-                  {/* Global Floating Chat Button */}
-                  <FloatingChatButton />
+                  {/* Global Floating Chat Button - Removed to use ChatWidget in PublicLayout */}
                 </Router>
               </FlyingCartProvider>
             </CartProvider>

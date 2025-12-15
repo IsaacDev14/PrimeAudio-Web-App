@@ -4,6 +4,7 @@ import { Search, ChevronRight, Music, Speaker, Mic, Guitar, Radio, Filter, X, Lo
 import ProductCard from '../components/ProductCard';
 import { ProductGridSkeleton } from '../components/Skeleton';
 import SEO from '../components/SEO';
+import HotDeals from '../components/HotDeals';
 
 // Category icon mapping
 const CATEGORY_ICONS = {
@@ -338,6 +339,9 @@ const Shop = () => {
 
                     {/* Products Grid */}
                     <div className="flex-1">
+                        {/* Hot Deals Section - Shows when offers exist */}
+                        {!activeCategory && !searchTerm && <HotDeals limit={4} />}
+
                         <div className="flex items-center justify-between mb-6">
                             <p className="text-slate-600 text-sm">
                                 Showing <span className="font-medium text-slate-900">{filteredProducts.length}</span> products

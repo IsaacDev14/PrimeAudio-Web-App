@@ -66,6 +66,16 @@ async def get_current_user(token: str = Depends(oauth2_scheme), db: AsyncSession
         raise credentials_exception
     return user
 
+
+async def get_admin_user(current_user: models.User = Depends(get_current_user)):
+    """Dependency that ensures the current user is an admin"""
+    if not current_user.is_admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Admin access required"
+        )
+    return current_user
+
 @router.post("/register", response_model=schemas.UserResponse)
 async def register(user: schemas.UserCreate, db: AsyncSession = Depends(database.get_db)):
     result = await db.execute(select(models.User).where(models.User.email == user.email))

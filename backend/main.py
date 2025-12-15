@@ -56,7 +56,7 @@ app.include_router(testimonials.router)
 app.include_router(settings.router)
 
 # New customer experience routers
-from app.routers import addresses, wishlist, notifications, messages, payments, reviews, cart
+from app.routers import addresses, wishlist, notifications, messages, payments, reviews, cart, offers
 
 app.include_router(addresses.router)
 app.include_router(wishlist.router)
@@ -65,3 +65,4 @@ app.include_router(messages.router)
 app.include_router(payments.router)
 app.include_router(reviews.router)
 app.include_router(cart.router)
+app.include_router(offers.router)

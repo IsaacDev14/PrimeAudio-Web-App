@@ -105,7 +105,7 @@ const Home = () => {
         { name: 'Behringer', domain: 'behringer.com' },
         { name: 'Shure', domain: 'shure.com' },
         { name: 'Pioneer DJ', domain: 'pioneerdj.com' },
-        { name: 'Audio-Technica', domain: 'audio-technica.com' },
+        { name: 'Audio-Technica', domain: 'audio-technica.us' },
         { name: 'JBL', domain: 'jbl.com' }
     ];
 

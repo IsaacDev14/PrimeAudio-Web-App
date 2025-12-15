@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { LayoutDashboard, Users, Settings, FileText, Image, TicketCheck, Package, LogOut, MessageSquare, ChevronRight } from "lucide-react";
+import { LayoutDashboard, Users, Settings, FileText, Image, TicketCheck, Package, LogOut, MessageSquare, ChevronRight, Gift } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { useAuth } from "../../context/AuthContext";
 import { useState } from "react";
@@ -14,6 +14,7 @@ const Sidebar = () => {
         { icon: LayoutDashboard, label: "Dashboard", path: "/admin" },
         { icon: Package, label: "Products", path: "/admin/products" },
         { icon: TicketCheck, label: "Orders", path: "/admin/orders" },
+        { icon: Gift, label: "Offers", path: "/admin/offers" },
         { icon: FileText, label: "Content", path: "/admin/content" },
         { icon: Users, label: "Users", path: "/admin/users" },
         { icon: Image, label: "Media", path: "/admin/media" },

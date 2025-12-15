@@ -158,3 +158,57 @@ class DashboardStats(BaseModel):
     approved_orders: int
     shipped_orders: int
     delivered_orders: int
+
+
+# Offer Schemas
+class OfferProductCreate(BaseModel):
+    product_id: int
+    custom_discount: Optional[int] = None
+
+class OfferCreate(BaseModel):
+    title: str
+    description: Optional[str] = None
+    discount_percentage: int = 10
+    banner_color: str = "#EF4444"
+    badge_text: str = "SALE"
+    start_date: datetime
+    end_date: datetime
+    is_active: bool = True
+    product_ids: Optional[List[int]] = []
+
+class OfferUpdate(BaseModel):
+    title: Optional[str] = None
+    description: Optional[str] = None
+    discount_percentage: Optional[int] = None
+    banner_color: Optional[str] = None
+    badge_text: Optional[str] = None
+    start_date: Optional[datetime] = None
+    end_date: Optional[datetime] = None
+    is_active: Optional[bool] = None
+
+class OfferProductResponse(BaseModel):
+    id: int
+    product_id: int
+    custom_discount: Optional[int] = None
+    product_name: Optional[str] = None
+    product_price: Optional[float] = None
+    product_image: Optional[str] = None
+
+    class Config:
+        from_attributes = True
+
+class OfferResponse(BaseModel):
+    id: int
+    title: str
+    description: Optional[str] = None
+    discount_percentage: int
+    banner_color: str
+    badge_text: str
+    start_date: datetime
+    end_date: datetime
+    is_active: bool
+    created_at: datetime
+    products: Optional[List[OfferProductResponse]] = []
+
+    class Config:
+        from_attributes = True
