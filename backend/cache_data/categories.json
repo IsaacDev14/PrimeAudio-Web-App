@@ -1,0 +1,57 @@
+[
+    {
+        "id": "cat_1",
+        "name": "Guitars",
+        "count": 45
+    },
+    {
+        "id": "cat_2",
+        "name": "Keyboards",
+        "count": 38
+    },
+    {
+        "id": "cat_3",
+        "name": "Drums",
+        "count": 35
+    },
+    {
+        "id": "cat_4",
+        "name": "Microphones",
+        "count": 42
+    },
+    {
+        "id": "cat_5",
+        "name": "Speakers",
+        "count": 40
+    },
+    {
+        "id": "cat_6",
+        "name": "DJ Equipment",
+        "count": 35
+    },
+    {
+        "id": "cat_7",
+        "name": "Audio Interfaces",
+        "count": 28
+    },
+    {
+        "id": "cat_8",
+        "name": "Headphones",
+        "count": 45
+    },
+    {
+        "id": "cat_9",
+        "name": "Amplifiers",
+        "count": 32
+    },
+    {
+        "id": "cat_10",
+        "name": "Lighting",
+        "count": 30
+    },
+    {
+        "id": "cat_11",
+        "name": "Accessories",
+        "count": 30
+    }
+]

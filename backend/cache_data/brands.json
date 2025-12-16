@@ -1,0 +1,106 @@
+[
+    {
+        "id": "brand_1",
+        "name": "Yamaha"
+    },
+    {
+        "id": "brand_2",
+        "name": "Fender"
+    },
+    {
+        "id": "brand_3",
+        "name": "Gibson"
+    },
+    {
+        "id": "brand_4",
+        "name": "Roland"
+    },
+    {
+        "id": "brand_5",
+        "name": "Korg"
+    },
+    {
+        "id": "brand_6",
+        "name": "Behringer"
+    },
+    {
+        "id": "brand_7",
+        "name": "Shure"
+    },
+    {
+        "id": "brand_8",
+        "name": "Audio-Technica"
+    },
+    {
+        "id": "brand_9",
+        "name": "JBL"
+    },
+    {
+        "id": "brand_10",
+        "name": "Pioneer"
+    },
+    {
+        "id": "brand_11",
+        "name": "Numark"
+    },
+    {
+        "id": "brand_12",
+        "name": "Native Instruments"
+    },
+    {
+        "id": "brand_13",
+        "name": "Focusrite"
+    },
+    {
+        "id": "brand_14",
+        "name": "Steinberg"
+    },
+    {
+        "id": "brand_15",
+        "name": "M-Audio"
+    },
+    {
+        "id": "brand_16",
+        "name": "Akai"
+    },
+    {
+        "id": "brand_17",
+        "name": "Tama"
+    },
+    {
+        "id": "brand_18",
+        "name": "Pearl"
+    },
+    {
+        "id": "brand_19",
+        "name": "Zildjian"
+    },
+    {
+        "id": "brand_20",
+        "name": "Sabian"
+    },
+    {
+        "id": "brand_21",
+        "name": "Martin"
+    },
+    {
+        "id": "brand_22",
+        "name": "Taylor"
+    },
+    {
+        "id": "brand_23",
+        "name": "Ibanez"
+    },
+    {
+        "id": "brand_24",
+        "name": "PRS"
+    },
+    {
+        "id": "brand_25",
+        "name": "Chauvet"
+    },
+    {
+        "id": "brand_26",
+        "name": "American DJ"
+    }
+]

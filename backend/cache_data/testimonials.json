@@ -1,0 +1,86 @@
+[
+    {
+        "id": "test_1",
+        "customer_name": "David Mwangi",
+        "content": "Best music store in Nairobi! Great quality instruments and excellent customer service.",
+        "rating": 5,
+        "is_verified": true
+    },
+    {
+        "id": "test_2",
+        "customer_name": "Sarah Kamau",
+        "content": "The team at Prime Audio helped set up my entire studio. Their expertise is unmatched!",
+        "rating": 5,
+        "is_verified": true
+    },
+    {
+        "id": "test_3",
+        "customer_name": "James Ochieng",
+        "content": "Best prices and authentic gear. I've bought 5 different pieces of equipment here!",
+        "rating": 5,
+        "is_verified": true
+    },
+    {
+        "id": "test_4",
+        "customer_name": "Mary Njeri",
+        "content": "Professional equipment at competitive prices. Highly recommend Prime Audio!",
+        "rating": 5,
+        "is_verified": true
+    },
+    {
+        "id": "test_5",
+        "customer_name": "Peter Wambua",
+        "content": "I bought my first guitar here and couldn't be happier. The staff really knows their stuff.",
+        "rating": 5,
+        "is_verified": true
+    },
+    {
+        "id": "test_6",
+        "customer_name": "Jane Akinyi",
+        "content": "Amazing selection of keyboards. Found exactly what I was looking for.",
+        "rating": 4,
+        "is_verified": true
+    },
+    {
+        "id": "test_7",
+        "customer_name": "Michael Otieno",
+        "content": "Quality products and fair pricing. My go-to store for all music equipment.",
+        "rating": 5,
+        "is_verified": true
+    },
+    {
+        "id": "test_8",
+        "customer_name": "Grace Wanjiku",
+        "content": "Excellent after-sales support. They really care about their customers.",
+        "rating": 5,
+        "is_verified": true
+    },
+    {
+        "id": "test_9",
+        "customer_name": "John Kiprop",
+        "content": "Wide variety of instruments. From beginner to professional level.",
+        "rating": 4,
+        "is_verified": true
+    },
+    {
+        "id": "test_10",
+        "customer_name": "Lucy Muthoni",
+        "content": "Fast delivery and great packaging. My equipment arrived in perfect condition.",
+        "rating": 5,
+        "is_verified": true
+    },
+    {
+        "id": "test_11",
+        "customer_name": "Daniel Kimani",
+        "content": "The tracking system is fantastic! I could follow my order every step of the way.",
+        "rating": 5,
+        "is_verified": true
+    },
+    {
+        "id": "test_12",
+        "customer_name": "Faith Chebet",
+        "content": "Professional DJ equipment at the best prices in Kenya. Highly recommended!",
+        "rating": 5,
+        "is_verified": true
+    }
+]

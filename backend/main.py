@@ -9,12 +9,15 @@ from dotenv import load_dotenv
 import os
 
 load_dotenv()
+# Trigger reload
+
 
 # Import caching
 from cache import (
     products_cache, meta_cache, offers_cache, settings_cache,
     invalidate_products_cache, invalidate_offers_cache, get_cache_stats
 )
+import fallback_data
 
 app = FastAPI(title="Prime Audio Solutions API - Firebase (Cached)")
 
@@ -202,9 +205,15 @@ testimonials_router = APIRouter(prefix="/testimonials", tags=["Testimonials"])
 
 @testimonials_router.get("/")
 async def get_testimonials():
-    db = get_firestore_client()
-    docs = db.collection('testimonials').stream()
-    return [{"id": doc.id, **doc.to_dict()} for doc in docs]
+    if not fallback_data.is_firebase_available():
+        return fallback_data.get_fallback_testimonials()
+    try:
+        db = get_firestore_client()
+        docs = db.collection('testimonials').stream()
+        return [{"id": doc.id, **doc.to_dict()} for doc in docs]
+    except Exception as e:
+        print(f"Firebase Error (Testimonials): {e}. Switching to Fallback.")
+        return fallback_data.get_fallback_testimonials()
 
 app.include_router(testimonials_router)
 
@@ -213,13 +222,27 @@ content_router = APIRouter(prefix="/content", tags=["Content"])
 
 @content_router.get("/")
 async def get_content(category: str = None):
-    db = get_firestore_client()
-    if category:
-        query = db.collection('content').where('category', '==', category)
-    else:
-        query = db.collection('content')
-    docs = query.stream()
-    return [{"id": doc.id, **doc.to_dict()} for doc in docs]
+    if not fallback_data.is_firebase_available():
+        content_items = fallback_data.load_json_file("content.json")
+        if category:
+            return [item for item in content_items if item.get('category') == category]
+        return content_items
+
+    try:
+        db = get_firestore_client()
+        if category:
+            query = db.collection('content').where('category', '==', category)
+        else:
+            query = db.collection('content')
+        docs = query.stream()
+        return [{"id": doc.id, **doc.to_dict()} for doc in docs]
+    except Exception as e:
+        print(f"Firebase Error (Content): {e}. Switching to Fallback.")
+        # Load content from fallback
+        content_items = fallback_data.load_json_file("content.json")
+        if category:
+            return [item for item in content_items if item.get('category') == category]
+        return content_items
 
 app.include_router(content_router)
 
@@ -228,9 +251,16 @@ categories_router = APIRouter(prefix="/categories", tags=["Categories"])
 
 @categories_router.get("/")
 async def get_all_categories():
-    db = get_firestore_client()
-    docs = db.collection('categories').stream()
-    return [{"id": doc.id, **doc.to_dict()} for doc in docs]
+    if not fallback_data.is_firebase_available():
+        return fallback_data.get_fallback_categories()
+
+    try:
+        db = get_firestore_client()
+        docs = db.collection('categories').stream()
+        return [{"id": doc.id, **doc.to_dict()} for doc in docs]
+    except Exception as e:
+        print(f"Firebase Error (Categories): {e}. Switching to Fallback.")
+        return fallback_data.get_fallback_categories()
 
 app.include_router(categories_router)
 
@@ -276,80 +306,152 @@ offers_router = APIRouter(prefix="/offers", tags=["Offers"])
 
 @offers_router.get("/")
 async def get_all_offers():
+    # Check manual fallback
+    if not fallback_data.is_firebase_available():
+        return fallback_data.get_fallback_offers(active_only=False)
+
     # Check cache first
     cached = offers_cache.get("all_offers")
     if cached is not None:
         return cached
     
-    db = get_firestore_client()
-    docs = db.collection('offers').stream()
-    result = [{"id": doc.id, **doc.to_dict()} for doc in docs]
-    
-    # Cache for 5 minutes
-    offers_cache.set("all_offers", result)
-    return result
+    try:
+        db = get_firestore_client()
+        docs = db.collection('offers').stream()
+        result = [{"id": doc.id, **doc.to_dict()} for doc in docs]
+        
+        # Cache for 5 minutes
+        offers_cache.set("all_offers", result)
+        return result
+    except Exception as e:
+        print(f"Firebase Error (Offers): {e}. Switching to Fallback.")
+        return fallback_data.get_fallback_offers(active_only=False)
 
 @offers_router.get("/active")
 async def get_active_offers():
+    if not fallback_data.is_firebase_available():
+        return fallback_data.get_fallback_offers(active_only=True)
+
     # Check cache first
     cached = offers_cache.get("active_offers")
     if cached is not None:
         return cached
     
-    db = get_firestore_client()
-    docs = db.collection('offers').where('is_active', '==', True).stream()
-    result = [{"id": doc.id, **doc.to_dict()} for doc in docs]
-    
-    # Cache for 5 minutes
-    offers_cache.set("active_offers", result)
-    return result
+    try:
+        db = get_firestore_client()
+        docs = db.collection('offers').where('is_active', '==', True).stream()
+        result = [{"id": doc.id, **doc.to_dict()} for doc in docs]
+        
+        # Cache for 5 minutes
+        offers_cache.set("active_offers", result)
+        return result
+    except Exception as e:
+        print(f"Firebase Error (Active Offers): {e}. Switching to Fallback.")
+        return fallback_data.get_fallback_offers(active_only=True)
 
 @offers_router.get("/products-on-sale")
 async def get_products_on_sale():
+    if not fallback_data.is_firebase_available():
+        offers = fallback_data.get_fallback_offers(active_only=True)
+        active_offer = offers[0] if offers else None
+        offer_discount = 0
+        if active_offer:
+            offer_discount = active_offer.get('discount_percentage') or active_offer.get('discount_percent') or active_offer.get('discount', 0)
+        
+        products = fallback_data.get_fallback_products(limit=100)
+        fallback_result = []
+        for p in products:
+            p_copy = p.copy()
+            original = p_copy.get('original_price') or p_copy.get('price')
+            if original and offer_discount > 0:
+                sale_price = round(original * (1 - offer_discount / 100))
+                p_copy['original_price'] = original
+                p_copy['sale_price'] = sale_price
+                p_copy['price'] = sale_price
+                p_copy['discount_percentage'] = offer_discount
+                fallback_result.append(p_copy)
+            elif p_copy.get('original_price') and p_copy.get('price') and p_copy['original_price'] > p_copy['price']:
+                p_copy['sale_price'] = p_copy['price']
+                p_copy['discount_percentage'] = round(((p_copy['original_price'] - p_copy['price']) / p_copy['original_price']) * 100)
+                fallback_result.append(p_copy)
+        return fallback_result[:20]
+
     # Check cache first
     cached = products_cache.get("products_on_sale")
     if cached is not None:
         return cached
     
-    db = get_firestore_client()
-    
-    # Get active offer to use its discount percentage
-    offer_docs = db.collection('offers').where('is_active', '==', True).limit(1).stream()
-    active_offer = None
-    offer_discount = 0
-    for doc in offer_docs:
-        active_offer = doc.to_dict()
-        # Try various field names for discount
-        offer_discount = active_offer.get('discount_percentage') or active_offer.get('discount_percent') or active_offer.get('discount', 0)
-        break
-    
-    # Get products to display
-    docs = db.collection('products').stream()
-    products = []
-    for doc in docs:
-        p = doc.to_dict()
-        p['id'] = doc.id
-        original = p.get('original_price') or p.get('price')
+    try:
+        db = get_firestore_client()
         
-        if original and offer_discount > 0:
-            # Apply offer discount to calculate sale price
-            sale_price = round(original * (1 - offer_discount / 100))
-            p['original_price'] = original
-            p['sale_price'] = sale_price
-            p['price'] = sale_price  # Update display price
-            p['discount_percentage'] = offer_discount
-            products.append(p)
-        elif p.get('original_price') and p.get('price') and p['original_price'] > p['price']:
-            # Fallback: product already has discount built in
-            p['sale_price'] = p['price']
-            p['discount_percentage'] = round(((p['original_price'] - p['price']) / p['original_price']) * 100)
-            products.append(p)
-    
-    result = products[:20]  # Limit to 20
-    
-    # Cache for 5 minutes (shorter since it depends on active offer)
-    products_cache.set("products_on_sale", result, ttl=300)
-    return result
+        # Get active offer to use its discount percentage
+        offer_docs = db.collection('offers').where('is_active', '==', True).limit(1).stream()
+        active_offer = None
+        offer_discount = 0
+        for doc in offer_docs:
+            active_offer = doc.to_dict()
+            # Try various field names for discount
+            offer_discount = active_offer.get('discount_percentage') or active_offer.get('discount_percent') or active_offer.get('discount', 0)
+            break
+        
+        # Get products to display
+        docs = db.collection('products').stream()
+        products = []
+        for doc in docs:
+            p = doc.to_dict()
+            p['id'] = doc.id
+            original = p.get('original_price') or p.get('price')
+            
+            if original and offer_discount > 0:
+                # Apply offer discount to calculate sale price
+                sale_price = round(original * (1 - offer_discount / 100))
+                p['original_price'] = original
+                p['sale_price'] = sale_price
+                p['price'] = sale_price  # Update display price
+                p['discount_percentage'] = offer_discount
+                products.append(p)
+            elif p.get('original_price') and p.get('price') and p['original_price'] > p['price']:
+                # Fallback: product already has discount built in
+                p['sale_price'] = p['price']
+                p['discount_percentage'] = round(((p['original_price'] - p['price']) / p['original_price']) * 100)
+                products.append(p)
+        
+        result = products[:20]  # Limit to 20
+        
+        # Cache for 5 minutes (shorter since it depends on active offer)
+        products_cache.set("products_on_sale", result, ttl=300)
+        return result
+        
+    except Exception as e:
+        print(f"Firebase Error (Products on Sale): {e}. Switching to Fallback.")
+        
+        # Fallback logic mirroring the above
+        offers = fallback_data.get_fallback_offers(active_only=True)
+        active_offer = offers[0] if offers else None
+        offer_discount = 0
+        if active_offer:
+            offer_discount = active_offer.get('discount_percentage') or active_offer.get('discount_percent') or active_offer.get('discount', 0)
+            
+        products = fallback_data.get_fallback_products(limit=100)
+        fallback_result = []
+        
+        for p in products:
+            p_copy = p.copy()
+            original = p_copy.get('original_price') or p_copy.get('price')
+            
+            if original and offer_discount > 0:
+                sale_price = round(original * (1 - offer_discount / 100))
+                p_copy['original_price'] = original
+                p_copy['sale_price'] = sale_price
+                p_copy['price'] = sale_price
+                p_copy['discount_percentage'] = offer_discount
+                fallback_result.append(p_copy)
+            elif p_copy.get('original_price') and p_copy.get('price') and p_copy['original_price'] > p_copy['price']:
+                p_copy['sale_price'] = p_copy['price']
+                p_copy['discount_percentage'] = round(((p_copy['original_price'] - p_copy['price']) / p_copy['original_price']) * 100)
+                fallback_result.append(p_copy)
+                
+        return fallback_result[:20]
 
 @offers_router.post("/")
 async def create_offer(data: dict, current_user: dict = Depends(get_current_user)):

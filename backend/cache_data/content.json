@@ -1,0 +1,72 @@
+[
+    {
+        "id": "cont_1",
+        "title": "Prime Audio Studio",
+        "category": "Projects",
+        "type": "Recording Studio",
+        "status": "Live",
+        "date": "2024-03-20",
+        "description": "Description for Prime Audio Studio",
+        "image_url": "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=600"
+    },
+    {
+        "id": "cont_2",
+        "title": "Music Production Course",
+        "category": "Projects",
+        "type": "Education",
+        "status": "Live",
+        "date": "2024-03-01",
+        "description": "Description for Music Production Course",
+        "image_url": "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=600"
+    },
+    {
+        "id": "cont_3",
+        "title": "Mobile DJ Service",
+        "category": "Projects",
+        "type": "Entertainment",
+        "status": "Live",
+        "date": "2024-02-15",
+        "description": "Description for Mobile DJ Service",
+        "image_url": "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=600"
+    },
+    {
+        "id": "cont_4",
+        "title": "Nairobi Music Festival",
+        "category": "Media",
+        "type": "Event",
+        "status": "Live",
+        "date": "2024-03-10",
+        "description": "Description for Nairobi Music Festival",
+        "image_url": "https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=600"
+    },
+    {
+        "id": "cont_5",
+        "title": "Studio Launch Party",
+        "category": "Media",
+        "type": "Community",
+        "status": "Live",
+        "date": "2024-06-15",
+        "description": "Description for Studio Launch Party",
+        "image_url": "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=600"
+    },
+    {
+        "id": "cont_6",
+        "title": "Instrument Repair",
+        "category": "Services",
+        "type": "Repair",
+        "status": "Live",
+        "date": "2024-01-01",
+        "description": "Description for Instrument Repair",
+        "image_url": "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=600"
+    },
+    {
+        "id": "cont_7",
+        "title": "How to Choose Your First Guitar",
+        "category": "Blog",
+        "type": "Guide",
+        "status": "Live",
+        "date": "2024-03-18",
+        "description": "Description for How to Choose Your First Guitar",
+        "image_url": "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=600"
+    }
+]
