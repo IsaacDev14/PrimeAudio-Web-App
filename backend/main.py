@@ -125,10 +125,14 @@ async def get_wishlist(current_user: dict = Depends(get_current_user)):
     for doc in docs:
         item = doc.to_dict()
         item['id'] = doc.id
-        # Get product details
-        prod_doc = db.collection('products').document(item.get('product_id', '')).get()
+        # Get product details and flatten for frontend
+        prod_doc = db.collection('products').document(str(item.get('product_id', ''))).get()
         if prod_doc.exists:
-            item['product'] = prod_doc.to_dict()
+            product = prod_doc.to_dict()
+            item['product_name'] = product.get('name')
+            item['product_price'] = product.get('price')
+            item['product_image'] = product.get('image_url')
+            item['product_stock'] = product.get('stock', 0)
         items.append(item)
     return items
 
@@ -144,11 +148,52 @@ async def add_to_wishlist(data: dict, current_user: dict = Depends(get_current_u
     doc_ref.set(item)
     return {"message": "Added to wishlist"}
 
-@wishlist_router.delete("/{item_id}")
-async def remove_from_wishlist(item_id: str, current_user: dict = Depends(get_current_user)):
+@wishlist_router.post("/{product_id}")
+async def add_to_wishlist_by_id(product_id: str, current_user: dict = Depends(get_current_user)):
+    """Add product to wishlist by product_id (for ProductCard component)"""
     db = get_firestore_client()
-    db.collection('wishlist').document(item_id).delete()
+    # Check if already in wishlist
+    existing = db.collection('wishlist').where('user_id', '==', current_user['id']).where('product_id', '==', product_id).limit(1).stream()
+    if list(existing):
+        return {"message": "Already in wishlist"}
+    
+    doc_ref = db.collection('wishlist').document()
+    item = {
+        "id": doc_ref.id,
+        "user_id": current_user['id'],
+        "product_id": product_id
+    }
+    doc_ref.set(item)
+    return {"message": "Added to wishlist"}
+
+@wishlist_router.get("/check/{product_id}")
+async def check_wishlist(product_id: str, current_user: dict = Depends(get_current_user)):
+    """Check if product is in user's wishlist"""
+    db = get_firestore_client()
+    query = db.collection('wishlist').where('user_id', '==', current_user['id']).where('product_id', '==', product_id).limit(1)
+    docs = list(query.stream())
+    return {"in_wishlist": len(docs) > 0}
+
+@wishlist_router.delete("/{product_id}")
+async def remove_from_wishlist(product_id: str, current_user: dict = Depends(get_current_user)):
+    """Delete wishlist item by product_id"""
+    db = get_firestore_client()
+    # Find wishlist item by user_id and product_id
+    query = db.collection('wishlist').where('user_id', '==', current_user['id']).where('product_id', '==', product_id)
+    docs = list(query.stream())
+    for doc in docs:
+        doc.reference.delete()
     return {"message": "Removed from wishlist"}
+
+@wishlist_router.delete("/")
+async def clear_wishlist(current_user: dict = Depends(get_current_user)):
+    """Clear all wishlist items for user"""
+    db = get_firestore_client()
+    query = db.collection('wishlist').where('user_id', '==', current_user['id'])
+    docs = query.stream()
+    for doc in docs:
+        doc.reference.delete()
+    return {"message": "Wishlist cleared"}
 
 app.include_router(wishlist_router)
 
@@ -267,23 +312,43 @@ async def get_products_on_sale():
         return cached
     
     db = get_firestore_client()
-    # Get products with discount
+    
+    # Get active offer to use its discount percentage
+    offer_docs = db.collection('offers').where('is_active', '==', True).limit(1).stream()
+    active_offer = None
+    offer_discount = 0
+    for doc in offer_docs:
+        active_offer = doc.to_dict()
+        # Try various field names for discount
+        offer_discount = active_offer.get('discount_percentage') or active_offer.get('discount_percent') or active_offer.get('discount', 0)
+        break
+    
+    # Get products to display
     docs = db.collection('products').stream()
     products = []
     for doc in docs:
         p = doc.to_dict()
-        original = p.get('original_price')
-        current = p.get('price')
-        if original and current and original > current:
-            p['id'] = doc.id
-            # Add computed fields for frontend
-            p['sale_price'] = current
-            p['discount_percentage'] = round(((original - current) / original) * 100)
+        p['id'] = doc.id
+        original = p.get('original_price') or p.get('price')
+        
+        if original and offer_discount > 0:
+            # Apply offer discount to calculate sale price
+            sale_price = round(original * (1 - offer_discount / 100))
+            p['original_price'] = original
+            p['sale_price'] = sale_price
+            p['price'] = sale_price  # Update display price
+            p['discount_percentage'] = offer_discount
             products.append(p)
+        elif p.get('original_price') and p.get('price') and p['original_price'] > p['price']:
+            # Fallback: product already has discount built in
+            p['sale_price'] = p['price']
+            p['discount_percentage'] = round(((p['original_price'] - p['price']) / p['original_price']) * 100)
+            products.append(p)
+    
     result = products[:20]  # Limit to 20
     
-    # Cache for 10 minutes
-    products_cache.set("products_on_sale", result)
+    # Cache for 5 minutes (shorter since it depends on active offer)
+    products_cache.set("products_on_sale", result, ttl=300)
     return result
 
 @offers_router.post("/")

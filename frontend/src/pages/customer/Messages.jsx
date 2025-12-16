@@ -25,11 +25,21 @@ const CustomerMessages = () => {
     const [selectedAdmin, setSelectedAdmin] = useState(null);
     const [admins, setAdmins] = useState([]);
     const [showMobileChat, setShowMobileChat] = useState(false);
+    const [isTyping, setIsTyping] = useState(false);
     const messagesEndRef = useRef(null);
+    const pollIntervalRef = useRef(null);
 
     useEffect(() => {
         fetchConversations();
         fetchAdmins();
+        // Poll for new messages every 3 seconds for real-time feel
+        pollIntervalRef.current = setInterval(() => {
+            fetchConversations();
+            if (selectedConversation) {
+                fetchMessages(selectedConversation.id);
+            }
+        }, 3000);
+        return () => clearInterval(pollIntervalRef.current);
     }, []);
 
     useEffect(() => {

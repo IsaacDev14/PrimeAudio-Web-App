@@ -193,12 +193,12 @@ const HotDeals = ({ limit = 4 }) => {
                                 </h3>
                                 <p className="text-xs text-gray-500 mb-2">{deal.category}</p>
 
-                                <div className="flex items-center gap-2">
-                                    <span className="text-red-600 font-bold">
-                                        KSh {deal.sale_price?.toLocaleString()}
-                                    </span>
-                                    <span className="text-gray-400 text-sm line-through">
+                                <div className="space-y-1">
+                                    <span className="text-gray-400 text-sm line-through block">
                                         KSh {deal.original_price?.toLocaleString()}
+                                    </span>
+                                    <span className="text-red-600 font-bold text-lg block">
+                                        KSh {deal.sale_price?.toLocaleString()}
                                     </span>
                                 </div>
                             </div>

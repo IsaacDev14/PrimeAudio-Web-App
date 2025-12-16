@@ -154,22 +154,16 @@ const ProductCard = ({ product }) => {
                 )}
             </div>
 
-            <div className="mt-3">
-                <div className="flex justify-between items-start">
-                    <h3 className="font-bold text-slate-900 text-[15px] leading-tight line-clamp-2">{product.name}</h3>
-                    <div className="flex items-center gap-1 shrink-0">
-                        <Star className="w-3.5 h-3.5 fill-black text-black" />
-                        <span className="text-sm font-light text-slate-900">{product.rating || 0}</span>
+            <div className="mt-3 space-y-2">
+                <div className="flex justify-between items-start gap-2">
+                    <h3 className="font-semibold text-gray-900 text-[15px] leading-tight line-clamp-2">{product.name}</h3>
+                    <div className="flex items-center gap-0.5 shrink-0">
+                        <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+                        <span className="text-sm text-gray-700">{product.rating || 0}</span>
                     </div>
                 </div>
-                <p className="text-slate-500 text-sm font-light mt-0.5">{product.condition || "In Stock"}</p>
-                <div className="flex flex-col mt-1">
-                    <p className="text-slate-500 text-sm line-clamp-2 font-light">{product.description || "Professional audio equipment"}</p>
-                    <div className="flex items-baseline gap-1 mt-1.5">
-                        <span className="font-bold text-slate-900">KSh {product.price.toLocaleString()}</span>
-                        <span className="text-slate-500 text-sm font-light">total</span>
-                    </div>
-                </div>
+                <p className="text-gray-500 text-sm line-clamp-2">{product.description || "Professional audio equipment"}</p>
+                <p className="font-bold text-gray-900 text-lg">KSh {product.price?.toLocaleString()}</p>
             </div>
         </motion.div>
     );
