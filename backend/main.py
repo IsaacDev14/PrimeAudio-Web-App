@@ -29,6 +29,8 @@ origins = [
     "http://127.0.0.1:5173",
     "http://127.0.0.1:5174",
     "http://127.0.0.1:3000",
+    "https://prime-audio-web-app-mzss.vercel.app",
+    "https://prime-audio-web-app-mzss.vercel.app/",
     "*"  # Allow all for testing
 ]
 
