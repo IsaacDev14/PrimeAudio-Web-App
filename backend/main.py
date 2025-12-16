@@ -272,8 +272,13 @@ async def get_products_on_sale():
     products = []
     for doc in docs:
         p = doc.to_dict()
-        if p.get('original_price') and p.get('price') and p['original_price'] > p['price']:
+        original = p.get('original_price')
+        current = p.get('price')
+        if original and current and original > current:
             p['id'] = doc.id
+            # Add computed fields for frontend
+            p['sale_price'] = current
+            p['discount_percentage'] = round(((original - current) / original) * 100)
             products.append(p)
     result = products[:20]  # Limit to 20
     
