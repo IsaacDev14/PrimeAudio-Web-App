@@ -12,6 +12,7 @@ import {
     Mail,
     CreditCard
 } from 'lucide-react';
+import { API_URL } from '../../config/api';
 
 const OrderDetails = () => {
     const { id } = useParams();
@@ -27,7 +28,7 @@ const OrderDetails = () => {
         const token = localStorage.getItem('token');
 
         try {
-            const res = await fetch(`http://localhost:8000/orders/${id}`, {
+            const res = await fetch(`${API_URL}/orders/${id}`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
 
@@ -236,8 +237,8 @@ const OrderDetails = () => {
                             <div className="flex justify-between">
                                 <span className="text-gray-500">Status</span>
                                 <span className={`font-medium ${order.payment_status === 'paid'
-                                        ? 'text-green-600'
-                                        : 'text-yellow-600'
+                                    ? 'text-green-600'
+                                    : 'text-yellow-600'
                                     }`}>
                                     {order.payment_status === 'paid' ? '✓ Paid' : 'Pending'}
                                 </span>

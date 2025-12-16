@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, X, Loader2 } from 'lucide-react';
+import { API_URL } from '../config/api';
 
 const SearchAutocomplete = ({ className = "" }) => {
     const [query, setQuery] = useState('');
@@ -23,7 +24,7 @@ const SearchAutocomplete = ({ className = "" }) => {
         const timer = setTimeout(async () => {
             setIsLoading(true);
             try {
-                const res = await fetch(`http://localhost:8000/products/?search=${encodeURIComponent(query)}&limit=6`);
+                const res = await fetch(`${API_URL}/products/?search=${encodeURIComponent(query)}&limit=6`);
                 if (res.ok) {
                     const data = await res.json();
                     setResults(data);

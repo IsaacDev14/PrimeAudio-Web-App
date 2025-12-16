@@ -1,6 +1,7 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { Search, Package, CheckCircle, Truck, MapPin, AlertCircle, Clock, PackageCheck } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { API_URL } from '../config/api';
 
 const OrderTracking = () => {
     const [trackingId, setTrackingId] = useState('');
@@ -17,7 +18,7 @@ const OrderTracking = () => {
         setOrderStatus(null);
 
         try {
-            const response = await fetch(`http://localhost:8000/orders/track/${trackingId.trim()}`);
+            const response = await fetch(`${API_URL}/orders/track/${trackingId.trim()}`);
 
             if (!response.ok) {
                 const errorData = await response.json();

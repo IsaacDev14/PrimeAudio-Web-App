@@ -4,6 +4,7 @@ import { DollarSign, ShoppingBag, Package, Users, TrendingUp, Clock, CheckCircle
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../components/ui/table';
 import { Badge } from '../../components/ui/badge';
 import { Button } from '../../components/ui/button';
+import { API_URL } from '../../config/api';
 
 const Dashboard = () => {
     const [stats, setStats] = useState(null);
@@ -37,7 +38,7 @@ const Dashboard = () => {
             }
 
             // Fetch stats
-            const statsRes = await fetch(`http://localhost:8000/orders/stats?${queryParams}`, {
+            const statsRes = await fetch(`${API_URL}/orders/stats?${queryParams}`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (statsRes.ok) {
@@ -46,7 +47,7 @@ const Dashboard = () => {
             }
 
             // Fetch recent orders
-            const ordersRes = await fetch('http://localhost:8000/orders/?limit=10', {
+            const ordersRes = await fetch(`${API_URL}/orders/?limit=10`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (ordersRes.ok) {

@@ -8,6 +8,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "../../components/ui/dialog";
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
 import { useToast } from "../../context/ToastContext";
+import { API_URL } from "../../config/api";
 
 const CATEGORIES = [
     "Guitars", "Keyboards", "Drums", "Microphones", "Speakers",
@@ -53,7 +54,7 @@ const AdminProducts = () => {
     const fetchProducts = async () => {
         setIsLoading(true);
         try {
-            const response = await fetch("http://localhost:8000/products/?limit=500");
+            const response = await fetch(`${API_URL}/products/?limit=500`);
             if (response.ok) {
                 const data = await response.json();
                 setProducts(data);
@@ -104,7 +105,7 @@ const AdminProducts = () => {
 
             let response;
             if (currentProduct) {
-                response = await fetch(`http://localhost:8000/products/${currentProduct.id}`, {
+                response = await fetch(`${API_URL}/products/${currentProduct.id}`, {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
@@ -113,7 +114,7 @@ const AdminProducts = () => {
                     body: JSON.stringify(payload)
                 });
             } else {
-                response = await fetch("http://localhost:8000/products/", {
+                response = await fetch(`${API_URL}/products/`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -145,7 +146,7 @@ const AdminProducts = () => {
         const token = localStorage.getItem("token");
 
         try {
-            const response = await fetch(`http://localhost:8000/products/${currentProduct.id}`, {
+            const response = await fetch(`${API_URL}/products/${currentProduct.id}`, {
                 method: "DELETE",
                 headers: { "Authorization": `Bearer ${token}` }
             });

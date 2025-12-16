@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Play, Award, Truck, Headphones, Shield, Star, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
 import SEO from '../components/SEO';
+import { API_URL } from '../config/api';
 
 const HeroProductCard = ({ product, rotateDuration }) => {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -116,14 +117,14 @@ const Home = () => {
     const fetchHomeData = async () => {
         try {
             // Fetch featured products
-            const productsRes = await fetch('http://localhost:8000/products/featured?limit=6');
+            const productsRes = await fetch(`${API_URL}/products/featured?limit=6`);
             if (productsRes.ok) {
                 const products = await productsRes.json();
                 setFeaturedProducts(products);
             }
 
             // Fetch testimonials
-            const testimonialsRes = await fetch('http://localhost:8000/testimonials/?limit=6&verified_only=true');
+            const testimonialsRes = await fetch(`${API_URL}/testimonials/?limit=6&verified_only=true`);
             if (testimonialsRes.ok) {
                 const testimonialsData = await testimonialsRes.json();
                 setTestimonials(testimonialsData);

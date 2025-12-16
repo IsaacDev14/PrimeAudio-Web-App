@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquare, X, Send, Bot, RotateCcw, Home } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
+import { API_URL } from '../config/api';
 
 const initialMessage = { id: 1, text: "Hello! I'm your Prime Audio assistant. How can I help you find the perfect instrument today?", sender: 'ai' };
 
@@ -36,7 +37,7 @@ const ChatWidget = () => {
 
         // Send to backend
         try {
-            const response = await fetch('http://localhost:8000/chat/', {
+            const response = await fetch(`${API_URL}/chat/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

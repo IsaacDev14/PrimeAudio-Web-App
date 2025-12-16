@@ -5,6 +5,7 @@ import ProductCard from '../components/ProductCard';
 import { ProductGridSkeleton } from '../components/ui/skeleton';
 import SEO from '../components/SEO';
 import HotDeals from '../components/HotDeals';
+import { API_URL } from '../config/api';
 
 // Category icon mapping
 const CATEGORY_ICONS = {
@@ -65,7 +66,7 @@ const Shop = () => {
 
     const fetchCategories = async () => {
         try {
-            const res = await fetch('http://localhost:8000/products/categories');
+            const res = await fetch(`${API_URL}/products/categories`);
             if (res.ok) {
                 const data = await res.json();
                 setCategories(data);
@@ -77,7 +78,7 @@ const Shop = () => {
 
     const fetchBrands = async () => {
         try {
-            const res = await fetch('http://localhost:8000/products/brands');
+            const res = await fetch(`${API_URL}/products/brands`);
             if (res.ok) {
                 const data = await res.json();
                 setBrands(data.slice(0, 15)); // Limit to 15 brands
@@ -90,7 +91,7 @@ const Shop = () => {
     const fetchProducts = async () => {
         setIsLoading(true);
         try {
-            let url = 'http://localhost:8000/products/?limit=100';
+            let url = `${API_URL}/products/?limit=100`;
 
             if (activeCategory) {
                 url += `&category=${encodeURIComponent(activeCategory)}`;

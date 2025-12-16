@@ -4,6 +4,7 @@ import { CheckCircle, Truck, Package, CreditCard, Smartphone, Building2, AlertCi
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { Link, useNavigate, Navigate } from 'react-router-dom';
+import { API_URL } from '../config/api';
 
 const Checkout = () => {
     const { cart, cartTotal, clearCart } = useCart();
@@ -67,7 +68,7 @@ const Checkout = () => {
     const fetchAddresses = async () => {
         const token = localStorage.getItem('token');
         try {
-            const res = await fetch('http://localhost:8000/addresses/', {
+            const res = await fetch(`${API_URL}/addresses/`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await res.json();
@@ -121,7 +122,7 @@ const Checkout = () => {
             }))
         };
 
-        const res = await fetch('http://localhost:8000/orders/', {
+        const res = await fetch(`${API_URL}/orders/`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -149,7 +150,7 @@ const Checkout = () => {
 
             if (paymentMethod === 'mpesa') {
                 // Initiate M-Pesa STK Push
-                const res = await fetch('http://localhost:8000/payments/mpesa/initiate', {
+                const res = await fetch(`${API_URL}/payments/mpesa/initiate`, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -173,7 +174,7 @@ const Checkout = () => {
                 }
             } else if (paymentMethod === 'card') {
                 // Initialize card payment
-                const res = await fetch('http://localhost:8000/payments/card/initiate', {
+                const res = await fetch(`${API_URL}/payments/card/initiate`, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -196,7 +197,7 @@ const Checkout = () => {
                 }
             } else if (paymentMethod === 'bank_transfer') {
                 // Get bank transfer details
-                const res = await fetch('http://localhost:8000/payments/bank-transfer/info', {
+                const res = await fetch(`${API_URL}/payments/bank-transfer/info`, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${token}`,

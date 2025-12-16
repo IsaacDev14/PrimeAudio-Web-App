@@ -2,8 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronRight, Clock } from 'lucide-react';
 import { Link } from 'react-router-dom';
-
-const API_URL = 'http://localhost:8000';
+import { API_URL } from '../config/api';
 
 const PromoBanner = () => {
     const [activeOffer, setActiveOffer] = useState(null);

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Star, Heart, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { API_URL } from '../config/api';
 
 const ProductCard = ({ product }) => {
     const { isAuthenticated } = useAuth();
@@ -26,7 +27,7 @@ const ProductCard = ({ product }) => {
         if (!token) return;
 
         try {
-            const res = await fetch(`http://localhost:8000/wishlist/check/${product.id}`, {
+            const res = await fetch(`${API_URL}/wishlist/check/${product.id}`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await res.json();
@@ -52,14 +53,14 @@ const ProductCard = ({ product }) => {
         try {
             if (isInWishlist) {
                 // Remove from wishlist
-                await fetch(`http://localhost:8000/wishlist/${product.id}`, {
+                await fetch(`${API_URL}/wishlist/${product.id}`, {
                     method: 'DELETE',
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 setIsInWishlist(false);
             } else {
                 // Add to wishlist
-                await fetch(`http://localhost:8000/wishlist/${product.id}`, {
+                await fetch(`${API_URL}/wishlist/${product.id}`, {
                     method: 'POST',
                     headers: { 'Authorization': `Bearer ${token}` }
                 });

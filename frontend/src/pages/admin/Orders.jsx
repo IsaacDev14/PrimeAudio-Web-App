@@ -6,6 +6,7 @@ import { Button } from "../../components/ui/button";
 import { Loader2, RefreshCcw, CheckCircle, Copy, Eye } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "../../components/ui/dialog";
 import { useToast } from "../../context/ToastContext";
+import { API_URL } from "../../config/api";
 
 const AdminOrders = () => {
     const toast = useToast();
@@ -25,7 +26,7 @@ const AdminOrders = () => {
         setIsLoading(true);
         try {
             const token = localStorage.getItem("token");
-            let url = "http://localhost:8000/orders/?limit=100";
+            let url = `${API_URL}/orders/?limit=100`;
             if (statusFilter !== 'all') {
                 url += `&status=${statusFilter}`;
             }
@@ -48,7 +49,7 @@ const AdminOrders = () => {
         setIsApproving(orderId);
         try {
             const token = localStorage.getItem("token");
-            const response = await fetch(`http://localhost:8000/orders/${orderId}/approve`, {
+            const response = await fetch(`${API_URL}/orders/${orderId}/approve`, {
                 method: "POST",
                 headers: { "Authorization": `Bearer ${token}` }
             });
@@ -72,7 +73,7 @@ const AdminOrders = () => {
     const updateStatus = async (orderId, newStatus) => {
         try {
             const token = localStorage.getItem("token");
-            const response = await fetch(`http://localhost:8000/orders/${orderId}/status?status=${newStatus}`, {
+            const response = await fetch(`${API_URL}/orders/${orderId}/status?status=${newStatus}`, {
                 method: "PUT",
                 headers: { "Authorization": `Bearer ${token}` }
             });

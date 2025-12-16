@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
+import { API_URL } from '../../config/api';
 import {
     ShoppingBag,
     Search,
@@ -30,7 +31,7 @@ const CustomerOrders = () => {
         const token = localStorage.getItem('token');
 
         try {
-            const res = await fetch('http://localhost:8000/orders/user', {
+            const res = await fetch(`${API_URL}/orders/user`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await res.json();

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Search, MoreVertical, Shield, ShieldAlert, CheckCircle, Clock, UserPlus, Users, User, Mail, MessageSquare } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { API_URL } from "../../config/api";
 
 const AdminUsers = () => {
     const navigate = useNavigate();
@@ -17,7 +18,7 @@ const AdminUsers = () => {
     const fetchUsers = async () => {
         const token = localStorage.getItem('token');
         try {
-            const res = await fetch('http://localhost:8000/auth/users', {
+            const res = await fetch(`${API_URL}/auth/users`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await res.json();

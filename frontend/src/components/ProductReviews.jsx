@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Star, ThumbsUp, MessageSquare, User } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { API_URL } from '../config/api';
 
 const ProductReviews = ({ productId }) => {
     const { isAuthenticated, user } = useAuth();
@@ -20,7 +21,7 @@ const ProductReviews = ({ productId }) => {
 
     const fetchReviews = async () => {
         try {
-            const res = await fetch(`http://localhost:8000/reviews/product/${productId}`);
+            const res = await fetch(`${API_URL}/reviews/product/${productId}`);
             const data = await res.json();
             if (Array.isArray(data)) {
                 setReviews(data);
@@ -40,7 +41,7 @@ const ProductReviews = ({ productId }) => {
         setIsSubmitting(true);
 
         try {
-            const res = await fetch('http://localhost:8000/reviews/', {
+            const res = await fetch(`${API_URL}/reviews/`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -73,7 +74,7 @@ const ProductReviews = ({ productId }) => {
         if (!token) return;
 
         try {
-            await fetch(`http://localhost:8000/reviews/${reviewId}/helpful`, {
+            await fetch(`${API_URL}/reviews/${reviewId}/helpful`, {
                 method: 'POST',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -169,8 +170,8 @@ const ProductReviews = ({ productId }) => {
                                     >
                                         <Star
                                             className={`w-8 h-8 transition-colors ${star <= newReview.rating
-                                                    ? 'fill-yellow-400 text-yellow-400'
-                                                    : 'text-gray-300 hover:text-yellow-300'
+                                                ? 'fill-yellow-400 text-yellow-400'
+                                                : 'text-gray-300 hover:text-yellow-300'
                                                 }`}
                                         />
                                     </button>

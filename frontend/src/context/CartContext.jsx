@@ -1,12 +1,11 @@
 import { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import { useToast } from './ToastContext';
 import { useAuth } from './AuthContext';
+import { API_URL } from '../config/api';
 
 const CartContext = createContext();
 
 export const useCart = () => useContext(CartContext);
-
-const API_URL = 'http://localhost:8000';
 
 export const CartProvider = ({ children }) => {
     const toast = useToast();

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { API_URL } from '../../config/api';
 import {
     ShoppingBag,
     Clock,
@@ -34,7 +35,7 @@ const CustomerDashboard = () => {
 
         try {
             // Fetch orders
-            const ordersRes = await fetch('http://localhost:8000/orders/user', {
+            const ordersRes = await fetch(`${API_URL}/orders/user`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const orders = await ordersRes.json();
@@ -50,7 +51,7 @@ const CustomerDashboard = () => {
             }
 
             // Fetch wishlist count
-            const wishlistRes = await fetch('http://localhost:8000/wishlist/', {
+            const wishlistRes = await fetch(`${API_URL}/wishlist/`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const wishlist = await wishlistRes.json();
@@ -59,7 +60,7 @@ const CustomerDashboard = () => {
             }
 
             // Fetch notifications
-            const notifRes = await fetch('http://localhost:8000/notifications/?limit=5', {
+            const notifRes = await fetch(`${API_URL}/notifications/?limit=5`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const notifs = await notifRes.json();

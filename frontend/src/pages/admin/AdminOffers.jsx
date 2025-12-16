@@ -5,8 +5,7 @@ import {
     Package, X, Check, Search, ChevronDown
 } from 'lucide-react';
 import { useToast } from '../../context/ToastContext';
-
-const API_URL = 'http://localhost:8000';
+import { API_URL } from '../../config/api';
 
 const AdminOffers = () => {
     const toast = useToast();

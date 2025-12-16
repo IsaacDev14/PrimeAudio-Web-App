@@ -11,6 +11,7 @@ import {
     Loader2,
     CheckCircle
 } from 'lucide-react';
+import { API_URL } from '../../config/api';
 
 const CustomerAddresses = () => {
     const [addresses, setAddresses] = useState([]);
@@ -37,7 +38,7 @@ const CustomerAddresses = () => {
         const token = localStorage.getItem('token');
 
         try {
-            const res = await fetch('http://localhost:8000/addresses/', {
+            const res = await fetch(`${API_URL}/addresses/`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await res.json();
@@ -57,8 +58,8 @@ const CustomerAddresses = () => {
 
         const token = localStorage.getItem('token');
         const url = editingAddress
-            ? `http://localhost:8000/addresses/${editingAddress.id}`
-            : 'http://localhost:8000/addresses/';
+            ? `${API_URL}/addresses/${editingAddress.id}`
+            : `${API_URL}/addresses/`;
         const method = editingAddress ? 'PUT' : 'POST';
 
         try {
@@ -88,7 +89,7 @@ const CustomerAddresses = () => {
         const token = localStorage.getItem('token');
 
         try {
-            await fetch(`http://localhost:8000/addresses/${addressId}`, {
+            await fetch(`${API_URL}/addresses/${addressId}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -102,7 +103,7 @@ const CustomerAddresses = () => {
         const token = localStorage.getItem('token');
 
         try {
-            await fetch(`http://localhost:8000/addresses/${addressId}/set-default`, {
+            await fetch(`${API_URL}/addresses/${addressId}/set-default`, {
                 method: 'POST',
                 headers: { 'Authorization': `Bearer ${token}` }
             });

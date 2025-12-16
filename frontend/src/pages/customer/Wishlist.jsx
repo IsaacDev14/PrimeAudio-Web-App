@@ -8,6 +8,7 @@ import {
     AlertCircle
 } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
+import { API_URL } from '../../config/api';
 
 const CustomerWishlist = () => {
     const { addToCart } = useCart();
@@ -22,7 +23,7 @@ const CustomerWishlist = () => {
         const token = localStorage.getItem('token');
 
         try {
-            const res = await fetch('http://localhost:8000/wishlist/', {
+            const res = await fetch(`${API_URL}/wishlist/`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await res.json();
@@ -40,7 +41,7 @@ const CustomerWishlist = () => {
         const token = localStorage.getItem('token');
 
         try {
-            await fetch(`http://localhost:8000/wishlist/${productId}`, {
+            await fetch(`${API_URL}/wishlist/${productId}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -66,7 +67,7 @@ const CustomerWishlist = () => {
         const token = localStorage.getItem('token');
 
         try {
-            await fetch('http://localhost:8000/wishlist/', {
+            await fetch(`${API_URL}/wishlist/`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });

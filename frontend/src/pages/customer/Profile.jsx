@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { User, Mail, Phone, Save, Loader2, Camera } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import { API_URL } from '../../config/api';
 
 const CustomerProfile = () => {
     const { user, setUser } = useAuth();
@@ -31,7 +32,7 @@ const CustomerProfile = () => {
         const token = localStorage.getItem('token');
 
         try {
-            const res = await fetch('http://localhost:8000/auth/me', {
+            const res = await fetch(`${API_URL}/auth/me`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -85,8 +86,8 @@ const CustomerProfile = () => {
                 <form onSubmit={handleSubmit} className="p-6 space-y-5">
                     {message.text && (
                         <div className={`p-4 rounded-lg ${message.type === 'success'
-                                ? 'bg-green-50 text-green-700 border border-green-200'
-                                : 'bg-red-50 text-red-700 border border-red-200'
+                            ? 'bg-green-50 text-green-700 border border-green-200'
+                            : 'bg-red-50 text-red-700 border border-red-200'
                             }`}>
                             {message.text}
                         </div>

@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { API_URL } from '../../config/api';
 import {
     MessageSquare,
     Send,
@@ -59,7 +60,7 @@ const AdminMessages = () => {
         const token = localStorage.getItem('token');
 
         try {
-            const res = await fetch('http://localhost:8000/messages/conversations', {
+            const res = await fetch(`${API_URL}/messages/conversations`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await res.json();
@@ -76,7 +77,7 @@ const AdminMessages = () => {
     const fetchCustomers = async () => {
         const token = localStorage.getItem('token');
         try {
-            const res = await fetch('http://localhost:8000/auth/users?role=customer', {
+            const res = await fetch(`${API_URL}/auth/users?role=customer`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await res.json();
@@ -92,7 +93,7 @@ const AdminMessages = () => {
         const token = localStorage.getItem('token');
 
         try {
-            const res = await fetch(`http://localhost:8000/messages/conversations/${conversationId}/messages`, {
+            const res = await fetch(`${API_URL}/messages/conversations/${conversationId}/messages`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await res.json();
@@ -112,7 +113,7 @@ const AdminMessages = () => {
         setIsSending(true);
 
         try {
-            const res = await fetch(`http://localhost:8000/messages/conversations/${selectedConversation.id}/messages`, {
+            const res = await fetch(`${API_URL}/messages/conversations/${selectedConversation.id}/messages`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -137,7 +138,7 @@ const AdminMessages = () => {
         const token = localStorage.getItem('token');
 
         try {
-            await fetch(`http://localhost:8000/messages/conversations/${conversationId}/close`, {
+            await fetch(`${API_URL}/messages/conversations/${conversationId}/close`, {
                 method: 'PUT',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -162,7 +163,7 @@ const AdminMessages = () => {
         }
 
         try {
-            const res = await fetch('http://localhost:8000/messages/conversations', {
+            const res = await fetch(`${API_URL}/messages/conversations`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,

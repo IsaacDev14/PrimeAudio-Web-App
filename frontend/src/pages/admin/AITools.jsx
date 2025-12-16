@@ -6,6 +6,7 @@ import { Label } from "../../components/ui/label";
 import { Textarea } from "../../components/ui/textarea";
 import { Wand2, Copy, Sparkles, Loader2, Check } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import { API_URL } from "../../config/api";
 
 const AdminAITools = () => {
     const [formData, setFormData] = useState({
@@ -26,7 +27,7 @@ const AdminAITools = () => {
         e.preventDefault();
         setIsLoading(true);
         try {
-            const response = await fetch("http://localhost:8000/chat/generate-description", {
+            const response = await fetch(`${API_URL}/chat/generate-description`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(formData)

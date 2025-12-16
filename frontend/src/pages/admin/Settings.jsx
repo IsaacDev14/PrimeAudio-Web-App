@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Save, Loader2, Globe, Mail, Phone, MapPin, Facebook, Instagram, Twitter, AlertTriangle } from "lucide-react";
+import { API_URL } from "../../config/api";
 
 export default function Settings() {
     const [loading, setLoading] = useState(true);
@@ -26,7 +27,7 @@ export default function Settings() {
     const fetchSettings = async () => {
         try {
             setLoading(true);
-            const res = await fetch("http://localhost:8000/settings/");
+            const res = await fetch(`${API_URL}/settings/`);
             if (!res.ok) throw new Error("Failed to fetch settings");
             const data = await res.json();
             setSettings(data);
@@ -52,7 +53,7 @@ export default function Settings() {
         setSuccess(false);
 
         try {
-            const res = await fetch("http://localhost:8000/settings/", {
+            const res = await fetch(`${API_URL}/settings/`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(settings)

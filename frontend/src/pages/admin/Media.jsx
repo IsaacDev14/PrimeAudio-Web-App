@@ -4,6 +4,7 @@ import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
 import { Label } from "../../components/ui/label";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../../components/ui/dialog";
+import { API_URL } from "../../config/api";
 
 const AdminMedia = () => {
     const [mediaItems, setMediaItems] = useState([]);
@@ -25,7 +26,7 @@ const AdminMedia = () => {
         const token = localStorage.getItem("token");
 
         try {
-            const response = await fetch("http://localhost:8000/products/upload", {
+            const response = await fetch(`${API_URL}/products/upload`, {
                 method: "POST",
                 headers: { "Authorization": `Bearer ${token}` },
                 body: formData

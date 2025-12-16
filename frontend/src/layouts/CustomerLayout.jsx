@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { API_URL } from '../config/api';
 import {
     LayoutDashboard,
     ShoppingBag,
@@ -31,7 +32,7 @@ const CustomerLayout = () => {
     const fetchNotifications = async () => {
         const token = localStorage.getItem('token');
         try {
-            const res = await fetch('http://localhost:8000/notifications', {
+            const res = await fetch(`${API_URL}/notifications`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (res.ok) {

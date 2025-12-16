@@ -1,4 +1,5 @@
 import { createContext, useState, useContext, useEffect, useCallback, useRef } from 'react';
+import { API_URL } from '../config/api';
 
 const AuthContext = createContext();
 
@@ -58,7 +59,7 @@ export const AuthProvider = ({ children }) => {
             const token = localStorage.getItem('token');
             if (token) {
                 try {
-                    const response = await fetch('http://localhost:8000/auth/me', {
+                    const response = await fetch(`${API_URL}/auth/me`, {
                         headers: {
                             'Authorization': `Bearer ${token}`
                         }
@@ -98,7 +99,7 @@ export const AuthProvider = ({ children }) => {
             formData.append('username', email.trim());
             formData.append('password', password.trim());
 
-            const response = await fetch('http://localhost:8000/auth/token', {
+            const response = await fetch(`${API_URL}/auth/token`, {
                 method: 'POST',
                 // Content-Type is set automatically by fetch when using URLSearchParams
                 body: formData,
@@ -121,7 +122,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     const register = async (email, password, fullName) => {
-        const response = await fetch('http://localhost:8000/auth/register', {
+        const response = await fetch(`${API_URL}/auth/register`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

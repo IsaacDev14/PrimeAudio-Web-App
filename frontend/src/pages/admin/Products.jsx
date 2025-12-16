@@ -6,6 +6,7 @@ import { Textarea } from "../../components/ui/textarea";
 import { Plus, Pencil, Trash2, Search, Loader2, Image as ImageIcon, Briefcase, Calendar, Folder, FileText, Globe } from "lucide-react";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "../../components/ui/alert-dialog";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "../../components/ui/dialog";
+import { API_URL } from "../../config/api";
 
 const AdminContent = () => {
     const [contentItems, setContentItems] = useState([]);
@@ -39,7 +40,7 @@ const AdminContent = () => {
     const fetchContent = async () => {
         setIsLoading(true);
         try {
-            const response = await fetch(`http://localhost:8000/content/?category=${activeTab}`);
+            const response = await fetch(`${API_URL}/content/?category=${activeTab}`);
             if (response.ok) {
                 const data = await response.json();
                 setContentItems(data);
@@ -67,11 +68,11 @@ const AdminContent = () => {
 
             let response;
             if (currentItem) {
-                response = await fetch(`http://localhost:8000/content/${currentItem.id}`, {
+                response = await fetch(`${API_URL}/content/${currentItem.id}`, {
                     method: "PUT", headers, body: JSON.stringify(payload)
                 });
             } else {
-                response = await fetch("http://localhost:8000/content/", {
+                response = await fetch(`${API_URL}/content/`, {
                     method: "POST", headers, body: JSON.stringify(payload)
                 });
             }
@@ -92,7 +93,7 @@ const AdminContent = () => {
         if (!currentItem) return;
         const token = localStorage.getItem("token");
         try {
-            const response = await fetch(`http://localhost:8000/content/${currentItem.id}`, {
+            const response = await fetch(`${API_URL}/content/${currentItem.id}`, {
                 method: "DELETE", headers: { "Authorization": `Bearer ${token}` }
             });
             if (response.ok) {

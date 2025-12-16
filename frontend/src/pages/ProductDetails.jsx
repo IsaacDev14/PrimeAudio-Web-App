@@ -10,6 +10,7 @@ import { Button } from '../components/ui/button';
 import ProductReviews from '../components/ProductReviews';
 import SEO from '../components/SEO';
 import { ProductDetailsSkeleton } from '../components/ui/skeleton';
+import { API_URL } from '../config/api';
 
 const ProductDetails = () => {
     // ... existing hook calls ...
@@ -30,7 +31,7 @@ const ProductDetails = () => {
     const fetchProduct = async () => {
         setIsLoading(true);
         try {
-            const res = await fetch(`http://localhost:8000/products/${id}`);
+            const res = await fetch(`${API_URL}/products/${id}`);
             if (res.ok) {
                 const data = await res.json();
                 setProduct(data);
