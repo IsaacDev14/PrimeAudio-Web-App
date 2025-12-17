@@ -15,18 +15,16 @@ export const CartProvider = ({ children }) => {
     const pendingToast = useRef(null);
     const syncedRef = useRef(false);
 
-    const [cart, setCart] = useState(() => {
-        const savedCart = localStorage.getItem('cart');
-        return savedCart ? JSON.parse(savedCart) : [];
-    });
+    const [cart, setCart] = useState([]);
 
     const [isCartOpen, setIsCartOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
     // Always save to localStorage as backup
-    useEffect(() => {
-        localStorage.setItem('cart', JSON.stringify(cart));
-    }, [cart]);
+    // Always save to localStorage as backup
+    // useEffect(() => {
+    //     localStorage.setItem('cart', JSON.stringify(cart));
+    // }, [cart]);
 
     // Show pending toast after render
     useEffect(() => {
@@ -58,7 +56,8 @@ export const CartProvider = ({ children }) => {
 
         setIsLoading(true);
         try {
-            const localCart = JSON.parse(localStorage.getItem('cart') || '[]');
+            // Use current state cart for sync instead of localStorage (disabled persistence)
+            const localCart = cart || [];
 
             // If we have local items, sync them to backend
             if (localCart.length > 0) {
