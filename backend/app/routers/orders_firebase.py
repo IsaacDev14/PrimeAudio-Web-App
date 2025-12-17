@@ -43,8 +43,14 @@ async def get_orders(
         orders.append(order)
     
     # Sort by created_at descending
+    # Sort by created_at descending
     orders.sort(key=lambda x: x.get('created_at', ''), reverse=True)
     return orders
+
+@router.get("/user")
+async def get_user_orders(current_user: dict = Depends(get_current_user)):
+    """Get orders for the current user (explicit endpoint)"""
+    return await get_orders(status_filter=None, current_user=current_user)
 
 @router.get("/stats")
 async def get_order_stats(current_user: dict = Depends(get_admin_user)):

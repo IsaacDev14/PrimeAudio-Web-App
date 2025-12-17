@@ -723,7 +723,13 @@ async def get_messages(conv_id: str, current_user: dict = Depends(get_current_us
     db = get_firestore_client()
     query = db.collection('messages').where('conversation_id', '==', conv_id)
     docs = query.stream()
-    messages = [{"id": doc.id, **doc.to_dict()} for doc in docs]
+    messages = []
+    for doc in docs:
+        data = doc.to_dict()
+        data['id'] = doc.id
+        data['sender_is_admin'] = data.get('is_admin', False) # Map for frontend
+        messages.append(data)
+    
     messages.sort(key=lambda x: x.get('created_at', ''))
     return messages
 
@@ -759,6 +765,13 @@ async def send_message(data: dict, current_user: dict = Depends(get_current_user
         "created_at": datetime.utcnow().isoformat()
     }
     doc_ref.set(message)
+
+    # Update conversation last_message
+    db.collection('conversations').document(data.get('conversation_id')).update({
+        "last_message": data.get('content'),
+        "updated_at": datetime.utcnow().isoformat()
+    })
+
     return message
 
 @messages_router.post("/conversations/{conv_id}/messages")
@@ -777,6 +790,13 @@ async def send_message_to_conversation(conv_id: str, data: dict, current_user: d
         "created_at": datetime.utcnow().isoformat()
     }
     doc_ref.set(message)
+
+    # Update conversation last_message
+    db.collection('conversations').document(conv_id).update({
+        "last_message": data.get('content'),
+        "updated_at": datetime.utcnow().isoformat()
+    })
+
     return message
 
 

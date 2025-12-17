@@ -35,7 +35,7 @@ const CustomerMessages = () => {
         fetchAdmins();
         // Poll for new messages every 3 seconds for real-time feel
         pollIntervalRef.current = setInterval(() => {
-            fetchConversations();
+            fetchConversations(true);
             if (selectedConversation) {
                 fetchMessages(selectedConversation.id);
             }
@@ -59,9 +59,9 @@ const CustomerMessages = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     };
 
-    const fetchConversations = async () => {
+    const fetchConversations = async (background = false) => {
         const token = localStorage.getItem('token');
-        setIsLoading(true);
+        if (!background) setIsLoading(true);
 
         try {
             const res = await fetch(`${API_URL}/messages/conversations`, {
@@ -74,7 +74,7 @@ const CustomerMessages = () => {
         } catch (error) {
             console.error('Error fetching conversations:', error);
         } finally {
-            setIsLoading(false);
+            if (!background) setIsLoading(false);
         }
     };
 
@@ -138,6 +138,18 @@ const CustomerMessages = () => {
     };
 
     const handleNewConversation = async (admin) => {
+        // Check for existing open conversation
+        const existing = conversations.find(c =>
+            (c.admin_id && c.admin_id === admin.id) ||
+            (c.subject && c.subject.includes(admin.full_name)) // Fallback if admin_id not present
+        );
+
+        if (existing) {
+            setSelectedConversation(existing);
+            setShowNewDialog(false);
+            return;
+        }
+
         const token = localStorage.getItem('token');
 
         try {

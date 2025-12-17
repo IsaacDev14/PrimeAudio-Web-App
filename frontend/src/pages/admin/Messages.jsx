@@ -279,7 +279,7 @@ const AdminMessages = () => {
                                             >
                                                 <div className="flex items-center justify-between mb-1">
                                                     <span className="font-medium text-gray-900 truncate text-sm">
-                                                        {conv.customer_name || conv.customer_email}
+                                                        {conv.user_name || conv.customer_name || conv.customer_email || 'Unknown Customer'}
                                                     </span>
                                                     {conv.unread_count > 0 && (
                                                         <span className="bg-blue-600 text-white text-xs px-2 py-0.5 rounded-full">
@@ -287,7 +287,7 @@ const AdminMessages = () => {
                                                         </span>
                                                     )}
                                                 </div>
-                                                <p className="text-xs text-gray-500 truncate">{conv.subject}</p>
+                                                {/* Subject removed as per user request */}
                                                 <p className="text-xs text-gray-400 truncate mt-1">
                                                     {conv.last_message || 'No messages yet'}
                                                 </p>
@@ -336,7 +336,7 @@ const AdminMessages = () => {
                                         <User className="w-5 h-5 text-white" />
                                     </div>
                                     <div>
-                                        <h3 className="font-semibold text-gray-900">{selectedConversation.customer_name || 'Customer'}</h3>
+                                        <h3 className="font-semibold text-gray-900">{selectedConversation.user_name || selectedConversation.customer_name || 'Customer'}</h3>
                                         <p className="text-xs text-gray-500">{selectedConversation.customer_email}</p>
                                     </div>
                                 </div>
