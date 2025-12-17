@@ -319,18 +319,15 @@ async def chat_interaction(data: dict):
     genai.configure(api_key=api_key)
     
     # List of models to try in order of preference
-    # List of models to try in order of preference
-    # Verified available in your exclusive catalog:
+    # Optimized for High Quota (Standard Models) + Fallback to Exclusive/Preview
     models_to_try = [
-        "gemini-2.5-flash", 
+        "gemini-flash-latest",       # Primary: High Quota (Standard)
+        "gemini-1.5-flash",          # Backup: Standard
+        "gemini-2.5-flash",          # Exclusive/Preview
         "gemini-2.5-pro", 
-        "gemini-2.0-flash",
-        "gemini-2.0-flash-lite",
-        "gemini-3-flash-preview" # Yes, you have this!
+        "gemini-2.0-flash"
     ]
     errors = []
-
-    # ... (Keep existing configuration) ...
 
     # Helper to get store context
     def get_store_context():
@@ -346,7 +343,7 @@ async def chat_interaction(data: dict):
                 price = p.get('price', 'N/A')
                 stock = p.get('stock', 0)
                 status = "In Stock" if stock > 0 else "Out of Stock"
-                inventory.append(f"- {name} (${price}): {status}")
+                inventory.append(f"- {name} (KSh {price}): {status}")
             
             if not inventory:
                 return "Store data currently unavailable."
