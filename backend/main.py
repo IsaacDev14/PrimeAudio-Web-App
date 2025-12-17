@@ -330,7 +330,48 @@ async def chat_interaction(data: dict):
     ]
     errors = []
 
-    prompt = f"You are a helpful assistant for Prime Audio, a premium audio equipment store. User says: {data.get('message', '')}"
+    # ... (Keep existing configuration) ...
+
+    # Helper to get store context
+    def get_store_context():
+        try:
+            # FORCE FALLBACK to ensure data availability
+            import fallback_data
+            products = fallback_data.get_fallback_products(limit=50)
+            
+            # Format concise inventory list
+            inventory = []
+            for p in products:
+                name = p.get('name', 'Unknown')
+                price = p.get('price', 'N/A')
+                stock = p.get('stock', 0)
+                status = "In Stock" if stock > 0 else "Out of Stock"
+                inventory.append(f"- {name} (${price}): {status}")
+            
+            if not inventory:
+                return "Store data currently unavailable."
+                
+            return "\n".join(inventory)
+        except Exception as e:
+            print(f"Context Generation Error: {e}")
+            return "Store data currently unavailable."
+
+    store_context = get_store_context()
+
+    system_instruction = f"""You are the Prime Audio AI Assistant. 
+    Your Goal: Help customers find audio gear using the STORE DATA below.
+    
+    RULES:
+    1. USE THE STORE DATA. If a product is not listed, say you don't have it.
+    2. BE CONCISE. Short sentences. No fluff.
+    3. BE ACCURATE. Use exact prices and names from the data.
+    4. If stock is 0, say it's out of stock.
+
+    STORE DATA:
+    {store_context}
+    """
+
+    prompt = f"{system_instruction}\n\nUser Question: {data.get('message', '')}"
 
     for model_name in models_to_try:
         try:
@@ -347,6 +388,27 @@ async def chat_interaction(data: dict):
     
     # If all failed
     return {"response": f"I'm having trouble connecting. Details: {' | '.join(errors)}"}
+
+@app.get("/debug_context")
+def debug_context():
+    """Debug endpoint to see what the AI sees"""
+    try:
+        # Note: get_store_context is locally defined in chat_interaction, so we can't call it here directly unless we move it or duplicate logic.
+        # For safety/speed, I'll essentially duplicate the logic or just use fallback_data to inspect the environment.
+        
+        # Checking Fallback Data Health
+        import fallback_data
+        products = fallback_data.get_fallback_products(limit=100)
+        
+        return {
+            "fallback_status": "OK",
+            "products_found": len(products),
+            "sample_product": products[0] if products else None,
+            "fallback_dir": str(fallback_data.CACHE_DIR),
+            "fallback_dir_exists": os.path.exists(fallback_data.CACHE_DIR)
+        }
+    except Exception as e:
+        return {"error": str(e)}
 
 
 # Offers Router
