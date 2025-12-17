@@ -67,7 +67,7 @@ export const CartProvider = ({ children }) => {
                         'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(localCart)
+                    body: JSON.stringify({ items: localCart })
                 });
 
                 if (res.ok) {

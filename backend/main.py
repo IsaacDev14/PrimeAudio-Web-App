@@ -76,19 +76,23 @@ async def get_cart(current_user: dict = Depends(get_current_user)):
     if not fallback_data.is_firebase_available():
         return []
         
-    db = get_firestore_client()
-    query = db.collection('cart_items').where('user_id', '==', current_user['id'])
-    docs = query.stream()
-    items = []
-    for doc in docs:
-        item = doc.to_dict()
-        item['id'] = doc.id
-        # Get product details
-        prod_doc = db.collection('products').document(item.get('product_id', '')).get()
-        if prod_doc.exists:
-            item['product'] = prod_doc.to_dict()
-        items.append(item)
-    return items
+    try:
+        db = get_firestore_client()
+        query = db.collection('cart_items').where('user_id', '==', current_user['id'])
+        docs = query.stream()
+        items = []
+        for doc in docs:
+            item = doc.to_dict()
+            item['id'] = doc.id
+            # Get product details
+            prod_doc = db.collection('products').document(item.get('product_id', '')).get()
+            if prod_doc.exists:
+                item['product'] = prod_doc.to_dict()
+            items.append(item)
+        return items
+    except Exception as e:
+        print(f"Error fetching cart: {e}")
+        return []
 
 @cart_router.post("/add")
 async def add_to_cart(data: dict, current_user: dict = Depends(get_current_user)):
@@ -315,8 +319,10 @@ async def chat_interaction(data: dict):
     genai.configure(api_key=api_key)
     
     # List of models to try in order of preference
-    # Updated based on your Dashboard Screenshot (You have 2.5 access!)
-    models_to_try = ["gemini-2.5-flash", "gemini-1.5-flash"]
+    # 1. Gemini 2.5 (Best, but limited to 20 reqs)
+    # 2. Gemini 1.5 (Standard Backup)
+    # 3. Gemini Pro (Legacy - Safety Net for Quota limits)
+    models_to_try = ["gemini-2.5-flash", "gemini-1.5-flash", "gemini-pro"]
     errors = []
 
     prompt = f"You are a helpful assistant for Prime Audio, a premium audio equipment store. User says: {data.get('message', '')}"
@@ -539,37 +545,44 @@ async def delete_offer(offer_id: str, current_user: dict = Depends(get_current_u
 async def sync_cart(data: dict, current_user: dict = Depends(get_current_user)):
     """Sync cart from frontend to database"""
     if not fallback_data.is_firebase_available():
-        return [{"message": "Synced (Fallback Mode)"}] # Return empty list or dummy
+        return [{"message": "Synced (Fallback Mode)"}]
 
-    db = get_firestore_client()
-    # Clear existing cart
-    query = db.collection('cart_items').where('user_id', '==', current_user['id'])
-    for doc in query.stream():
-        doc.reference.delete()
-    # Add new items
-    items = data.get('items', [])
-    for item in items:
-        doc_ref = db.collection('cart_items').document()
-        cart_item = {
-            "id": doc_ref.id,
-            "user_id": current_user['id'],
-            "product_id": item.get('product_id') or item.get('id'),
-            "quantity": item.get('quantity', 1)
-        }
-        doc_ref.set(cart_item)
-    # Return updated cart (reusing logic from get_cart)
-    query = db.collection('cart_items').where('user_id', '==', current_user['id'])
-    docs = query.stream()
-    result = []
-    for doc in docs:
-        item = doc.to_dict()
-        item['id'] = doc.id
-        # Get product details
-        prod_doc = db.collection('products').document(item.get('product_id', '')).get()
-        if prod_doc.exists:
-            item['product'] = prod_doc.to_dict()
-        result.append(item)
-    return result
+    try:
+        db = get_firestore_client()
+        # Clear existing cart
+        query = db.collection('cart_items').where('user_id', '==', current_user['id'])
+        docs = query.stream()
+        for doc in docs:
+            doc.reference.delete()
+        
+        # Add new items
+        items = data.get('items', [])
+        for item in items:
+            doc_ref = db.collection('cart_items').document()
+            cart_item = {
+                "id": doc_ref.id,
+                "user_id": current_user['id'],
+                "product_id": item.get('id'),
+                "quantity": item.get('quantity', 1)
+            }
+            doc_ref.set(cart_item)
+            
+        # Return updated cart (reusing logic from get_cart)
+        query = db.collection('cart_items').where('user_id', '==', current_user['id'])
+        docs = query.stream()
+        result = []
+        for doc in docs:
+            cart_item_data = doc.to_dict()
+            cart_item_data['id'] = doc.id
+            # Get product details
+            prod_doc = db.collection('products').document(cart_item_data.get('product_id', '')).get()
+            if prod_doc.exists:
+                cart_item_data['product'] = prod_doc.to_dict()
+            result.append(cart_item_data)
+        return result
+    except Exception as e:
+        print(f"Error syncing cart: {e}")
+        return [{"message": "Sync Failed", "error": str(e)}]
 
 # Reviews Router
 reviews_router = APIRouter(prefix="/reviews", tags=["Reviews"])

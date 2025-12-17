@@ -371,7 +371,7 @@ const Checkout = () => {
                                                 required
                                                 type="text"
                                                 name="name"
-                                                value={formData.name}
+                                                value={formData.name || ''}
                                                 onChange={handleInputChange}
                                                 className="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                             />
@@ -382,7 +382,7 @@ const Checkout = () => {
                                                 required
                                                 type="tel"
                                                 name="phone"
-                                                value={formData.phone}
+                                                value={formData.phone || ''}
                                                 onChange={handleInputChange}
                                                 placeholder="+254 700 000 000"
                                                 className="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -395,7 +395,7 @@ const Checkout = () => {
                                             required
                                             type="email"
                                             name="email"
-                                            value={formData.email}
+                                            value={formData.email || ''}
                                             onChange={handleInputChange}
                                             className="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                         />
@@ -405,7 +405,7 @@ const Checkout = () => {
                                         <textarea
                                             required
                                             name="address"
-                                            value={formData.address}
+                                            value={formData.address || ''}
                                             onChange={handleInputChange}
                                             rows="3"
                                             className="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
