@@ -319,10 +319,15 @@ async def chat_interaction(data: dict):
     genai.configure(api_key=api_key)
     
     # List of models to try in order of preference
-    # 1. Gemini 2.5 (Best, but limited to 20 reqs)
-    # 2. Gemini 1.5 (Standard Backup)
-    # 3. Gemini Pro (Legacy - Safety Net for Quota limits)
-    models_to_try = ["gemini-2.5-flash", "gemini-1.5-flash", "gemini-pro"]
+    # List of models to try in order of preference
+    # Verified available in your exclusive catalog:
+    models_to_try = [
+        "gemini-2.5-flash", 
+        "gemini-2.5-pro", 
+        "gemini-2.0-flash",
+        "gemini-2.0-flash-lite",
+        "gemini-3-flash-preview" # Yes, you have this!
+    ]
     errors = []
 
     prompt = f"You are a helpful assistant for Prime Audio, a premium audio equipment store. User says: {data.get('message', '')}"
