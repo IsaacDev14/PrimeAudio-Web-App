@@ -73,6 +73,9 @@ cart_router = APIRouter(prefix="/cart", tags=["Cart"])
 
 @cart_router.get("/")
 async def get_cart(current_user: dict = Depends(get_current_user)):
+    if not fallback_data.is_firebase_available():
+        return []
+        
     db = get_firestore_client()
     query = db.collection('cart_items').where('user_id', '==', current_user['id'])
     docs = query.stream()
@@ -116,7 +119,7 @@ async def clear_cart(current_user: dict = Depends(get_current_user)):
         doc.reference.delete()
     return {"message": "Cart cleared"}
 
-app.include_router(cart_router)
+
 
 # Wishlist Router
 wishlist_router = APIRouter(prefix="/wishlist", tags=["Wishlist"])
@@ -200,7 +203,7 @@ async def clear_wishlist(current_user: dict = Depends(get_current_user)):
         doc.reference.delete()
     return {"message": "Wishlist cleared"}
 
-app.include_router(wishlist_router)
+
 
 # Testimonials Router
 testimonials_router = APIRouter(prefix="/testimonials", tags=["Testimonials"])
@@ -217,7 +220,7 @@ async def get_testimonials():
         print(f"Firebase Error (Testimonials): {e}. Switching to Fallback.")
         return fallback_data.get_fallback_testimonials()
 
-app.include_router(testimonials_router)
+
 
 # Content Router
 content_router = APIRouter(prefix="/content", tags=["Content"])
@@ -246,7 +249,7 @@ async def get_content(category: str = None):
             return [item for item in content_items if item.get('category') == category]
         return content_items
 
-app.include_router(content_router)
+
 
 # Categories Router (simple)
 categories_router = APIRouter(prefix="/categories", tags=["Categories"])
@@ -264,7 +267,7 @@ async def get_all_categories():
         print(f"Firebase Error (Categories): {e}. Switching to Fallback.")
         return fallback_data.get_fallback_categories()
 
-app.include_router(categories_router)
+
 
 # Notifications Router
 notifications_router = APIRouter(prefix="/notifications", tags=["Notifications"])
@@ -276,7 +279,7 @@ async def get_notifications(current_user: dict = Depends(get_current_user)):
     docs = query.stream()
     return [{"id": doc.id, **doc.to_dict()} for doc in docs]
 
-app.include_router(notifications_router)
+
 
 # Chat/AI Router (for Gemini integration)
 chat_router = APIRouter(prefix="/chat", tags=["Chat"])
@@ -301,7 +304,27 @@ async def generate_description(data: dict):
     except Exception as e:
         return {"description": f"Error generating description: {str(e)}"}
 
-app.include_router(chat_router)
+@chat_router.post("/")
+async def chat_interaction(data: dict):
+    """General chat interaction with Gemini"""
+    try:
+        import google.generativeai as genai
+        api_key = os.getenv("GEMINI_API_KEY")
+        if not api_key:
+            return {"response": "I'm sorry, I'm not configured correctly (Missing API Key)."}
+        
+        genai.configure(api_key=api_key)
+        model = genai.GenerativeModel("gemini-2.0-flash")
+        
+        # Simple chat history or context could be added here
+        prompt = f"You are a helpful assistant for Prime Audio, a premium audio equipment store. User says: {data.get('message', '')}"
+        
+        response = model.generate_content(prompt)
+        return {"response": response.text}
+    except Exception as e:
+        print(f"Chat Error: {e}")
+        return {"response": f"I'm having trouble connecting right now. Error: {str(e)}"}
+
 
 # Offers Router
 offers_router = APIRouter(prefix="/offers", tags=["Offers"])
@@ -497,12 +520,15 @@ async def delete_offer(offer_id: str, current_user: dict = Depends(get_current_u
     invalidate_offers_cache()  # Clear cache
     return {"message": "Deleted"}
 
-app.include_router(offers_router)
+
 
 # Cart sync endpoint
 @cart_router.post("/sync")
 async def sync_cart(data: dict, current_user: dict = Depends(get_current_user)):
     """Sync cart from frontend to database"""
+    if not fallback_data.is_firebase_available():
+        return [{"message": "Synced (Fallback Mode)"}] # Return empty list or dummy
+
     db = get_firestore_client()
     # Clear existing cart
     query = db.collection('cart_items').where('user_id', '==', current_user['id'])
@@ -519,7 +545,19 @@ async def sync_cart(data: dict, current_user: dict = Depends(get_current_user)):
             "quantity": item.get('quantity', 1)
         }
         doc_ref.set(cart_item)
-    return {"message": "Cart synced", "count": len(items)}
+    # Return updated cart (reusing logic from get_cart)
+    query = db.collection('cart_items').where('user_id', '==', current_user['id'])
+    docs = query.stream()
+    result = []
+    for doc in docs:
+        item = doc.to_dict()
+        item['id'] = doc.id
+        # Get product details
+        prod_doc = db.collection('products').document(item.get('product_id', '')).get()
+        if prod_doc.exists:
+            item['product'] = prod_doc.to_dict()
+        result.append(item)
+    return result
 
 # Reviews Router
 reviews_router = APIRouter(prefix="/reviews", tags=["Reviews"])
@@ -548,7 +586,7 @@ async def create_review(data: dict, current_user: dict = Depends(get_current_use
     doc_ref.set(review)
     return review
 
-app.include_router(reviews_router)
+
 
 # Addresses Router
 addresses_router = APIRouter(prefix="/addresses", tags=["Addresses"])
@@ -576,7 +614,7 @@ async def create_address(data: dict, current_user: dict = Depends(get_current_us
     doc_ref.set(address)
     return address
 
-app.include_router(addresses_router)
+
 
 # Messages Router
 messages_router = APIRouter(prefix="/messages", tags=["Messages"])
@@ -652,7 +690,7 @@ async def send_message_to_conversation(conv_id: str, data: dict, current_user: d
     doc_ref.set(message)
     return message
 
-app.include_router(messages_router)
+
 
 # Payments Router
 payments_router = APIRouter(prefix="/payments", tags=["Payments"])
@@ -678,7 +716,7 @@ async def bank_transfer_info(current_user: dict = Depends(get_current_user)):
         "branch": "Nairobi Main"
     }
 
-app.include_router(payments_router)
+
 
 # Settings Router
 settings_router = APIRouter(prefix="/settings", tags=["Settings"])
@@ -699,7 +737,7 @@ async def update_settings(data: dict, current_user: dict = Depends(get_current_u
     db.collection('settings').document('app_settings').set(data, merge=True)
     return data
 
-app.include_router(settings_router)
+
 
 # Content Router (full CRUD)
 @content_router.post("/")
@@ -872,6 +910,25 @@ async def get_notifications_with_limit(limit: int = 10, current_user: dict = Dep
     docs = query.stream()
     return [{"id": doc.id, **doc.to_dict()} for doc in docs]
 
-print("Firebase-powered Prime Audio API is ready with ALL endpoints!")
+
+# -------------------------------------------------------------------------
+# Final Router Inclusion (MUST be at the end to capture all endpoints)
+# -------------------------------------------------------------------------
+app.include_router(cart_router)
+app.include_router(wishlist_router)
+app.include_router(testimonials_router)
+app.include_router(content_router)
+app.include_router(categories_router)
+app.include_router(notifications_router)
+app.include_router(chat_router)
+app.include_router(offers_router)
+app.include_router(reviews_router)
+app.include_router(addresses_router)
+app.include_router(messages_router)
+app.include_router(payments_router)
+app.include_router(settings_router)
+
+print("Firebase-powered Prime Audio API is ready with ALL endpoints (Router Fix Applied)!")
+
 
 
