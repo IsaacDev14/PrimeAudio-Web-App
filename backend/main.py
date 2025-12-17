@@ -306,24 +306,36 @@ async def generate_description(data: dict):
 
 @chat_router.post("/")
 async def chat_interaction(data: dict):
-    """General chat interaction with Gemini"""
-    try:
-        import google.generativeai as genai
-        api_key = os.getenv("GEMINI_API_KEY")
-        if not api_key:
-            return {"response": "I'm sorry, I'm not configured correctly (Missing API Key)."}
-        
-        genai.configure(api_key=api_key)
-        model = genai.GenerativeModel("gemini-2.0-flash")
-        
-        # Simple chat history or context could be added here
-        prompt = f"You are a helpful assistant for Prime Audio, a premium audio equipment store. User says: {data.get('message', '')}"
-        
-        response = model.generate_content(prompt)
-        return {"response": response.text}
-    except Exception as e:
-        print(f"Chat Error: {e}")
-        return {"response": f"I'm having trouble connecting right now. Error: {str(e)}"}
+    """General chat interaction with Gemini (Auto-Fallback)"""
+    import google.generativeai as genai
+    api_key = os.getenv("GEMINI_API_KEY")
+    if not api_key:
+        return {"response": "I'm sorry, I'm not configured correctly (Missing API Key)."}
+    
+    genai.configure(api_key=api_key)
+    
+    # List of models to try in order of preference
+    # Updated based on your Dashboard Screenshot (You have 2.5 access!)
+    models_to_try = ["gemini-2.5-flash", "gemini-1.5-flash"]
+    errors = []
+
+    prompt = f"You are a helpful assistant for Prime Audio, a premium audio equipment store. User says: {data.get('message', '')}"
+
+    for model_name in models_to_try:
+        try:
+            print(f"Trying Gemini model: {model_name}")
+            model = genai.GenerativeModel(model_name)
+            response = model.generate_content(prompt)
+            print(f"Success with {model_name}")
+            return {"response": response.text}
+        except Exception as e:
+            error_msg = f"{model_name}: {str(e)}"
+            print(f"Failed: {error_msg}")
+            errors.append(error_msg)
+            continue
+    
+    # If all failed
+    return {"response": f"I'm having trouble connecting. Details: {' | '.join(errors)}"}
 
 
 # Offers Router
