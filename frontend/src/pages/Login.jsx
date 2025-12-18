@@ -50,12 +50,11 @@ const Login = () => {
 
     // If user is already logged in, redirect immediately using Navigate component
     // COMMENTED OUT per user request: "everytime time i click login it MUST and SHOULD bring me the login page"
-    /*
+    // If user is already logged in, redirect immediately using Navigate component
     if (user) {
         const destination = user.is_admin ? '/admin' : redirectTo;
         return <Navigate to={destination} replace />;
     }
-    */
 
     const handleSubmit = async (e) => {
         e.preventDefault();

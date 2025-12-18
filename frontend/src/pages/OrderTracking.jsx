@@ -28,13 +28,14 @@ const OrderTracking = () => {
             const order = await response.json();
 
             // Build history based on status
-            const statusFlow = ['pending', 'approved', 'Processing', 'Shipped', 'Delivered'];
+            // Flow: Pending -> Processing -> Approved -> Shipped -> Delivered
+            const statusFlow = ['pending', 'Processing', 'approved', 'Shipped', 'Delivered'];
             const currentIndex = statusFlow.indexOf(order.status);
 
             const history = [
                 { status: 'Order Placed', date: new Date(order.created_at).toLocaleString(), completed: true },
-                { status: 'Approved', date: order.approved_at ? new Date(order.approved_at).toLocaleString() : null, completed: currentIndex >= 1 },
-                { status: 'Processing', date: currentIndex >= 2 ? 'In Progress' : null, completed: currentIndex >= 2 },
+                { status: 'Processing', date: currentIndex >= 1 ? 'In Review' : null, completed: currentIndex >= 1 },
+                { status: 'Approved', date: order.approved_at ? new Date(order.approved_at).toLocaleString() : null, completed: currentIndex >= 2 },
                 { status: 'Shipped', date: currentIndex >= 3 ? 'In Transit' : null, completed: currentIndex >= 3 },
                 { status: 'Delivered', date: currentIndex >= 4 ? 'Completed' : null, completed: currentIndex >= 4 },
             ];
@@ -134,8 +135,8 @@ const OrderTracking = () => {
                                 <div className="flex justify-between items-center mb-8">
                                     {[
                                         { icon: Clock, label: 'Pending' },
-                                        { icon: CheckCircle, label: 'Approved' },
                                         { icon: Package, label: 'Processing' },
+                                        { icon: CheckCircle, label: 'Approved' },
                                         { icon: Truck, label: 'Shipped' },
                                         { icon: PackageCheck, label: 'Delivered' },
                                     ].map((step, idx) => {

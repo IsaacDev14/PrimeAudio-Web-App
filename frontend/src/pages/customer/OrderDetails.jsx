@@ -19,6 +19,32 @@ const OrderDetails = () => {
     const navigate = useNavigate();
     const [order, setOrder] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [isConfirming, setIsConfirming] = useState(false);
+
+    const handleConfirmDelivery = async () => {
+        if (!confirm("Have you received this order? By confirming, the order will be marked as completed.")) return;
+
+        setIsConfirming(true);
+        try {
+            const token = localStorage.getItem('token');
+            const res = await fetch(`${API_URL}/orders/${id}/confirm-delivery`, {
+                method: 'PUT',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            if (res.ok) {
+                // Refresh order
+                fetchOrderDetails();
+                // We could also show a confetti or success toast here
+            } else {
+                alert("Failed to confirm delivery. Please try again.");
+            }
+        } catch (error) {
+            console.error("Error confirming delivery:", error);
+        } finally {
+            setIsConfirming(false);
+        }
+    };
 
     useEffect(() => {
         fetchOrderDetails();
@@ -249,11 +275,29 @@ const OrderDetails = () => {
                     {/* Track Order Button */}
                     <Link
                         to={`/track-order?id=${order.tracking_id || order.id}`}
-                        className="block w-full text-center py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                        className="block w-full text-center py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium mb-3"
                     >
                         <Truck className="w-4 h-4 inline mr-2" />
                         Track Order
                     </Link>
+
+                    {/* Report Received / Confirm Delivery */}
+                    {order.status === 'Shipped' && (
+                        <button
+                            onClick={handleConfirmDelivery}
+                            disabled={isConfirming}
+                            className="block w-full text-center py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium"
+                        >
+                            {isConfirming ? (
+                                <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full mx-auto"></div>
+                            ) : (
+                                <>
+                                    <CheckCircle className="w-4 h-4 inline mr-2" />
+                                    Confirm Delivery
+                                </>
+                            )}
+                        </button>
+                    )}
                 </div>
             </div>
         </div>

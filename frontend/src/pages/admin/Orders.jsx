@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/ca
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../components/ui/table";
 import { Badge } from "../../components/ui/badge";
 import { Button } from "../../components/ui/button";
-import { Loader2, RefreshCcw, CheckCircle, Copy, Eye } from "lucide-react";
+import { Loader2, RefreshCcw, CheckCircle, Copy, Eye, Truck } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "../../components/ui/dialog";
 import { useToast } from "../../context/ToastContext";
 import { API_URL } from "../../config/api";
@@ -221,16 +221,28 @@ const AdminOrders = () => {
                                                         )}
                                                     </Button>
                                                 )}
+
+                                                {/* Primary Action: Ship Order (for Approved orders) */}
+                                                {order.status === 'approved' && (
+                                                    <Button
+                                                        size="sm"
+                                                        onClick={() => updateStatus(order.id, 'Shipped')}
+                                                        className="bg-purple-600 hover:bg-purple-700"
+                                                    >
+                                                        <Truck className="w-4 h-4 mr-1" />
+                                                        Ship Order
+                                                    </Button>
+                                                )}
+
                                                 {order.status !== 'pending' && order.status !== 'Cancelled' && (
                                                     <select
                                                         className="h-8 w-[140px] rounded-md border border-input bg-background px-2 text-xs"
                                                         value={order.status}
                                                         onChange={(e) => updateStatus(order.id, e.target.value)}
                                                     >
-                                                        <option value="approved">Approved</option>
                                                         <option value="Processing">Processing</option>
+                                                        <option value="approved">Approved</option>
                                                         <option value="Shipped">Shipped</option>
-                                                        <option value="Delivered">Delivered</option>
                                                         <option value="Cancelled">Cancelled</option>
                                                     </select>
                                                 )}

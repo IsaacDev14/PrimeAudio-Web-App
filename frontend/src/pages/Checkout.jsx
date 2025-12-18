@@ -113,7 +113,7 @@ const Checkout = () => {
             customer_name: formData.name,
             customer_email: formData.email,
             customer_phone: formData.phone,
-            delivery_address: `${formData.address}, ${formData.city}`,
+            shipping_address: `${formData.address}, ${formData.city}`, // Match backend key
             notes: formData.notes,
             payment_method: paymentMethod,
             total_amount: cartTotal,
@@ -169,6 +169,17 @@ const Checkout = () => {
 
                 if (result.success) {
                     // Simulate waiting for payment (in production, use webhooks)
+
+                    // Mark as paid in backend since this is a demo/simulated success
+                    await fetch(`${API_URL}/orders/${order.id}/pay`, {
+                        method: 'PUT',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ payment_status: 'paid' })
+                    });
+
                     toast.dismiss(toastId);
                     toast.success('Payment successful!');
                     setPaymentStatus('success');

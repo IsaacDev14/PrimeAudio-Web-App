@@ -57,11 +57,12 @@ def cache_stats():
     return get_cache_stats()
 
 # Firebase-powered routers
-from app.routers import auth_firebase, products_firebase, orders_firebase
+from app.routers import auth_firebase, products_firebase, orders_firebase, notifications
 
 app.include_router(auth_firebase.router)
 app.include_router(products_firebase.router)
 app.include_router(orders_firebase.router)
+app.include_router(notifications.router)
 
 # Additional Firebase routers (simplified versions)
 from fastapi import APIRouter, Depends
@@ -273,15 +274,7 @@ async def get_all_categories():
 
 
 
-# Notifications Router
-notifications_router = APIRouter(prefix="/notifications", tags=["Notifications"])
 
-@notifications_router.get("/")
-async def get_notifications(current_user: dict = Depends(get_current_user)):
-    db = get_firestore_client()
-    query = db.collection('notifications').where('user_id', '==', current_user['id'])
-    docs = query.stream()
-    return [{"id": doc.id, **doc.to_dict()} for doc in docs]
 
 
 
@@ -1022,13 +1015,7 @@ async def remove_from_wishlist_by_product(product_id: str, current_user: dict = 
         doc.reference.delete()
     return {"message": "Removed from wishlist"}
 
-# Notifications with limit
-@notifications_router.get("/")
-async def get_notifications_with_limit(limit: int = 10, current_user: dict = Depends(get_current_user)):
-    db = get_firestore_client()
-    query = db.collection('notifications').where('user_id', '==', current_user['id']).limit(limit)
-    docs = query.stream()
-    return [{"id": doc.id, **doc.to_dict()} for doc in docs]
+
 
 
 # -------------------------------------------------------------------------
@@ -1039,7 +1026,7 @@ app.include_router(wishlist_router)
 app.include_router(testimonials_router)
 app.include_router(content_router)
 app.include_router(categories_router)
-app.include_router(notifications_router)
+
 app.include_router(chat_router)
 app.include_router(offers_router)
 app.include_router(reviews_router)

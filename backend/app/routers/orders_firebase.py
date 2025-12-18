@@ -3,7 +3,7 @@ Orders Router - Firebase Firestore Version
 """
 from fastapi import APIRouter, HTTPException, status, Depends
 from typing import Optional
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 import uuid
 import sys
 import os
@@ -12,6 +12,11 @@ from firebase_db import get_firestore_client
 from app.routers.auth_firebase import get_current_user, get_admin_user
 
 router = APIRouter(prefix="/orders", tags=["Orders"])
+
+# Helper for Kenya Time (UTC+3)
+def get_kenya_time():
+    kenya_tz = timezone(timedelta(hours=3))
+    return datetime.now(kenya_tz).isoformat()
 
 def get_db():
     return get_firestore_client()
@@ -94,6 +99,23 @@ async def get_order(order_id: str, current_user: dict = Depends(get_current_user
     order = doc.to_dict()
     order['id'] = doc.id
     
+    # Hydrate product details for items
+    if 'items' in order:
+        enriched_items = []
+        for item in order['items']:
+            # If item already has details, keep them (backward compatibility)
+            if not item.get('name') or not item.get('image_url'):
+                prod_id = item.get('product_id')
+                if prod_id:
+                    prod_doc = db.collection('products').document(prod_id).get()
+                    if prod_doc.exists:
+                        prod_data = prod_doc.to_dict()
+                        item['name'] = prod_data.get('name', 'Unknown Product')
+                        item['image_url'] = prod_data.get('image_url')
+                        item['category'] = prod_data.get('category')
+            enriched_items.append(item)
+        order['items'] = enriched_items
+    
     # Check permission
     if not current_user.get('is_admin') and order.get('user_id') != current_user['id']:
         raise HTTPException(status_code=403, detail="Not authorized")
@@ -109,15 +131,18 @@ async def create_order(order_data: dict, current_user: dict = Depends(get_curren
     order = {
         "id": doc_ref.id,
         "user_id": current_user['id'],
-        "user_email": current_user.get('email'),
-        "user_name": current_user.get('full_name'),
+        "user_email": order_data.get('customer_email') or current_user.get('email'),
+        "full_name": order_data.get('customer_name') or current_user.get('full_name'),
+        "phone": order_data.get('customer_phone'),
         "status": "pending",
+        "payment_status": "pending", 
         "total_amount": order_data.get('total_amount', 0),
         "items": order_data.get('items', []),
-        "shipping_address": order_data.get('shipping_address', ''),
+        "shipping_address": order_data.get('shipping_address') or order_data.get('delivery_address', ''),
+        "notes": order_data.get('notes', ''),
         "payment_method": order_data.get('payment_method', 'mpesa'),
         "tracking_id": None,
-        "created_at": datetime.utcnow().isoformat()
+        "created_at": get_kenya_time()
     }
     
     doc_ref.set(order)
@@ -142,7 +167,38 @@ async def update_order_status(
     # Add tracking ID if approved
     if new_status in ['approved', 'Processing', 'Shipped']:
         update_data["tracking_id"] = f"PA-{uuid.uuid4().hex[:8].upper()}"
-        update_data["approved_at"] = datetime.utcnow().isoformat()
+        update_data["approved_at"] = get_kenya_time()
+    
+    doc_ref.update(update_data)
+    
+    updated = doc_ref.get().to_dict()
+    updated['id'] = doc_ref.id
+    return updated
+
+@router.put("/{order_id}/confirm-delivery")
+async def confirm_delivery(order_id: str, current_user: dict = Depends(get_current_user)):
+    """Customer confirms delivery"""
+    db = get_db()
+    doc_ref = db.collection('orders').document(order_id)
+    doc = doc_ref.get()
+    
+    if not doc.exists:
+        raise HTTPException(status_code=404, detail="Order not found")
+        
+    order = doc.to_dict()
+    
+    # Verify ownership
+    if order.get('user_id') != current_user['id']:
+        raise HTTPException(status_code=403, detail="Not authorized")
+        
+    # Verify status flow
+    if order.get('status') != 'Shipped':
+        raise HTTPException(status_code=400, detail="Order must be Shipped before it can be Delivered")
+        
+    update_data = {
+        "status": "Delivered",
+        "delivered_at": get_kenya_time()
+    }
     
     doc_ref.update(update_data)
     
@@ -183,3 +239,25 @@ async def track_order(tracking_id: str):
         "approved_at": order.get('approved_at'),
         "items_count": len(order.get('items', []))
     }
+
+@router.put("/{order_id}/pay")
+async def update_payment_status(order_id: str, payment_data: dict, current_user: dict = Depends(get_current_user)):
+    """Update payment status (e.g. after successful M-Pesa)"""
+    db = get_db()
+    doc_ref = db.collection('orders').document(order_id)
+    doc = doc_ref.get()
+    
+    if not doc.exists:
+        raise HTTPException(status_code=404, detail="Order not found")
+    
+    # In a real app, verify signature/admin/callback here. 
+    # For this demo, allow user to mark own order paid if successful client-side (or admin)
+    order = doc.to_dict()
+    if not current_user.get('is_admin') and order.get('user_id') != current_user['id']:
+        raise HTTPException(status_code=403, detail="Not authorized")
+
+    new_status = payment_data.get('payment_status')
+    if new_status:
+        doc_ref.update({"payment_status": new_status})
+    
+    return {"status": "success", "payment_status": new_status}
