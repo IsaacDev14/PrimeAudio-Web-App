@@ -50,14 +50,16 @@ const CustomerOrders = () => {
 
     const getStatusColor = (status) => {
         const colors = {
-            pending: 'bg-yellow-100 text-yellow-700 border-yellow-200',
-            approved: 'bg-blue-100 text-blue-700 border-blue-200',
-            processing: 'bg-purple-100 text-purple-700 border-purple-200',
-            shipped: 'bg-indigo-100 text-indigo-700 border-indigo-200',
-            delivered: 'bg-green-100 text-green-700 border-green-200',
-            cancelled: 'bg-red-100 text-red-700 border-red-200'
+            pending: 'bg-amber-50 text-amber-700 border-amber-200 ring-1 ring-amber-200',
+            approved: 'bg-blue-50 text-blue-700 border-blue-200 ring-1 ring-blue-200',
+            processing: 'bg-purple-50 text-purple-700 border-purple-200 ring-1 ring-purple-200',
+            shipped: 'bg-indigo-50 text-indigo-700 border-indigo-200 ring-1 ring-indigo-200',
+            delivered: 'bg-emerald-50 text-emerald-700 border-emerald-200 ring-1 ring-emerald-200',
+            cancelled: 'bg-red-50 text-red-700 border-red-200 ring-1 ring-red-200'
         };
-        return colors[status] || 'bg-gray-100 text-gray-700 border-gray-200';
+        // Normalize status to lowercase for lookup
+        const statusKey = status?.toLowerCase() || 'pending';
+        return colors[statusKey] || 'bg-gray-50 text-gray-700 border-gray-200 ring-1 ring-gray-200';
     };
 
     const getStatusIcon = (status) => {
@@ -69,7 +71,8 @@ const CustomerOrders = () => {
             delivered: CheckCircle,
             cancelled: XCircle
         };
-        return icons[status] || Clock;
+        const statusKey = status?.toLowerCase() || 'pending';
+        return icons[statusKey] || Clock;
     };
 
     const statusOptions = [
@@ -181,7 +184,7 @@ const CustomerOrders = () => {
                                                     <h3 className="font-semibold text-gray-900">
                                                         Order #{order.tracking_id || order.id}
                                                     </h3>
-                                                    <span className={`px-2 py-0.5 rounded-full text-xs font-medium border ${getStatusColor(order.status)}`}>
+                                                    <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold uppercase tracking-wide border ${getStatusColor(order.status)}`}>
                                                         {order.status}
                                                     </span>
                                                 </div>

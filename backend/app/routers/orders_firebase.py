@@ -57,31 +57,102 @@ async def get_user_orders(current_user: dict = Depends(get_current_user)):
     return await get_orders(status_filter=None, current_user=current_user)
 
 @router.get("/stats")
-async def get_order_stats(current_user: dict = Depends(get_admin_user)):
-    """Get order statistics (admin only)"""
+async def get_order_stats(
+    period: str = 'all',
+    start_date: Optional[str] = None,
+    end_date: Optional[str] = None,
+    current_user: dict = Depends(get_admin_user)
+):
+    """Get order statistics (admin only) with date filtering"""
     db = get_db()
+    
+    # Calculate Date Range
+    now = datetime.now(timezone(timedelta(hours=3))) # Kenya Time
+    filter_start = None
+    filter_end = None
+    
+    if period == 'day':
+        filter_start = now.replace(hour=0, minute=0, second=0, microsecond=0)
+        filter_end = now.replace(hour=23, minute=59, second=59, microsecond=999999)
+    elif period == 'week':
+        # Start of week (Monday)
+        start_of_week = now - timedelta(days=now.weekday())
+        filter_start = start_of_week.replace(hour=0, minute=0, second=0, microsecond=0)
+        filter_end = now
+    elif period == 'month':
+        filter_start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+        filter_end = now
+    elif period == 'year':
+        filter_start = now.replace(month=1, day=1, hour=0, minute=0, second=0, microsecond=0)
+        filter_end = now
+    elif period == 'custom' and start_date and end_date:
+        try:
+            filter_start = datetime.fromisoformat(start_date.replace('Z', '+00:00'))
+            filter_end = datetime.fromisoformat(end_date.replace('Z', '+00:00')) + timedelta(days=1) - timedelta(microseconds=1)
+        except ValueError:
+            pass # Fallback to all time if invalid
+            
+    # Count Users (Global) - usually dashboards show total user base regardless of period
+    users_ref = db.collection('users')
+    active_users = len(list(users_ref.stream()))
+    
+    # Count Products (Global)
+    products_ref = db.collection('products')
+    products_in_stock = len(list(products_ref.stream()))
+    
+    # Process Orders
     docs = db.collection('orders').stream()
     
     stats = {
         "total_orders": 0,
-        "pending": 0,
-        "approved": 0,
-        "processing": 0,
-        "shipped": 0,
-        "delivered": 0,
-        "cancelled": 0,
-        "total_revenue": 0
+        "total_revenue": 0,
+        "pending_orders": 0,
+        "approved_orders": 0,
+        "processing_orders": 0,
+        "shipped_orders": 0,
+        "delivered_orders": 0,
+        "cancelled_orders": 0,
+        "active_users": active_users,
+        "products_in_stock": products_in_stock
     }
     
     for doc in docs:
         order = doc.to_dict()
+        
+        # Date Filtering
+        if filter_start and filter_end:
+            created_at_str = order.get('created_at')
+            if created_at_str:
+                try:
+                    # Handle ISO format with/without timezone
+                    created_at = datetime.fromisoformat(created_at_str)
+                    
+                    # Ensure timezone awareness for comparison
+                    if created_at.tzinfo is None:
+                        # Assume Kenya time if naive (legacy data)
+                        created_at = created_at.replace(tzinfo=timezone(timedelta(hours=3)))
+                    
+                    if filter_start.tzinfo is None:
+                         filter_start = filter_start.replace(tzinfo=timezone(timedelta(hours=3)))
+                    if filter_end.tzinfo is None:
+                         filter_end = filter_end.replace(tzinfo=timezone(timedelta(hours=3)))
+
+                    if not (filter_start <= created_at <= filter_end):
+                        continue
+                except ValueError:
+                    continue # Skip if date format error
+
         stats["total_orders"] += 1
-        status_lower = order.get('status', '').lower()
         
-        if status_lower in stats:
-            stats[status_lower] += 1
+        status_raw = order.get('status', '').lower()
         
-        if status_lower not in ['cancelled', 'pending']:
+        # Map status to key
+        status_key = f"{status_raw}_orders"
+        if status_key in stats:
+            stats[status_key] += 1
+        
+        # Calculate revenue (exclude cancelled)
+        if status_raw not in ['cancelled']:
             stats["total_revenue"] += order.get('total_amount', 0)
     
     return stats

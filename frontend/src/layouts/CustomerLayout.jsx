@@ -15,8 +15,17 @@ import {
     X,
     ChevronRight,
     Search,
-    ShoppingCart
+    ShoppingCart,
+    Settings
 } from 'lucide-react';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from '../components/ui/dropdown-menu';
 
 const CustomerLayout = () => {
     const { user, logout } = useAuth();
@@ -141,15 +150,47 @@ const CustomerLayout = () => {
                         )}
                     </div>
 
-                    {/* User Info */}
-                    <div className="flex items-center gap-3 pl-4 border-l border-gray-200">
-                        <div className="text-right">
-                            <p className="text-sm font-medium text-gray-900">{user?.full_name || 'User'}</p>
-                            <p className="text-xs text-gray-500">Customer</p>
-                        </div>
-                        <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm">
-                            {user?.full_name?.charAt(0) || user?.email?.charAt(0) || 'U'}
-                        </div>
+                    {/* User Dropdown */}
+                    <div className="pl-4 border-l border-gray-200">
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <button className="flex items-center gap-3 hover:bg-gray-50 p-1.5 rounded-full transition-colors outline-none">
+                                    <div className="text-right hidden md:block">
+                                        <p className="text-sm font-medium text-gray-900">{user?.full_name || 'User'}</p>
+                                        <p className="text-xs text-gray-500">Customer</p>
+                                    </div>
+                                    <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm shadow-md ring-2 ring-white">
+                                        {user?.full_name?.charAt(0) || user?.email?.charAt(0) || 'U'}
+                                    </div>
+                                </button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent className="w-56" align="end">
+                                <DropdownMenuLabel className="font-normal">
+                                    <div className="flex flex-col space-y-1">
+                                        <p className="text-sm font-medium leading-none">{user?.full_name || 'User'}</p>
+                                        <p className="text-xs leading-none text-muted-foreground">{user?.email}</p>
+                                    </div>
+                                </DropdownMenuLabel>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem asChild>
+                                    <Link to="/dashboard/profile" className="cursor-pointer">
+                                        <User className="mr-2 h-4 w-4" />
+                                        <span>Profile</span>
+                                    </Link>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem asChild>
+                                    <Link to="/dashboard/addresses" className="cursor-pointer">
+                                        <MapPin className="mr-2 h-4 w-4" />
+                                        <span>Addresses</span>
+                                    </Link>
+                                </DropdownMenuItem>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem onClick={handleLogout} className="text-red-600 focus:text-red-600 cursor-pointer">
+                                    <LogOut className="mr-2 h-4 w-4" />
+                                    <span>Log out</span>
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
                     </div>
                 </div>
             </header>
@@ -259,13 +300,12 @@ const CustomerLayout = () => {
                     >
                         Continue Shopping
                     </Link>
-                    <button
-                        onClick={handleLogout}
-                        className="flex items-center gap-3 w-full px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg font-medium transition-colors"
+                    <Link
+                        to="/shop"
+                        className="flex items-center justify-center gap-2 w-full py-2.5 px-4 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
                     >
-                        <LogOut className="w-5 h-5" />
-                        <span>Logout</span>
-                    </button>
+                        Continue Shopping
+                    </Link>
                 </div>
             </aside>
 
