@@ -806,7 +806,12 @@ payments_router = APIRouter(prefix="/payments", tags=["Payments"])
 
 @payments_router.post("/mpesa/initiate")
 async def initiate_mpesa(data: dict, current_user: dict = Depends(get_current_user)):
-    return {"message": "M-Pesa payment initiated", "checkout_request_id": "test123", "status": "pending"}
+    return {
+        "success": True, 
+        "message": "M-Pesa payment initiated", 
+        "checkout_request_id": "test123", 
+        "status": "pending"
+    }
 
 @payments_router.post("/mpesa/callback")
 async def mpesa_callback(data: dict):
@@ -814,11 +819,17 @@ async def mpesa_callback(data: dict):
 
 @payments_router.post("/card/initiate")
 async def initiate_card(data: dict, current_user: dict = Depends(get_current_user)):
-    return {"message": "Card payment initiated", "payment_url": "https://example.com/pay", "status": "pending"}
+    return {
+        "success": True,
+        "message": "Card payment initiated", 
+        "payment_url": "https://example.com/pay", 
+        "status": "pending"
+    }
 
 @payments_router.get("/bank-transfer/info")
 async def bank_transfer_info(current_user: dict = Depends(get_current_user)):
     return {
+        "success": True,
         "bank_name": "Prime Audio Bank",
         "account_number": "1234567890",
         "account_name": "Prime Audio Solutions",

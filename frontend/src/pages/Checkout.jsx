@@ -3,13 +3,15 @@ import { motion } from 'framer-motion';
 import { CheckCircle, Truck, Package, CreditCard, Smartphone, Building2, AlertCircle, Loader2, ArrowLeft } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 import { Link, useNavigate, Navigate } from 'react-router-dom';
 import { API_URL } from '../config/api';
 
 const Checkout = () => {
-    const { cart, cartTotal, clearCart } = useCart();
     const { user, loading } = useAuth();
+    const { cart, cartTotal, clearCart } = useCart();
     const navigate = useNavigate();
+    const toast = useToast();
 
     const [step, setStep] = useState(1); // 1: shipping, 2: payment, 3: success
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -142,6 +144,7 @@ const Checkout = () => {
         setIsSubmitting(true);
         setPaymentStatus('processing');
         const token = localStorage.getItem('token');
+        const toastId = toast.loading('Processing payment...');
 
         try {
             // First create the order
@@ -166,10 +169,14 @@ const Checkout = () => {
 
                 if (result.success) {
                     // Simulate waiting for payment (in production, use webhooks)
+                    toast.dismiss(toastId);
+                    toast.success('Payment successful!');
                     setPaymentStatus('success');
                     clearCart();
                     setStep(3);
                 } else {
+                    toast.dismiss(toastId);
+                    toast.error('M-Pesa payment failed to initiate');
                     setPaymentStatus('failed');
                 }
             } else if (paymentMethod === 'card') {
@@ -190,9 +197,13 @@ const Checkout = () => {
                 const result = await res.json();
 
                 if (result.success && result.authorization_url) {
-                    // Redirect to Paystack payment page
+                    toast.dismiss(toastId);
+                    toast.info('Redirecting to payment gateway...');
+                    // Redirect to payment page
                     window.location.href = result.authorization_url;
                 } else {
+                    toast.dismiss(toastId);
+                    toast.error('Card payment failed to initialize');
                     setPaymentStatus('failed');
                 }
             } else if (paymentMethod === 'bank_transfer') {
@@ -209,16 +220,22 @@ const Checkout = () => {
                 const result = await res.json();
 
                 if (result.success) {
+                    toast.dismiss(toastId);
+                    toast.success('Order placed! Please complete the transfer.');
                     setBankDetails(result);
                     setPaymentStatus('success');
                     clearCart();
                     setStep(3);
                 } else {
+                    toast.dismiss(toastId);
+                    toast.error('Failed to get bank details');
                     setPaymentStatus('failed');
                 }
             }
         } catch (error) {
             console.error('Payment error:', error);
+            toast.dismiss(toastId);
+            toast.error('An error occurred during payment');
             setPaymentStatus('failed');
         } finally {
             setIsSubmitting(false);
