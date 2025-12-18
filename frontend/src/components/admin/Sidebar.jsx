@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { LayoutDashboard, Users, Settings, FileText, Image, TicketCheck, Package, LogOut, MessageSquare, ChevronRight, Gift, X, Sparkles } from "lucide-react";
+import { LayoutDashboard, Users, Settings, FileText, Image, TicketCheck, Package, LogOut, MessageSquare, ChevronRight, Gift, X, Sparkles, Activity } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { useAuth } from "../../context/AuthContext";
 import { useState } from "react";
@@ -21,6 +21,7 @@ const Sidebar = ({ isOpen, onClose }) => {
         { icon: MessageSquare, label: "Messages", path: "/admin/messages" },
         { icon: Image, label: "Media", path: "/admin/media" },
         { icon: Sparkles, label: "AI Tools", path: "/admin/ai-tools" },
+        { icon: Activity, label: "Activity Log", path: "/admin/activity" },
         { icon: Settings, label: "Settings", path: "/admin/settings" },
     ];
 

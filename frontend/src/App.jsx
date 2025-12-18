@@ -32,6 +32,7 @@ import AdminMedia from './pages/admin/Media';
 import AdminMessages from './pages/admin/Messages';
 import AdminSettings from './pages/admin/Settings';
 import AdminOffers from './pages/admin/AdminOffers';
+import AdminActivityLog from './pages/admin/ActivityLog';
 
 // Customer Dashboard Pages
 import CustomerDashboard from './pages/customer/Dashboard';
@@ -94,6 +95,7 @@ function App() {
                       <Route path="ai-tools" element={<AdminAITools />} />
                       <Route path="settings" element={<AdminSettings />} />
                       <Route path="offers" element={<AdminOffers />} />
+                      <Route path="activity" element={<AdminActivityLog />} />
                     </Route>
 
                     {/* 404 Fallback */}

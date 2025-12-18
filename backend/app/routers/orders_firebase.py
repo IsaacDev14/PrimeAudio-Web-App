@@ -57,13 +57,14 @@ async def get_user_orders(current_user: dict = Depends(get_current_user)):
     return await get_orders(status_filter=None, current_user=current_user)
 
 @router.get("/stats")
+@router.get("/stats")
 async def get_order_stats(
     period: str = 'all',
     start_date: Optional[str] = None,
     end_date: Optional[str] = None,
     current_user: dict = Depends(get_admin_user)
 ):
-    """Get order statistics (admin only) with date filtering"""
+    """Get order statistics (admin only) with date filtering and query optimization"""
     db = get_db()
     
     # Calculate Date Range
@@ -73,7 +74,7 @@ async def get_order_stats(
     
     if period == 'day':
         filter_start = now.replace(hour=0, minute=0, second=0, microsecond=0)
-        filter_end = now.replace(hour=23, minute=59, second=59, microsecond=999999)
+        filter_end = now
     elif period == 'week':
         # Start of week (Monday)
         start_of_week = now - timedelta(days=now.weekday())
@@ -89,19 +90,44 @@ async def get_order_stats(
         try:
             filter_start = datetime.fromisoformat(start_date.replace('Z', '+00:00'))
             filter_end = datetime.fromisoformat(end_date.replace('Z', '+00:00')) + timedelta(days=1) - timedelta(microseconds=1)
-        except ValueError:
-            pass # Fallback to all time if invalid
             
-    # Count Users (Global) - usually dashboards show total user base regardless of period
-    users_ref = db.collection('users')
-    active_users = len(list(users_ref.stream()))
+            # Ensure timezone awareness
+            if filter_start.tzinfo is None:
+                    filter_start = filter_start.replace(tzinfo=timezone(timedelta(hours=3)))
+            if filter_end.tzinfo is None:
+                    filter_end = filter_end.replace(tzinfo=timezone(timedelta(hours=3)))
+        except ValueError:
+            pass 
+            
+    # Count Users (Global) - Use Aggregation if supported, else legacy len()
+    try:
+        from google.cloud.firestore import Client
+        from google.cloud.firestore_v1.base_query import FieldFilter
+        
+        users_ref = db.collection('users')
+        active_users = users_ref.count().get()[0][0].value
+        
+        products_ref = db.collection('products')
+        products_in_stock = products_ref.count().get()[0][0].value
+    except Exception as e:
+        # Fallback for older SDKs or emulators
+        print(f"Aggregation failed, falling back to stream: {e}")
+        active_users = len(list(db.collection('users').stream()))
+        products_in_stock = len(list(db.collection('products').stream()))
+
     
-    # Count Products (Global)
-    products_ref = db.collection('products')
-    products_in_stock = len(list(products_ref.stream()))
+    # Process Orders with Query Filtering
+    orders_ref = db.collection('orders')
     
-    # Process Orders
-    docs = db.collection('orders').stream()
+    # Apply Date Filter if present
+    query = orders_ref
+    if filter_start and filter_end:
+        # Convert to ISO string for comparison as stored in DB (Assuming ISO storage)
+        # Note: String comparison works for ISO dates
+        query = query.where(filter=FieldFilter('created_at', '>=', filter_start.isoformat())).where(filter=FieldFilter('created_at', '<=', filter_end.isoformat()))
+    
+    # Execute Query (Reduced Read Set)
+    docs = query.stream()
     
     stats = {
         "total_orders": 0,
@@ -116,42 +142,16 @@ async def get_order_stats(
         "products_in_stock": products_in_stock
     }
     
+    # Iterate over FILTERED set (Much smaller)
     for doc in docs:
         order = doc.to_dict()
-        
-        # Date Filtering
-        if filter_start and filter_end:
-            created_at_str = order.get('created_at')
-            if created_at_str:
-                try:
-                    # Handle ISO format with/without timezone
-                    created_at = datetime.fromisoformat(created_at_str)
-                    
-                    # Ensure timezone awareness for comparison
-                    if created_at.tzinfo is None:
-                        # Assume Kenya time if naive (legacy data)
-                        created_at = created_at.replace(tzinfo=timezone(timedelta(hours=3)))
-                    
-                    if filter_start.tzinfo is None:
-                         filter_start = filter_start.replace(tzinfo=timezone(timedelta(hours=3)))
-                    if filter_end.tzinfo is None:
-                         filter_end = filter_end.replace(tzinfo=timezone(timedelta(hours=3)))
-
-                    if not (filter_start <= created_at <= filter_end):
-                        continue
-                except ValueError:
-                    continue # Skip if date format error
-
         stats["total_orders"] += 1
         
         status_raw = order.get('status', '').lower()
-        
-        # Map status to key
         status_key = f"{status_raw}_orders"
         if status_key in stats:
             stats[status_key] += 1
         
-        # Calculate revenue (exclude cancelled)
         if status_raw not in ['cancelled']:
             stats["total_revenue"] += order.get('total_amount', 0)
     
