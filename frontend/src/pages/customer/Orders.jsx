@@ -36,7 +36,10 @@ const CustomerOrders = () => {
             });
             const data = await res.json();
             if (Array.isArray(data)) {
+                console.log("Fetched orders:", data);
                 setOrders(data);
+            } else {
+                console.error("Orders data is not an array:", data);
             }
         } catch (error) {
             console.error('Error fetching orders:', error);
@@ -82,7 +85,10 @@ const CustomerOrders = () => {
     const filteredOrders = orders.filter(order => {
         const matchesSearch = order.tracking_id?.toLowerCase().includes(searchTerm.toLowerCase()) ||
             order.id.toString().includes(searchTerm);
-        const matchesStatus = selectedStatus === 'all' || order.status === selectedStatus;
+
+        const matchesStatus = selectedStatus === 'all' ||
+            (order.status && order.status.toLowerCase() === selectedStatus.toLowerCase());
+
         return matchesSearch && matchesStatus;
     });
 

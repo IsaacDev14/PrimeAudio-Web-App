@@ -73,20 +73,26 @@ const AdminOrders = () => {
     const updateStatus = async (orderId, newStatus) => {
         try {
             const token = localStorage.getItem("token");
-            const response = await fetch(`${API_URL}/orders/${orderId}/status?status=${newStatus}`, {
+            const response = await fetch(`${API_URL}/orders/${orderId}/status`, {
                 method: "PUT",
-                headers: { "Authorization": `Bearer ${token}` }
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ status: newStatus })
             });
 
             if (response.ok) {
                 setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
                 toast.success(`Order status updated to ${newStatus}`);
             } else {
-                toast.error('Failed to update status');
+                const errorData = await response.json().catch(() => ({}));
+                console.error("Status update failed:", errorData);
+                toast.error(errorData.detail || 'Failed to update status');
             }
         } catch (error) {
             console.error("Failed to update status:", error);
-            toast.error('Failed to update status');
+            toast.error('Failed to update status: ' + error.message);
         }
     };
 
@@ -161,104 +167,106 @@ const AdminOrders = () => {
                             No orders found.
                         </div>
                     ) : (
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead>Order ID</TableHead>
-                                    <TableHead>Date</TableHead>
-                                    <TableHead>Tracking ID</TableHead>
-                                    <TableHead>Amount</TableHead>
-                                    <TableHead>Status</TableHead>
-                                    <TableHead>Actions</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {orders.map((order) => (
-                                    <TableRow key={order.id}>
-                                        <TableCell className="font-medium">#{order.id}</TableCell>
-                                        <TableCell>
-                                            {order.created_at ? new Date(order.created_at).toLocaleDateString() : 'N/A'}
-                                        </TableCell>
-                                        <TableCell>
-                                            {order.tracking_id ? (
-                                                <div className="flex items-center gap-2">
-                                                    <code className="text-xs bg-slate-100 px-2 py-1 rounded font-mono">
-                                                        {order.tracking_id}
-                                                    </code>
-                                                    <button
-                                                        onClick={() => copyTrackingId(order.tracking_id)}
-                                                        className="p-1 hover:bg-slate-100 rounded"
-                                                    >
-                                                        <Copy className="w-3 h-3 text-slate-500" />
-                                                    </button>
-                                                </div>
-                                            ) : (
-                                                <span className="text-muted-foreground text-sm">-</span>
-                                            )}
-                                        </TableCell>
-                                        <TableCell>KES {order.total_amount?.toLocaleString()}</TableCell>
-                                        <TableCell>
-                                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(order.status)}`}>
-                                                {order.status}
-                                            </span>
-                                        </TableCell>
-                                        <TableCell>
-                                            <div className="flex items-center gap-2">
-                                                {order.status === 'pending' && (
-                                                    <Button
-                                                        size="sm"
-                                                        onClick={() => approveOrder(order.id)}
-                                                        disabled={isApproving === order.id}
-                                                        className="bg-green-600 hover:bg-green-700"
-                                                    >
-                                                        {isApproving === order.id ? (
-                                                            <Loader2 className="h-4 w-4 animate-spin" />
-                                                        ) : (
-                                                            <>
-                                                                <CheckCircle className="w-4 h-4 mr-1" />
-                                                                Approve
-                                                            </>
-                                                        )}
-                                                    </Button>
-                                                )}
-
-                                                {/* Primary Action: Ship Order (for Approved orders) */}
-                                                {order.status === 'approved' && (
-                                                    <Button
-                                                        size="sm"
-                                                        onClick={() => updateStatus(order.id, 'Shipped')}
-                                                        className="bg-purple-600 hover:bg-purple-700"
-                                                    >
-                                                        <Truck className="w-4 h-4 mr-1" />
-                                                        Ship Order
-                                                    </Button>
-                                                )}
-
-                                                {order.status !== 'pending' && order.status !== 'Cancelled' && (
-                                                    <select
-                                                        className="h-8 w-[140px] rounded-md border border-input bg-background px-2 text-xs"
-                                                        value={order.status}
-                                                        onChange={(e) => updateStatus(order.id, e.target.value)}
-                                                    >
-                                                        <option value="Processing">Processing</option>
-                                                        <option value="approved">Approved</option>
-                                                        <option value="Shipped">Shipped</option>
-                                                        <option value="Cancelled">Cancelled</option>
-                                                    </select>
-                                                )}
-                                                <Button
-                                                    variant="ghost"
-                                                    size="sm"
-                                                    onClick={() => setSelectedOrder(order)}
-                                                >
-                                                    <Eye className="w-4 h-4" />
-                                                </Button>
-                                            </div>
-                                        </TableCell>
+                        <div className="overflow-x-auto">
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead>Order ID</TableHead>
+                                        <TableHead>Date</TableHead>
+                                        <TableHead>Tracking ID</TableHead>
+                                        <TableHead>Amount</TableHead>
+                                        <TableHead>Status</TableHead>
+                                        <TableHead>Actions</TableHead>
                                     </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
+                                </TableHeader>
+                                <TableBody>
+                                    {orders.map((order) => (
+                                        <TableRow key={order.id}>
+                                            <TableCell className="font-medium">#{order.id}</TableCell>
+                                            <TableCell>
+                                                {order.created_at ? new Date(order.created_at).toLocaleDateString() : 'N/A'}
+                                            </TableCell>
+                                            <TableCell>
+                                                {order.tracking_id ? (
+                                                    <div className="flex items-center gap-2">
+                                                        <code className="text-xs bg-slate-100 px-2 py-1 rounded font-mono">
+                                                            {order.tracking_id}
+                                                        </code>
+                                                        <button
+                                                            onClick={() => copyTrackingId(order.tracking_id)}
+                                                            className="p-1 hover:bg-slate-100 rounded"
+                                                        >
+                                                            <Copy className="w-3 h-3 text-slate-500" />
+                                                        </button>
+                                                    </div>
+                                                ) : (
+                                                    <span className="text-muted-foreground text-sm">-</span>
+                                                )}
+                                            </TableCell>
+                                            <TableCell>KES {order.total_amount?.toLocaleString()}</TableCell>
+                                            <TableCell>
+                                                <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(order.status)}`}>
+                                                    {order.status}
+                                                </span>
+                                            </TableCell>
+                                            <TableCell>
+                                                <div className="flex items-center gap-2">
+                                                    {order.status === 'pending' && (
+                                                        <Button
+                                                            size="sm"
+                                                            onClick={() => approveOrder(order.id)}
+                                                            disabled={isApproving === order.id}
+                                                            className="bg-green-600 hover:bg-green-700"
+                                                        >
+                                                            {isApproving === order.id ? (
+                                                                <Loader2 className="h-4 w-4 animate-spin" />
+                                                            ) : (
+                                                                <>
+                                                                    <CheckCircle className="w-4 h-4 mr-1" />
+                                                                    Approve
+                                                                </>
+                                                            )}
+                                                        </Button>
+                                                    )}
+
+                                                    {/* Primary Action: Ship Order (for Approved orders) */}
+                                                    {order.status === 'approved' && (
+                                                        <Button
+                                                            size="sm"
+                                                            onClick={() => updateStatus(order.id, 'Shipped')}
+                                                            className="bg-purple-600 hover:bg-purple-700"
+                                                        >
+                                                            <Truck className="w-4 h-4 mr-1" />
+                                                            Ship Order
+                                                        </Button>
+                                                    )}
+
+                                                    {order.status !== 'pending' && order.status !== 'Cancelled' && (
+                                                        <select
+                                                            className="h-8 w-[140px] rounded-md border border-input bg-background px-2 text-xs"
+                                                            value={order.status}
+                                                            onChange={(e) => updateStatus(order.id, e.target.value)}
+                                                        >
+                                                            <option value="Processing">Processing</option>
+                                                            <option value="approved">Approved</option>
+                                                            <option value="Shipped">Shipped</option>
+                                                            <option value="Cancelled">Cancelled</option>
+                                                        </select>
+                                                    )}
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        onClick={() => setSelectedOrder(order)}
+                                                    >
+                                                        <Eye className="w-4 h-4" />
+                                                    </Button>
+                                                </div>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </div>
                     )}
                 </CardContent>
             </Card>

@@ -1,12 +1,32 @@
 import { useState } from "react";
-import { Outlet, Navigate } from "react-router-dom";
+import { Outlet, Navigate, Link } from "react-router-dom";
 import Sidebar from "../components/admin/Sidebar";
-import { Search, Bell, Menu } from "lucide-react";
+import { Search, Bell, Menu, LogOut, Settings, User } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "../components/ui/dropdown-menu";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle
+} from "../components/ui/alert-dialog";
+import { Button } from "../components/ui/button";
 
 const AdminLayout = () => {
-    const { user, loading } = useAuth();
+    const { user, loading, logout } = useAuth();
     const [sidebarOpen, setSidebarOpen] = useState(false);
+    const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
     // Show loading state
     if (loading) {
@@ -54,6 +74,36 @@ const AdminLayout = () => {
                             <Bell className="h-5 w-5" />
                             <span className="absolute top-1.5 md:top-2 right-1.5 md:right-2 h-2 w-2 rounded-full bg-red-500 border-2 border-white"></span>
                         </button>
+
+                        {/* User Dropdown */}
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" className="relative h-10 w-10 md:h-11 md:w-11 rounded-full ring-2 ring-white shadow-md hover:ring-blue-100 transition-all">
+                                    <div className="h-full w-full rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white font-bold text-lg">
+                                        {user?.full_name?.charAt(0) || user?.email?.charAt(0) || 'A'}
+                                    </div>
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent className="w-56" align="end" forceMount>
+                                <DropdownMenuLabel className="font-normal">
+                                    <div className="flex flex-col space-y-1">
+                                        <p className="text-sm font-medium leading-none">{user?.full_name || 'Admin User'}</p>
+                                        <p className="text-xs leading-none text-muted-foreground">{user?.email}</p>
+                                    </div>
+                                </DropdownMenuLabel>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem asChild>
+                                    <Link to="/admin/settings" className="cursor-pointer">
+                                        <Settings className="mr-2 h-4 w-4" />
+                                        <span>Settings</span>
+                                    </Link>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => setShowLogoutConfirm(true)} className="text-red-600 focus:text-red-600 cursor-pointer">
+                                    <LogOut className="mr-2 h-4 w-4" />
+                                    <span>Log out</span>
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
                     </div>
                 </header>
 
@@ -61,6 +111,23 @@ const AdminLayout = () => {
                     <Outlet />
                 </main>
             </div>
+            {/* Logout Confirmation Dialog */}
+            <AlertDialog open={showLogoutConfirm} onOpenChange={setShowLogoutConfirm}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Logout</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Are you sure you want to logout? You will need to sign in again to access the admin area.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={logout} className="bg-red-600 hover:bg-red-700">
+                            Logout
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </div>
     );
 };

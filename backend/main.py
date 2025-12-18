@@ -57,12 +57,13 @@ def cache_stats():
     return get_cache_stats()
 
 # Firebase-powered routers
-from app.routers import auth_firebase, products_firebase, orders_firebase, notifications
+from app.routers import auth_firebase, products_firebase, orders_firebase, notifications, activity_logs
 
 app.include_router(auth_firebase.router)
 app.include_router(products_firebase.router)
 app.include_router(orders_firebase.router)
 app.include_router(notifications.router)
+app.include_router(activity_logs.router)
 
 # Additional Firebase routers (simplified versions)
 from fastapi import APIRouter, Depends

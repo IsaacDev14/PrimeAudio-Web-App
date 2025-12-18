@@ -13,6 +13,16 @@ import {
     CreditCard
 } from 'lucide-react';
 import { API_URL } from '../../config/api';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "../../components/ui/alert-dialog";
 
 const OrderDetails = () => {
     const { id } = useParams();
@@ -20,9 +30,11 @@ const OrderDetails = () => {
     const [order, setOrder] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [isConfirming, setIsConfirming] = useState(false);
+    const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
 
     const handleConfirmDelivery = async () => {
-        if (!confirm("Have you received this order? By confirming, the order will be marked as completed.")) return;
+        // Confirmation check handled by AlertDialog UI
+
 
         setIsConfirming(true);
         try {
@@ -283,20 +295,40 @@ const OrderDetails = () => {
 
                     {/* Report Received / Confirm Delivery */}
                     {order.status === 'Shipped' && (
-                        <button
-                            onClick={handleConfirmDelivery}
-                            disabled={isConfirming}
-                            className="block w-full text-center py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium"
-                        >
-                            {isConfirming ? (
-                                <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full mx-auto"></div>
-                            ) : (
-                                <>
-                                    <CheckCircle className="w-4 h-4 inline mr-2" />
-                                    Confirm Delivery
-                                </>
-                            )}
-                        </button>
+                        <>
+                            <button
+                                onClick={() => setIsConfirmDialogOpen(true)}
+                                disabled={isConfirming}
+                                className="block w-full text-center py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium"
+                            >
+                                {isConfirming ? (
+                                    <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full mx-auto"></div>
+                                ) : (
+                                    <>
+                                        <CheckCircle className="w-4 h-4 inline mr-2" />
+                                        Confirm Delivery
+                                    </>
+                                )}
+                            </button>
+
+                            <AlertDialog open={isConfirmDialogOpen} onOpenChange={setIsConfirmDialogOpen}>
+                                <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>Confirm Order Receipt</AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                            Have you received this order? By confirming, the order will be marked as completed.
+                                            This action cannot be undone.
+                                        </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                        <AlertDialogAction onClick={handleConfirmDelivery} className="bg-green-600 hover:bg-green-700">
+                                            Yes, I Received It
+                                        </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
+                        </>
                     )}
                 </div>
             </div>

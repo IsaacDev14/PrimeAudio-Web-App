@@ -1,7 +1,7 @@
 """
 Orders Router - Firebase Firestore Version
 """
-from fastapi import APIRouter, HTTPException, status, Depends
+from fastapi import APIRouter, HTTPException, status, Depends, Body
 from typing import Optional
 from datetime import datetime, timedelta, timezone
 import uuid
@@ -47,7 +47,6 @@ async def get_orders(
             
         orders.append(order)
     
-    # Sort by created_at descending
     # Sort by created_at descending
     orders.sort(key=lambda x: x.get('created_at', ''), reverse=True)
     return orders
@@ -151,7 +150,7 @@ async def create_order(order_data: dict, current_user: dict = Depends(get_curren
 @router.put("/{order_id}/status")
 async def update_order_status(
     order_id: str, 
-    status_data: dict,
+    status_data: dict = Body(...),
     current_user: dict = Depends(get_admin_user)
 ):
     """Update order status (admin only)"""
@@ -166,14 +165,22 @@ async def update_order_status(
     
     # Add tracking ID if approved
     if new_status in ['approved', 'Processing', 'Shipped']:
-        update_data["tracking_id"] = f"PA-{uuid.uuid4().hex[:8].upper()}"
-        update_data["approved_at"] = get_kenya_time()
+        # Only generate tracking ID if not already present
+        current_data = doc_ref.get().to_dict()
+        if not current_data.get('tracking_id'):
+            update_data["tracking_id"] = f"PA-{uuid.uuid4().hex[:8].upper()}"
+            update_data["approved_at"] = get_kenya_time()
     
     doc_ref.update(update_data)
     
     updated = doc_ref.get().to_dict()
     updated['id'] = doc_ref.id
     return updated
+
+@router.post("/{order_id}/approve")
+async def approve_order_endpoint(order_id: str, current_user: dict = Depends(get_admin_user)):
+    """Approve order (Convenience endpoint)"""
+    return await update_order_status(order_id, {"status": "approved"}, current_user)
 
 @router.put("/{order_id}/confirm-delivery")
 async def confirm_delivery(order_id: str, current_user: dict = Depends(get_current_user)):

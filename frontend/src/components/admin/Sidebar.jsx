@@ -82,32 +82,8 @@ const Sidebar = ({ isOpen, onClose }) => {
                 })}
             </nav>
 
-            {/* User Section */}
-            <div className="p-3 md:p-4 border-t border-gray-200 space-y-2 md:space-y-3">
-                {/* User Info */}
-                <div className="flex items-center gap-2 md:gap-3 px-2 md:px-3 py-2">
-                    <div className="h-9 w-9 md:h-10 md:w-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white font-bold text-sm shadow-lg flex-shrink-0">
-                        {user?.full_name?.charAt(0) || user?.email?.charAt(0) || 'A'}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-gray-900 truncate">
-                            {user?.full_name || 'Admin'}
-                        </p>
-                        <p className="text-xs text-gray-500 truncate">
-                            {user?.email || 'admin@primeaudio.co.ke'}
-                        </p>
-                    </div>
-                </div>
+            {/* User Section Removed - Moved to AdminLayout Header */}
 
-                {/* Logout Button */}
-                <button
-                    onClick={handleLogout}
-                    className="w-full flex items-center gap-3 px-3 md:px-4 py-2.5 md:py-3 rounded-lg text-sm font-medium text-red-600 hover:text-red-700 hover:bg-red-50 transition-all duration-200"
-                >
-                    <LogOut className="h-5 w-5" />
-                    <span>Logout</span>
-                </button>
-            </div>
         </div>
     );
 
