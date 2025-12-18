@@ -6,6 +6,7 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from datetime import datetime, timedelta
 from typing import Optional
 from jose import JWTError, jwt
+from google.cloud.firestore_v1.base_query import FieldFilter
 import hashlib
 import sys
 import os
@@ -52,7 +53,7 @@ def verify_token(token: str) -> Optional[dict]:
 def get_user_by_email(email: str):
     """Get user from Firestore by email"""
     db = get_db()
-    query = db.collection('users').where('email', '==', email).limit(1)
+    query = db.collection('users').where(filter=FieldFilter('email', '==', email)).limit(1)
     docs = list(query.stream())
     if docs:
         user = docs[0].to_dict()
@@ -165,14 +166,14 @@ async def get_users_by_role(
     try:
         if current_user.get('is_admin'):
             if role == "admin":
-                query = db.collection('users').where('is_admin', '==', True)
+                query = db.collection('users').where(filter=FieldFilter('is_admin', '==', True))
             elif role == "customer":
-                query = db.collection('users').where('is_admin', '==', False)
+                query = db.collection('users').where(filter=FieldFilter('is_admin', '==', False))
             else:
                 query = db.collection('users')
         else:
             # Customers can only see admins (support staff)
-            query = db.collection('users').where('is_admin', '==', True)
+            query = db.collection('users').where(filter=FieldFilter('is_admin', '==', True))
         
         docs = query.stream()
         users = []

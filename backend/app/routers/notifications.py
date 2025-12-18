@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from typing import List, Optional
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
+from google.cloud.firestore_v1.base_query import FieldFilter
 import sys
 import os
 
@@ -24,10 +25,10 @@ async def get_notifications(
     db = get_db()
     
     # Base query: notifications for this user
-    query = db.collection('notifications').where('user_id', '==', current_user['id'])
+    query = db.collection('notifications').where(filter=FieldFilter('user_id', '==', current_user['id']))
     
     if unread_only:
-        query = query.where('is_read', '==', False)
+        query = query.where(filter=FieldFilter('is_read', '==', False))
         
     # Firestore requires composite index for 'where' + 'order_by' on different fields
     # For simplicity/stablity without index creation, we'll fetch then sort in memory for now
@@ -50,16 +51,16 @@ async def get_notifications(
 async def get_unread_count(current_user: dict = Depends(get_current_user)):
     """Get count of unread notifications"""
     db = get_db()
-    query = db.collection('notifications')\
-        .where('user_id', '==', current_user['id'])\
-        .where('is_read', '==', False)
-        
+    # Count unread
+    unread_count = len(list(db.collection('notifications')\
+        .where(filter=FieldFilter('user_id', '==', current_user['id']))\
+        .where(filter=FieldFilter('is_read', '==', False))\
+        .stream()))
     # Counting in Firestore can be done by counting the stream (costly for huge sets used often, but fine here)
     # or using the count() aggregation query (if supported by this lib version).
     # We'll stick to stream len for compatibility.
     
-    docs = list(query.stream())
-    return {"count": len(docs)}
+    return {"count": unread_count}
 
 @router.put("/{notification_id}/read")
 async def mark_as_read(notification_id: str, current_user: dict = Depends(get_current_user)):
@@ -82,13 +83,13 @@ async def mark_as_read(notification_id: str, current_user: dict = Depends(get_cu
 async def mark_all_as_read(current_user: dict = Depends(get_current_user)):
     """Mark all notifications as read"""
     db = get_db()
+    # Batch update for efficiency
     batch = db.batch()
-    
-    query = db.collection('notifications')\
-        .where('user_id', '==', current_user['id'])\
-        .where('is_read', '==', False)
-        
-    docs = list(query.stream())
+    docs = db.collection('notifications')\
+        .where(filter=FieldFilter('user_id', '==', current_user['id']))\
+        .where(filter=FieldFilter('is_read', '==', False))\
+        .stream()
+    docs = list(docs)
     
     if not docs:
         return {"message": "No unread notifications"}

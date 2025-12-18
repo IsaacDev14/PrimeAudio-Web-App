@@ -10,6 +10,7 @@ import os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
 from firebase_db import get_firestore_client
 from app.routers.auth_firebase import get_current_user, get_admin_user
+from google.cloud.firestore_v1.base_query import FieldFilter
 
 router = APIRouter(prefix="/orders", tags=["Orders"])
 
@@ -32,7 +33,7 @@ async def get_orders(
     if current_user.get('is_admin'):
         query = db.collection('orders')
     else:
-        query = db.collection('orders').where('user_id', '==', current_user['id'])
+        query = db.collection('orders').where(filter=FieldFilter('user_id', '==', current_user['id']))
     
     docs = query.stream()
     orders = []
@@ -102,7 +103,6 @@ async def get_order_stats(
     # Count Users (Global) - Use Aggregation if supported, else legacy len()
     try:
         from google.cloud.firestore import Client
-        from google.cloud.firestore_v1.base_query import FieldFilter
         
         users_ref = db.collection('users')
         active_users = users_ref.count().get()[0][0].value
@@ -300,7 +300,7 @@ async def delete_order(order_id: str, current_user: dict = Depends(get_admin_use
 async def track_order(tracking_id: str):
     """Track order by tracking ID (public)"""
     db = get_db()
-    query = db.collection('orders').where('tracking_id', '==', tracking_id).limit(1)
+    query = db.collection('orders').where(filter=FieldFilter('tracking_id', '==', tracking_id)).limit(1)
     docs = list(query.stream())
     
     if not docs:
