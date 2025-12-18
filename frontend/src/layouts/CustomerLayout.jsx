@@ -296,12 +296,6 @@ const CustomerLayout = () => {
                 <div className="p-4 border-t border-gray-200">
                     <Link
                         to="/shop"
-                        className="flex items-center justify-center gap-2 w-full py-2.5 px-4 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors mb-3"
-                    >
-                        Continue Shopping
-                    </Link>
-                    <Link
-                        to="/shop"
                         className="flex items-center justify-center gap-2 w-full py-2.5 px-4 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
                     >
                         Continue Shopping
