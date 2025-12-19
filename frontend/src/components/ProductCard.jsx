@@ -124,23 +124,21 @@ const ProductCard = ({ product }) => {
                     <Heart className={`w-4 h-4 stroke-2 ${isInWishlist ? 'fill-white' : ''}`} />
                 </button>
 
-                {/* Navigation Buttons (Visible on Hover) */}
-                {images.length > 1 && (
-                    <>
-                        <button
-                            onClick={prevImage}
-                            className="absolute top-1/2 left-2 -translate-y-1/2 p-1.5 bg-white/90 hover:bg-white rounded-full text-slate-900 shadow-md transition-opacity z-20 disabled:opacity-50"
-                        >
-                            <ChevronLeft className="w-4 h-4" />
-                        </button>
-                        <button
-                            onClick={nextImage}
-                            className="absolute top-1/2 right-2 -translate-y-1/2 p-1.5 bg-white/90 hover:bg-white rounded-full text-slate-900 shadow-md transition-opacity z-20"
-                        >
-                            <ChevronRight className="w-4 h-4" />
-                        </button>
-                    </>
-                )}
+                {/* Navigation Buttons (Always visible) */}
+                <>
+                    <button
+                        onClick={prevImage}
+                        className="absolute top-1/2 left-2 -translate-y-1/2 p-1.5 bg-white/60 backdrop-blur-md hover:bg-white rounded-full text-slate-900 shadow-md transition-all z-20 disabled:opacity-50"
+                    >
+                        <ChevronLeft className="w-4 h-4" />
+                    </button>
+                    <button
+                        onClick={nextImage}
+                        className="absolute top-1/2 right-2 -translate-y-1/2 p-1.5 bg-white/60 backdrop-blur-md hover:bg-white rounded-full text-slate-900 shadow-md transition-all z-20"
+                    >
+                        <ChevronRight className="w-4 h-4" />
+                    </button>
+                </>
 
                 {/* Carousel Dots */}
                 {images.length > 1 && (
