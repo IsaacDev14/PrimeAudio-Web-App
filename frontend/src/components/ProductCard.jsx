@@ -13,7 +13,7 @@ const ProductCard = ({ product }) => {
     const [isWishlistLoading, setIsWishlistLoading] = useState(false);
 
     // Define images with fallback
-    const images = product.images || [product.image_url];
+    const images = (product.images && product.images.length > 0) ? product.images : [product.image_url];
 
     // Check if product is in wishlist
     useEffect(() => {
@@ -129,13 +129,13 @@ const ProductCard = ({ product }) => {
                     <>
                         <button
                             onClick={prevImage}
-                            className="absolute top-1/2 left-2 -translate-y-1/2 p-1.5 bg-white/90 hover:bg-white rounded-full text-slate-900 shadow-md opacity-0 group-hover:opacity-100 transition-opacity z-20 disabled:opacity-50"
+                            className="absolute top-1/2 left-2 -translate-y-1/2 p-1.5 bg-white/90 hover:bg-white rounded-full text-slate-900 shadow-md transition-opacity z-20 disabled:opacity-50"
                         >
                             <ChevronLeft className="w-4 h-4" />
                         </button>
                         <button
                             onClick={nextImage}
-                            className="absolute top-1/2 right-2 -translate-y-1/2 p-1.5 bg-white/90 hover:bg-white rounded-full text-slate-900 shadow-md opacity-0 group-hover:opacity-100 transition-opacity z-20"
+                            className="absolute top-1/2 right-2 -translate-y-1/2 p-1.5 bg-white/90 hover:bg-white rounded-full text-slate-900 shadow-md transition-opacity z-20"
                         >
                             <ChevronRight className="w-4 h-4" />
                         </button>
