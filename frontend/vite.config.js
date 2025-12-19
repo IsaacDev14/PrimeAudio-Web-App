@@ -33,6 +33,18 @@ export default defineConfig(({ mode }) => {
     ],
     define: {
       __API_URL__: JSON.stringify(apiUrl)
+    },
+    build: {
+      chunkSizeWarningLimit: 1000, // Increase warning limit slightly
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            vendor: ['react', 'react-dom', 'react-router-dom'],
+            ui: ['framer-motion', 'lucide-react', 'clsx', 'tailwind-merge'],
+            utils: ['date-fns', 'react-helmet-async', 'react-markdown']
+          }
+        }
+      }
     }
   }
 })
