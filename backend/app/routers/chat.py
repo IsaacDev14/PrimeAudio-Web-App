@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
-import google.generativeai as genai
+import httpx
 import os
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
@@ -12,17 +12,12 @@ router = APIRouter(prefix="/chat", tags=["AI Chat"])
 class ChatRequest(BaseModel):
     message: str
 
-# Configure Gemini
-api_key = os.getenv("gemini_api_key")
-if api_key:
-    genai.configure(api_key=api_key)
-    model = genai.GenerativeModel('gemini-2.5-flash') 
-else:
-    model = None
+DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
+DEEPSEEK_URL = "https://api.deepseek.com/v1/chat/completions"
 
 @router.post("/")
 async def chat_with_ai(request: ChatRequest, db: AsyncSession = Depends(database.get_db)):
-    if not model:
+    if not DEEPSEEK_API_KEY:
         raise HTTPException(status_code=503, detail="AI Service not configured")
     
     try:
@@ -71,9 +66,29 @@ RULES:
 - Keep lists to 3-5 items maximum
 - Add blank lines between paragraphs"""
 
-        full_prompt = f"{system_prompt}\n\nCustomer question: {request.message}"
-        response = model.generate_content(full_prompt)
-        return {"response": response.text}
+        headers = {
+            "Authorization": f"Bearer {DEEPSEEK_API_KEY}",
+            "Content-Type": "application/json"
+        }
+        
+        payload = {
+            "model": "deepseek-chat",
+            "messages": [
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": request.message}
+            ],
+            "temperature": 0.7
+        }
+
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            response = await client.post(DEEPSEEK_URL, headers=headers, json=payload)
+            if response.status_code != 200:
+                raise HTTPException(status_code=response.status_code, detail=response.text)
+            
+            data = response.json()
+            reply = data["choices"][0]["message"]["content"]
+            return {"response": reply}
+            
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -84,14 +99,32 @@ class DescriptionRequest(BaseModel):
 
 @router.post("/generate-description")
 async def generate_description(request: DescriptionRequest):
-    if not model:
+    if not DEEPSEEK_API_KEY:
          raise HTTPException(status_code=503, detail="AI Service not configured")
     
     prompt = f"Write a professional and engaging e-commerce product description for a {request.product_name} in the category {request.category}. Key features: {request.features}. Use HTML formatting for bolding key terms."
     
+    headers = {
+        "Authorization": f"Bearer {DEEPSEEK_API_KEY}",
+        "Content-Type": "application/json"
+    }
+    
+    payload = {
+        "model": "deepseek-chat",
+        "messages": [
+            {"role": "user", "content": prompt}
+        ],
+        "temperature": 0.7
+    }
+
     try:
-        response = model.generate_content(prompt)
-        return {"description": response.text}
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            response = await client.post(DEEPSEEK_URL, headers=headers, json=payload)
+            if response.status_code != 200:
+                raise HTTPException(status_code=response.status_code, detail=response.text)
+            
+            data = response.json()
+            reply = data["choices"][0]["message"]["content"]
+            return {"description": reply}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
