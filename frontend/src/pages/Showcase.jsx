@@ -692,7 +692,7 @@ const Showcase = () => {
             </section>
 
             {/* CTA */}
-            <section className="py-20 md:py-24 bg-[#FF5C00]">
+            <section className="py-12 md:py-16 bg-[#FF5C00]">
                 <div className="container mx-auto px-4 text-center">
                     <motion.div
                         initial="hidden"
