@@ -5,7 +5,6 @@ import {
     ArrowRight,
     Star,
     ChevronDown,
-    Package,
     Warehouse,
     Truck,
     CheckCircle2,
@@ -28,7 +27,7 @@ const PORTFOLIO_ITEMS = [
     {
         title: 'Retail Display Setup',
         description:
-            'Full in-store audio showcase for a flagship electronics retailer — speakers, amps, and demo stations ready for opening day.',
+            'Full in-store audio showcase for a flagship retailer on Luthuli Avenue — speakers, amps, and demo stations ready for opening day.',
         category: 'Client Setup',
         image: IMAGES.retail,
         tall: true,
@@ -36,7 +35,7 @@ const PORTFOLIO_ITEMS = [
     {
         title: 'Doorstep Delivery',
         description:
-            'White-glove handoff of a premium DJ controller to a thrilled customer right at their front door.',
+            'Careful handoff of a premium DJ controller to a happy customer at their doorstep in Westlands, Nairobi.',
         category: 'Delivery',
         image: IMAGES.delivery,
         tall: false,
@@ -44,7 +43,7 @@ const PORTFOLIO_ITEMS = [
     {
         title: 'Warehouse Operations',
         description:
-            'Organized staging zone where every order is logged, sorted, and prepped for same-day dispatch.',
+            'Our Nairobi CBD warehouse — every order logged, sorted, and prepped for same-day dispatch across the city.',
         category: 'Logistics',
         image: IMAGES.warehouse,
         tall: false,
@@ -52,7 +51,7 @@ const PORTFOLIO_ITEMS = [
     {
         title: 'Branded Packaging',
         description:
-            'Every item wrapped in protective materials and sealed in Prime Audio branded boxes before it leaves our facility.',
+            'Every item wrapped in protective materials and sealed in Prime Audio boxes before it leaves our Nairobi facility.',
         category: 'Packaging',
         image: IMAGES.packaging,
         tall: true,
@@ -60,7 +59,7 @@ const PORTFOLIO_ITEMS = [
     {
         title: 'Corporate Event Install',
         description:
-            'Full PA system and lighting rig deployed for a 500-guest corporate launch — tested, tuned, and show-ready.',
+            'Full PA system deployed for a 500-guest corporate launch at a Nairobi hotel — tested, tuned, and show-ready.',
         category: 'Client Setup',
         image: IMAGES.event,
         tall: false,
@@ -68,7 +67,7 @@ const PORTFOLIO_ITEMS = [
     {
         title: 'Last-Mile Dispatch',
         description:
-            'Rapid city delivery via our motorbike fleet — getting urgent orders to studios and venues across Nairobi.',
+            'Motorbike delivery fleet navigating Nairobi traffic — urgent orders to studios and venues across the city.',
         category: 'Delivery',
         image: IMAGES.lastmile,
         tall: false,
@@ -85,36 +84,36 @@ const PROCESS_STEPS = [
 const TESTIMONIALS = [
     {
         name: 'James Ochieng',
-        company: 'Soundwave Events Ltd',
+        company: 'Soundwave Events Ltd, Nairobi',
         initials: 'JO',
         quote:
-            'Prime Audio handled our entire festival gear delivery — 40+ items, zero damage, on time. They are now our go-to logistics partner for every major event.',
+            'Prime Audio handled our entire festival gear delivery — 40+ items, zero damage, on time. They are now our go-to partner for every major event in Kenya.',
     },
     {
         name: 'Amina Hassan',
-        company: 'BeatBox Studios Nairobi',
+        company: 'BeatBox Studios, Westlands',
         initials: 'AH',
         quote:
-            'From studio monitors to cables, every delivery arrives perfectly packed. Their team even helped us set up on-site. Unmatched service in this city.',
+            'From studio monitors to cables, every delivery arrives perfectly packed. Their team even helped us set up on-site. Unmatched service in Nairobi.',
     },
     {
         name: 'David Njoroge',
         company: 'Harmony Retail Group',
         initials: 'DN',
         quote:
-            'We trusted them with a 300-order weekend push and they delivered flawlessly. Our customers noticed — satisfaction scores hit an all-time high.',
+            'We trusted them with a 300-order weekend push and they delivered flawlessly. Our customers across Nairobi noticed — satisfaction hit an all-time high.',
     },
 ];
 
 const CATEGORY_STYLES = {
-    'Client Setup': 'bg-blue-500/90 text-white',
+    'Client Setup': 'bg-blue-600 text-white',
     Delivery: 'bg-[#FF5C00] text-white',
-    Logistics: 'bg-violet-500/90 text-white',
-    Packaging: 'bg-emerald-500/90 text-white',
+    Logistics: 'bg-violet-600 text-white',
+    Packaging: 'bg-emerald-600 text-white',
 };
 
 const fadeUp = {
-    hidden: { opacity: 0, y: 48 },
+    hidden: { opacity: 0, y: 32 },
     visible: { opacity: 1, y: 0 },
 };
 
@@ -130,9 +129,7 @@ function ShowcaseImage({ src, alt, className, wrapperClassName = 'relative w-ful
 
     return (
         <div className={wrapperClassName}>
-            {!loaded && (
-                <div className="absolute inset-0 bg-gradient-to-br from-[#0F1D32] to-[#0A1628] animate-pulse" />
-            )}
+            {!loaded && <div className="absolute inset-0 bg-slate-100 animate-pulse" />}
             <img
                 ref={imgRef}
                 src={src}
@@ -141,9 +138,9 @@ function ShowcaseImage({ src, alt, className, wrapperClassName = 'relative w-ful
                 decoding="async"
                 fetchPriority={priority ? 'high' : 'auto'}
                 onLoad={() => setLoaded(true)}
-                className={`${className} transition-opacity duration-700 ${loaded ? 'opacity-100' : 'opacity-0'}`}
+                className={`${className} transition-opacity duration-500 ${loaded ? 'opacity-100' : 'opacity-0'}`}
             />
-                    </div>
+        </div>
     );
 }
 
@@ -175,19 +172,14 @@ function AnimatedCounter({ end, suffix = '+', duration = 2000 }) {
 function StatItem({ value, suffix, label, showDivider }) {
     return (
         <div className="flex items-center flex-1">
-            {showDivider && <div className="hidden lg:block w-px h-20 bg-white/10 mx-10" />}
+            {showDivider && <div className="hidden lg:block w-px h-16 bg-slate-200 mx-10" />}
             <div className="flex-1 text-center lg:text-left">
-                <div
-                    className="font-black text-white leading-none"
-                    style={{ fontSize: 'clamp(2.5rem, 5vw, 3.75rem)' }}
-                >
+                <div className="text-3xl md:text-4xl font-bold text-[#0A1628] leading-none">
                     <AnimatedCounter end={value} suffix={suffix} />
                 </div>
-                <p className="mt-3 text-white/50 text-sm font-medium tracking-wide uppercase">
-                    {label}
-                </p>
-                        </div>
-                    </div>
+                <p className="mt-2 text-slate-500 text-sm font-medium">{label}</p>
+            </div>
+        </div>
     );
 }
 
@@ -198,37 +190,31 @@ function PortfolioCard({ item, index }) {
             whileInView="visible"
             viewport={{ once: true, margin: '-40px' }}
             variants={fadeUp}
-            transition={{ duration: 0.6, delay: index * 0.07 }}
-            className={`group relative overflow-hidden rounded-3xl bg-[#0F1D32] ${
+            transition={{ duration: 0.5, delay: index * 0.06 }}
+            className={`group bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-lg hover:border-slate-300 transition-all duration-300 ${
                 item.tall ? 'lg:row-span-2' : ''
             }`}
         >
-            <div
-                className={`relative overflow-hidden ${
-                    item.tall ? 'h-80 lg:h-[calc(100%-5.5rem)] lg:min-h-[480px]' : 'h-64'
-                }`}
-            >
+            <div className={`relative overflow-hidden ${item.tall ? 'h-72 lg:min-h-[420px]' : 'h-56'}`}>
                 <ShowcaseImage
                     src={item.image}
                     alt={item.title}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0A1628] via-[#0A1628]/30 to-transparent" />
                 <span
-                    className={`absolute top-5 left-5 px-3 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-widest shadow-lg ${
+                    className={`absolute top-4 left-4 px-3 py-1 rounded-full text-[11px] font-semibold uppercase tracking-wide ${
                         CATEGORY_STYLES[item.category]
                     }`}
                 >
                     {item.category}
                 </span>
-                <div className="absolute inset-0 bg-[#FF5C00]/0 group-hover:bg-[#FF5C00]/10 transition-colors duration-500" />
             </div>
-            <div className="p-6 lg:p-7">
-                <h3 className="text-xl font-bold text-white mb-2 group-hover:text-[#FF5C00] transition-colors">
+            <div className="p-6">
+                <h3 className="text-lg font-bold text-slate-900 mb-2 group-hover:text-[#FF5C00] transition-colors">
                     {item.title}
                 </h3>
-                <p className="text-white/55 text-sm leading-relaxed">{item.description}</p>
-                </div>
+                <p className="text-slate-500 text-sm leading-relaxed">{item.description}</p>
+            </div>
         </motion.article>
     );
 }
@@ -239,82 +225,70 @@ const Showcase = () => {
     };
 
     return (
-        <div className="bg-[#0A1628] text-white overflow-x-hidden">
+        <div className="bg-white text-slate-900 overflow-x-hidden">
             <SEO
                 title="Our Work"
-                description="See how Prime Audio delivers — client setups, logistics, packaging, and happy customers across East Africa."
-                keywords="prime audio portfolio, delivery logistics, client setups, professional audio delivery, nairobi"
+                description="See how Prime Audio delivers across Nairobi and Kenya — client setups, logistics, packaging, and happy customers."
+                keywords="prime audio portfolio, nairobi audio shop, delivery logistics, client setups, kenya"
             />
 
             {/* Hero */}
-            <section className="relative -mt-20 min-h-screen flex items-end lg:items-center pt-20">
+            <section className="relative -mt-20 pt-20 min-h-[85vh] flex items-center">
                 <ShowcaseImage
                     src={IMAGES.hero}
-                    alt="Delivery team loading packages into van at golden hour"
+                    alt="Kenyan delivery team loading packages in Nairobi"
                     priority
                     wrapperClassName="absolute inset-0 overflow-hidden"
                     className="w-full h-full object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-r from-[#0A1628]/95 via-[#0A1628]/70 to-[#0A1628]/40" />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0A1628] via-transparent to-[#0A1628]/50" />
-                <div className="absolute top-1/3 right-0 w-[500px] h-[500px] bg-[#FF5C00]/10 rounded-full blur-[120px] pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-r from-white/90 via-white/55 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-white/40 via-transparent to-transparent" />
 
-                <div className="relative z-10 container mx-auto px-4 pb-20 lg:pb-0 py-16 lg:py-24">
-                    <div className="grid lg:grid-cols-2 gap-12 items-center">
+                <div className="relative z-10 container mx-auto px-4 py-16 lg:py-20">
+                    <div className="grid lg:grid-cols-2 gap-10 items-center">
                         <motion.div
-                            initial={{ opacity: 0, y: 60 }}
+                            initial={{ opacity: 0, y: 30 }}
                             animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                            transition={{ duration: 0.7 }}
+                            className="max-w-xl"
                         >
-                            <div className="inline-flex items-center gap-2 bg-[#FF5C00]/15 border border-[#FF5C00]/30 rounded-full px-4 py-1.5 mb-8">
-                                <Package className="w-4 h-4 text-[#FF5C00]" />
-                                <span className="text-[#FF5C00] text-xs font-bold uppercase tracking-[0.2em]">
-                                    Prime Audio Solutions
-                                </span>
-                    </div>
-                            <h1
-                                className="font-black leading-[1.02] mb-6"
-                                style={{ fontSize: 'clamp(3rem, 7.5vw, 5.75rem)' }}
-                            >
+                            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#0A1628] leading-tight mb-5">
                                 We Deliver.
                                 <br />
                                 <span className="text-[#FF5C00]">You Shine.</span>
                             </h1>
-                            <p
-                                className="text-white/65 max-w-lg mb-10 leading-relaxed"
-                                style={{ fontSize: 'clamp(1.1rem, 2vw, 1.4rem)' }}
-                            >
-                                From first order to final handoff — we handle it all.
+                            <p className="text-slate-600 text-base lg:text-lg mb-8 leading-relaxed">
+                                From our Nairobi shop to your door — we handle every order, setup, and delivery across Kenya.
                             </p>
-                            <div className="flex flex-col sm:flex-row gap-4">
+                            <div className="flex flex-col sm:flex-row gap-3">
                                 <button
                                     onClick={scrollToWork}
-                                    className="group px-8 py-4 bg-[#FF5C00] hover:bg-[#e65200] text-white rounded-full font-bold text-base transition-all shadow-[0_0_40px_rgba(255,92,0,0.35)] hover:shadow-[0_0_60px_rgba(255,92,0,0.55)] flex items-center justify-center gap-2"
+                                    className="px-6 py-3 bg-[#FF5C00] hover:bg-[#e65200] text-white rounded-lg font-semibold text-sm transition-colors flex items-center justify-center gap-2"
                                 >
                                     See Our Work
-                                    <ChevronDown className="w-5 h-5 group-hover:translate-y-1 transition-transform" />
+                                    <ChevronDown className="w-4 h-4" />
                                 </button>
-                                    <Link
+                                <Link
                                     to="/contact"
-                                    className="px-8 py-4 bg-white/8 hover:bg-white/15 text-white border border-white/20 hover:border-white/35 rounded-full font-bold text-base transition-all backdrop-blur-md flex items-center justify-center gap-2"
-                                    >
+                                    className="px-6 py-3 bg-white hover:bg-slate-50 text-slate-800 border border-slate-300 rounded-lg font-semibold text-sm transition-colors flex items-center justify-center gap-2"
+                                >
                                     Get a Quote
-                                    <ArrowRight className="w-5 h-5" />
-                                    </Link>
-                                </div>
-                            </motion.div>
+                                    <ArrowRight className="w-4 h-4" />
+                                </Link>
+                            </div>
+                        </motion.div>
 
-                                    <motion.div
-                            initial={{ opacity: 0, x: 40 }}
+                        <motion.div
+                            initial={{ opacity: 0, x: 30 }}
                             animate={{ opacity: 1, x: 0 }}
-                            transition={{ duration: 0.8, delay: 0.2 }}
-                            className="hidden lg:grid grid-cols-2 gap-4"
+                            transition={{ duration: 0.7, delay: 0.15 }}
+                            className="hidden lg:grid grid-cols-2 gap-3"
                         >
                             {PORTFOLIO_ITEMS.slice(0, 4).map((item, i) => (
                                 <div
                                     key={item.title}
-                                    className={`relative rounded-2xl overflow-hidden border border-white/10 ${
-                                        i === 0 ? 'col-span-2 h-48' : 'h-36'
+                                    className={`relative rounded-xl overflow-hidden border border-slate-200 shadow-sm ${
+                                        i === 0 ? 'col-span-2 h-40' : 'h-28'
                                     }`}
                                 >
                                     <ShowcaseImage
@@ -322,7 +296,6 @@ const Showcase = () => {
                                         alt={item.title}
                                         className="w-full h-full object-cover"
                                     />
-                                    <div className="absolute inset-0 bg-[#0A1628]/30" />
                                 </div>
                             ))}
                         </motion.div>
@@ -331,47 +304,39 @@ const Showcase = () => {
             </section>
 
             {/* Stats */}
-            <section className="relative py-20 bg-[#060E1A] border-y border-white/5">
-                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,92,0,0.06)_0%,transparent_70%)]" />
-                <div className="container mx-auto px-4 relative">
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-0">
+            <section className="py-14 bg-slate-50 border-y border-slate-200">
+                <div className="container mx-auto px-4">
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-0">
                         <StatItem value={500} suffix="+" label="Deliveries Completed" />
                         <StatItem value={120} suffix="+" label="Happy Clients" showDivider />
-                        <StatItem value={15} suffix="" label="Cities Covered" showDivider />
+                        <StatItem value={15} suffix="+" label="Towns Across Kenya" showDivider />
                         <StatItem value={98} suffix="%" label="Satisfaction Rate" showDivider />
-                                </div>
-                            </div>
+                    </div>
+                </div>
             </section>
 
             {/* Portfolio */}
-            <section id="our-work" className="py-28 md:py-36">
+            <section id="our-work" className="py-20 md:py-28">
                 <div className="container mx-auto px-4">
                     <motion.div
                         initial="hidden"
                         whileInView="visible"
                         viewport={{ once: true }}
                         variants={fadeUp}
-                        transition={{ duration: 0.6 }}
-                        className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-16"
+                        className="mb-14"
                     >
-                        <div>
-                            <p className="text-[#FF5C00] font-bold uppercase tracking-[0.25em] text-xs mb-4">
-                                Portfolio
-                            </p>
-                            <h2
-                                className="font-black leading-tight"
-                                style={{ fontSize: 'clamp(2.25rem, 5vw, 3.75rem)' }}
-                            >
-                                Our Work in Action
-                            </h2>
-                        </div>
-                        <p className="text-white/50 max-w-md text-base lg:text-right leading-relaxed">
-                            Real projects. Real deliveries. Real results for clients who trust us with their most
-                            important orders.
+                        <p className="text-[#FF5C00] font-semibold uppercase tracking-widest text-xs mb-3">
+                            Portfolio
+                        </p>
+                        <h2 className="text-3xl md:text-4xl font-bold text-[#0A1628] mb-4">
+                            Our Work in Action
+                        </h2>
+                        <p className="text-slate-500 max-w-2xl text-base leading-relaxed">
+                            Real projects across Nairobi and beyond — setups, deliveries, and logistics for clients who trust us with their gear.
                         </p>
                     </motion.div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-7">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {PORTFOLIO_ITEMS.map((item, i) => (
                             <PortfolioCard key={item.title} item={item} index={i} />
                         ))}
@@ -380,26 +345,21 @@ const Showcase = () => {
             </section>
 
             {/* Featured Project */}
-            <section className="py-28 md:py-36 bg-[#060E1A]">
+            <section className="py-20 md:py-28 bg-slate-50">
                 <div className="container mx-auto px-4">
-                    <div className="grid lg:grid-cols-2 gap-14 lg:gap-20 items-center">
+                    <div className="grid lg:grid-cols-2 gap-12 items-center">
                         <motion.div
                             initial="hidden"
                             whileInView="visible"
                             viewport={{ once: true }}
                             variants={fadeUp}
-                            transition={{ duration: 0.7 }}
-                            className="relative"
+                            className="rounded-2xl overflow-hidden border border-slate-200 shadow-sm aspect-[4/3] lg:aspect-auto lg:h-[480px]"
                         >
-                            <div className="absolute -inset-4 bg-[#FF5C00]/10 rounded-3xl blur-2xl" />
-                            <div className="relative rounded-3xl overflow-hidden aspect-[4/3] lg:aspect-auto lg:h-[540px] border border-white/10">
-                                <ShowcaseImage
-                                    src={IMAGES.featured}
-                                    alt="Weekend bulk order fulfillment operation"
-                                    className="w-full h-full object-cover"
-                                />
-                                <div className="absolute inset-0 bg-gradient-to-tr from-[#0A1628]/50 to-transparent" />
-                            </div>
+                            <ShowcaseImage
+                                src={IMAGES.featured}
+                                alt="Weekend bulk order fulfillment at Nairobi warehouse"
+                                className="w-full h-full object-cover"
+                            />
                         </motion.div>
 
                         <motion.div
@@ -407,56 +367,42 @@ const Showcase = () => {
                             whileInView="visible"
                             viewport={{ once: true }}
                             variants={fadeUp}
-                            transition={{ duration: 0.7, delay: 0.12 }}
+                            transition={{ delay: 0.1 }}
                         >
-                            <p className="text-[#FF5C00] font-bold uppercase tracking-[0.25em] text-xs mb-5">
+                            <p className="text-[#FF5C00] font-semibold uppercase tracking-widest text-xs mb-4">
                                 Featured Project
                             </p>
-                            <h2
-                                className="font-black leading-tight mb-7"
-                                style={{ fontSize: 'clamp(1.85rem, 4vw, 2.85rem)' }}
-                            >
+                            <h2 className="text-2xl md:text-3xl font-bold text-[#0A1628] mb-5 leading-tight">
                                 How We Delivered 300 Orders in One Weekend
                             </h2>
-                            <p className="text-white/60 leading-relaxed mb-10 text-lg">
+                            <p className="text-slate-600 leading-relaxed mb-8">
                                 Harmony Retail Group launched a flash sale on premium audio gear — and 300 orders hit
-                                their system in 48 hours. We mobilized our full warehouse team, extended dispatch
-                                hours, and coordinated 12 delivery routes across Nairobi. Every item was
-                                quality-checked, branded-packed, and delivered before Monday morning.
+                                their system in 48 hours. We mobilised our full Nairobi warehouse team, extended dispatch
+                                hours, and coordinated 12 delivery routes across the city. Every item was
+                                quality-checked, packed, and delivered before Monday morning.
                             </p>
 
-                            <div className="grid grid-cols-3 gap-4 mb-10">
+                            <div className="grid grid-cols-3 gap-3 mb-8">
                                 {[
                                     { stat: '300', label: 'Orders Fulfilled' },
                                     { stat: '0', label: 'Returns' },
                                     { stat: '2-Day', label: 'Turnaround' },
                                 ].map((s) => (
-                                    <div
-                                        key={s.label}
-                                        className="bg-[#0A1628] rounded-2xl p-5 text-center border border-white/8"
-                                    >
-                                        <div className="text-2xl lg:text-3xl font-black text-[#FF5C00]">
-                                            {s.stat}
-                                        </div>
-                                        <div className="text-[11px] text-white/45 mt-1.5 font-semibold uppercase tracking-wide">
-                                            {s.label}
-                                        </div>
-                                </div>
-                            ))}
-                        </div>
+                                    <div key={s.label} className="bg-white rounded-xl p-4 text-center border border-slate-200">
+                                        <div className="text-xl md:text-2xl font-bold text-[#FF5C00]">{s.stat}</div>
+                                        <div className="text-[11px] text-slate-500 mt-1 font-medium">{s.label}</div>
+                                    </div>
+                                ))}
+                            </div>
 
-                            <blockquote className="relative pl-6 border-l-2 border-[#FF5C00]">
-                                <p className="text-white/75 italic leading-relaxed mb-4 text-base">
-                                    &ldquo;Prime Audio turned what could have been a logistics nightmare into our
-                                    smoothest product launch ever. 300 orders, zero issues — our customers were blown
-                                    away.&rdquo;
+                            <blockquote className="border-l-4 border-[#FF5C00] pl-5">
+                                <p className="text-slate-600 italic leading-relaxed mb-3 text-sm">
+                                    &ldquo;Prime Audio turned what could have been a logistics nightmare into our smoothest
+                                    product launch ever. 300 orders, zero issues — our Nairobi customers were blown away.&rdquo;
                                 </p>
-                                <footer>
-                                    <span className="font-bold text-white">David Njoroge</span>
-                                    <span className="text-white/45 text-sm">
-                                        {' '}
-                                        — Operations Director, Harmony Retail Group
-                                    </span>
+                                <footer className="text-sm">
+                                    <span className="font-semibold text-slate-900">David Njoroge</span>
+                                    <span className="text-slate-500"> — Harmony Retail Group</span>
                                 </footer>
                             </blockquote>
                         </motion.div>
@@ -465,55 +411,49 @@ const Showcase = () => {
             </section>
 
             {/* Process */}
-            <section className="py-28 md:py-36">
+            <section className="py-20 md:py-28">
                 <div className="container mx-auto px-4">
                     <motion.div
                         initial="hidden"
                         whileInView="visible"
                         viewport={{ once: true }}
                         variants={fadeUp}
-                        className="text-center mb-20"
+                        className="text-center mb-14"
                     >
-                        <p className="text-[#FF5C00] font-bold uppercase tracking-[0.25em] text-xs mb-4">
+                        <p className="text-[#FF5C00] font-semibold uppercase tracking-widest text-xs mb-3">
                             How We Work
                         </p>
-                        <h2
-                            className="font-black"
-                            style={{ fontSize: 'clamp(2.25rem, 5vw, 3.75rem)' }}
-                        >
+                        <h2 className="text-3xl md:text-4xl font-bold text-[#0A1628]">
                             Four Steps to Flawless Delivery
                         </h2>
                     </motion.div>
 
-                    <div className="relative max-w-5xl mx-auto">
-                        <div className="hidden lg:block absolute top-[3.25rem] left-[10%] right-[10%] h-px bg-gradient-to-r from-transparent via-[#FF5C00]/50 to-transparent" />
-
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
+                    <div className="relative max-w-4xl mx-auto">
+                        <div className="hidden lg:block absolute top-10 left-[12%] right-[12%] h-px bg-slate-200" />
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
                             {PROCESS_STEPS.map((step, i) => {
                                 const Icon = step.icon;
                                 return (
-                            <motion.div
+                                    <motion.div
                                         key={step.title}
                                         initial="hidden"
                                         whileInView="visible"
-                                viewport={{ once: true }}
+                                        viewport={{ once: true }}
                                         variants={fadeUp}
-                                transition={{ delay: i * 0.1 }}
-                                        className="relative text-center"
+                                        transition={{ delay: i * 0.08 }}
+                                        className="text-center"
                                     >
-                                        <div className="relative inline-block mb-7">
-                                            <div className="w-[4.5rem] h-[4.5rem] rounded-2xl bg-[#0F1D32] border border-[#FF5C00]/25 flex items-center justify-center mx-auto shadow-[0_0_40px_rgba(255,92,0,0.08)]">
-                                                <Icon className="w-7 h-7 text-[#FF5C00]" strokeWidth={1.5} />
+                                        <div className="relative inline-block mb-5">
+                                            <div className="w-16 h-16 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center mx-auto">
+                                                <Icon className="w-6 h-6 text-[#FF5C00]" strokeWidth={1.5} />
                                             </div>
-                                            <span className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-[#FF5C00] text-white text-xs font-black flex items-center justify-center shadow-lg">
+                                            <span className="absolute -top-1.5 -right-1.5 w-6 h-6 rounded-full bg-[#FF5C00] text-white text-xs font-bold flex items-center justify-center">
                                                 {i + 1}
                                             </span>
-                                </div>
-                                        <h3 className="text-lg font-bold text-white mb-2">{step.title}</h3>
-                                        <p className="text-white/50 text-sm leading-relaxed max-w-[180px] mx-auto">
-                                            {step.description}
-                                        </p>
-                            </motion.div>
+                                        </div>
+                                        <h3 className="font-semibold text-slate-900 mb-1">{step.title}</h3>
+                                        <p className="text-slate-500 text-sm">{step.description}</p>
+                                    </motion.div>
                                 );
                             })}
                         </div>
@@ -522,96 +462,80 @@ const Showcase = () => {
             </section>
 
             {/* Testimonials */}
-            <section className="py-28 md:py-36 bg-[#060E1A]">
+            <section className="py-20 md:py-28 bg-slate-50">
                 <div className="container mx-auto px-4">
                     <motion.div
                         initial="hidden"
                         whileInView="visible"
                         viewport={{ once: true }}
                         variants={fadeUp}
-                        className="text-center mb-16"
+                        className="text-center mb-12"
                     >
-                        <p className="text-[#FF5C00] font-bold uppercase tracking-[0.25em] text-xs mb-4">
+                        <p className="text-[#FF5C00] font-semibold uppercase tracking-widest text-xs mb-3">
                             Testimonials
                         </p>
-                        <h2
-                            className="font-black"
-                            style={{ fontSize: 'clamp(2.25rem, 5vw, 3.75rem)' }}
-                        >
+                        <h2 className="text-3xl md:text-4xl font-bold text-[#0A1628]">
                             Clients Who Trust Us
                         </h2>
                     </motion.div>
 
-                    <div className="grid md:grid-cols-3 gap-7">
+                    <div className="grid md:grid-cols-3 gap-6">
                         {TESTIMONIALS.map((t, i) => (
-                                <motion.div
+                            <motion.div
                                 key={t.name}
                                 initial="hidden"
                                 whileInView="visible"
-                                    viewport={{ once: true }}
+                                viewport={{ once: true }}
                                 variants={fadeUp}
-                                transition={{ delay: i * 0.1 }}
-                                className="bg-[#0A1628] rounded-3xl p-8 border border-white/6 hover:border-[#FF5C00]/25 transition-all duration-500 hover:-translate-y-1"
+                                transition={{ delay: i * 0.08 }}
+                                className="bg-white rounded-2xl p-7 border border-slate-200 shadow-sm hover:shadow-md transition-shadow"
                             >
-                                <div className="flex gap-1 mb-6">
+                                <div className="flex gap-0.5 mb-4">
                                     {[...Array(5)].map((_, j) => (
-                                        <Star
-                                            key={j}
-                                            className="w-4 h-4 fill-[#FF5C00] text-[#FF5C00]"
-                                        />
+                                        <Star key={j} className="w-4 h-4 fill-[#FF5C00] text-[#FF5C00]" />
                                     ))}
                                 </div>
-                                <p className="text-white/65 leading-relaxed mb-8 text-[15px]">
+                                <p className="text-slate-600 leading-relaxed mb-6 text-sm">
                                     &ldquo;{t.quote}&rdquo;
                                 </p>
-                                <div className="flex items-center gap-4 pt-6 border-t border-white/6">
-                                    <div className="w-11 h-11 rounded-full bg-gradient-to-br from-[#FF5C00] to-[#e65200] flex items-center justify-center text-white font-bold text-sm">
+                                <div className="flex items-center gap-3 pt-5 border-t border-slate-100">
+                                    <div className="w-10 h-10 rounded-full bg-[#FF5C00] flex items-center justify-center text-white font-semibold text-xs">
                                         {t.initials}
-                                        </div>
-                                        <div>
-                                        <div className="font-bold text-white text-sm">{t.name}</div>
-                                        <div className="text-xs text-white/40">{t.company}</div>
                                     </div>
+                                    <div>
+                                        <div className="font-semibold text-slate-900 text-sm">{t.name}</div>
+                                        <div className="text-xs text-slate-500">{t.company}</div>
                                     </div>
-                                </motion.div>
-                            ))}
-                        </div>
+                                </div>
+                            </motion.div>
+                        ))}
+                    </div>
                 </div>
             </section>
 
             {/* CTA */}
-            <section className="relative py-28 md:py-36 overflow-hidden">
-                <div className="absolute inset-0 bg-[#FF5C00]" />
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.12)_0%,transparent_60%)]" />
-                <div className="absolute -top-20 -right-20 w-80 h-80 bg-white/10 rounded-full blur-3xl" />
-
-                <div className="container mx-auto px-4 relative z-10 text-center">
+            <section className="py-20 md:py-24 bg-[#FF5C00]">
+                <div className="container mx-auto px-4 text-center">
                     <motion.div
                         initial="hidden"
                         whileInView="visible"
                         viewport={{ once: true }}
                         variants={fadeUp}
-                        className="max-w-3xl mx-auto"
+                        className="max-w-2xl mx-auto"
                     >
-                        <h2
-                            className="font-black text-white mb-5"
-                            style={{ fontSize: 'clamp(2.5rem, 6vw, 4.25rem)' }}
-                        >
+                        <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
                             Ready to Work With Us?
                         </h2>
-                        <p
-                            className="text-white/90 mb-10"
-                            style={{ fontSize: 'clamp(1.1rem, 2vw, 1.35rem)' }}
-                        >
-                            Let&apos;s handle your next delivery like it&apos;s our own.
+                        <p className="text-white/90 mb-8 text-base">
+                            Let&apos;s handle your next delivery like it&apos;s our own — from Nairobi to anywhere in Kenya.
                         </p>
-                            <Link
-                                to="/contact"
-                            className="inline-flex items-center gap-3 px-10 py-5 bg-[#0A1628] hover:bg-[#0F1D32] text-white rounded-full font-bold text-lg transition-all shadow-[0_12px_40px_rgba(10,22,40,0.45)] hover:scale-105"
+                        <Link
+                            to="/contact"
+                            className="inline-flex items-center gap-2 px-8 py-4 bg-[#0A1628] hover:bg-[#0F1D32] text-white rounded-lg font-semibold transition-colors"
                         >
                             Contact Us Today
-                            <ArrowRight className="w-5 h-5" />
-                            </Link>
+                            <ArrowRight className="w-4 h-4" />
+                        </Link>
                     </motion.div>
                 </div>
             </section>

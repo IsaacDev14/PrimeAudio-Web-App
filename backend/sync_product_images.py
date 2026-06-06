@@ -55,6 +55,13 @@ async def sync_files():
             generated = resolve_generated_png(name)
             remotes = cfg.get("remote", [])
 
+            if generated and not remotes:
+                dest = PUBLIC_DIR / f"{slug}.jpg"
+                shutil.copy(generated, dest)
+                print(f"  GEN {dest.name}")
+                ok += 1
+                continue
+
             for i, url in enumerate(remotes):
                 dest = PUBLIC_DIR / (f"{slug}.jpg" if i == 0 else f"{slug}-{i + 1}.jpg")
 

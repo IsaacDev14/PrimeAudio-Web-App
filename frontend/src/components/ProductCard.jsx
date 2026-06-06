@@ -86,11 +86,11 @@ const ProductCard = ({ product }) => {
 
     return (
         <motion.div
-            className="group block bg-white rounded-xl overflow-hidden cursor-pointer"
+            className="group block bg-white rounded-xl overflow-hidden cursor-pointer border border-slate-100 shadow-sm hover:shadow-md transition-shadow"
             onHoverStart={() => setIsHovered(true)}
             onHoverEnd={() => setIsHovered(false)}
         >
-            <div className="relative h-64 overflow-hidden bg-gray-100 rounded-xl">
+            <div className="relative aspect-[4/3] overflow-hidden bg-slate-50 rounded-t-xl">
                 <Link to={`/shop/${product.id}`}>
                     <AnimatePresence mode="wait">
                         <motion.img
@@ -101,7 +101,7 @@ const ProductCard = ({ product }) => {
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             transition={{ duration: 0.3 }}
-                            className="absolute inset-0 w-full h-full object-cover"
+                            className="absolute inset-0 w-full h-full object-contain p-3"
                         />
                     </AnimatePresence>
                 </Link>
@@ -124,7 +124,8 @@ const ProductCard = ({ product }) => {
                     <Heart className={`w-4 h-4 stroke-2 ${isInWishlist ? 'fill-white' : ''}`} />
                 </button>
 
-                {/* Navigation Buttons (Always visible) */}
+                {/* Navigation Buttons */}
+                {images.length > 1 && (
                 <>
                     <button
                         onClick={prevImage}
@@ -139,6 +140,7 @@ const ProductCard = ({ product }) => {
                         <ChevronRight className="w-4 h-4" />
                     </button>
                 </>
+                )}
 
                 {/* Carousel Dots */}
                 {images.length > 1 && (
@@ -153,16 +155,16 @@ const ProductCard = ({ product }) => {
                 )}
             </div>
 
-            <div className="mt-3 space-y-2">
+            <div className="px-3 pt-3 pb-4 space-y-1.5">
                 <div className="flex justify-between items-start gap-2">
-                    <h3 className="font-semibold text-gray-900 text-[15px] leading-tight line-clamp-2">{product.name}</h3>
+                    <h3 className="font-medium text-gray-900 text-xs leading-snug line-clamp-2">{product.name}</h3>
                     <div className="flex items-center gap-0.5 shrink-0">
-                        <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-                        <span className="text-sm text-gray-700">{product.rating || 0}</span>
+                        <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
+                        <span className="text-[11px] text-gray-600">{product.rating || 0}</span>
                     </div>
                 </div>
-                <p className="text-gray-500 text-sm line-clamp-2">{product.description || "Professional audio equipment"}</p>
-                <p className="font-bold text-gray-900 text-lg">KSh {product.price?.toLocaleString()}</p>
+                <p className="text-gray-500 text-[11px] leading-relaxed line-clamp-2">{product.description || "Professional audio equipment"}</p>
+                <p className="font-semibold text-gray-900 text-sm pt-0.5">KSh {product.price?.toLocaleString()}</p>
             </div>
         </motion.div>
     );

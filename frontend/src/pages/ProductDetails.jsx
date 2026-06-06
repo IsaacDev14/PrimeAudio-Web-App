@@ -70,8 +70,8 @@ const ProductDetails = () => {
 
     if (isLoading) {
         return (
-            <div className="pt-24 pb-20 bg-gray-50 min-h-screen">
-                <div className="container mx-auto px-4">
+            <div className="pb-20 bg-gray-50 min-h-screen">
+                <div className="container mx-auto px-4 lg:px-6">
                     <ProductDetailsSkeleton />
                 </div>
             </div>
@@ -80,24 +80,26 @@ const ProductDetails = () => {
 
     if (!product) {
         return (
-            <div className="pt-24 pb-20 text-center bg-gray-50 min-h-screen">
-                <h2 className="text-2xl font-bold text-gray-900 mb-4">Product not found</h2>
-                <Link to="/shop" className="text-blue-600 hover:underline flex items-center justify-center gap-2">
-                    <ArrowLeft className="w-4 h-4" /> Back to Shop
-                </Link>
+            <div className="pb-20 text-center bg-gray-50 min-h-screen">
+                <div className="container mx-auto px-4 lg:px-6">
+                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Product not found</h2>
+                    <Link to="/shop" className="text-blue-600 hover:underline flex items-center justify-center gap-2">
+                        <ArrowLeft className="w-4 h-4" /> Back to Shop
+                    </Link>
+                </div>
             </div>
         );
     }
 
     return (
-        <div className="pt-24 pb-20 bg-gray-50 min-h-screen">
+        <div className="pb-20 bg-gray-50 min-h-screen">
             <SEO
                 title={product.name}
                 description={product.description || `Buy ${product.name} at Prime Audio.`}
                 image={product.image_url}
                 keywords={`${product.name}, ${product.category}, buy audio gear`}
             />
-            <div className="container mx-auto px-4">
+            <div className="container mx-auto px-4 lg:px-6">
                 {/* Breadcrumb */}
                 <Link to="/shop" className="text-blue-600 hover:underline flex items-center gap-2 mb-8">
                     <ArrowLeft className="w-4 h-4" /> Back to Shop
@@ -241,6 +243,9 @@ const ProductDetails = () => {
                         </div>
                     </motion.div>
                 </div>
+
+                {/* Product Reviews Section */}
+                <ProductReviews productId={product.id} />
             </div>
 
             {/* Add to Cart Confirmation Dialog */}
@@ -279,9 +284,6 @@ const ProductDetails = () => {
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
-
-            {/* Product Reviews Section */}
-            {product && <ProductReviews productId={product.id} />}
         </div>
     );
 };

@@ -57,9 +57,7 @@
         "condition": "New",
         "stock": 10,
         "image_url": "/images/products/ibanez-classical-guitar.jpg",
-        "images": [
-            "/images/products/ibanez-classical-guitar-2.jpg"
-        ],
+        "images": [],
         "is_featured": false,
         "rating": 4.5
     },
@@ -133,9 +131,7 @@
         "condition": "New",
         "stock": 15,
         "image_url": "/images/products/akai-midi-controller.jpg",
-        "images": [
-            "/images/products/akai-midi-controller-2.jpg"
-        ],
+        "images": [],
         "is_featured": false,
         "rating": 4.6
     },
@@ -309,9 +305,7 @@
         "condition": "New",
         "stock": 18,
         "image_url": "/images/products/sennheiser-lavalier-microphone.jpg",
-        "images": [
-            "/images/products/sennheiser-lavalier-microphone-2.jpg"
-        ],
+        "images": [],
         "is_featured": false,
         "rating": 4.5
     },
@@ -325,9 +319,7 @@
         "condition": "New",
         "stock": 8,
         "image_url": "/images/products/jbl-studio-monitor-pair.jpg",
-        "images": [
-            "/images/products/jbl-studio-monitor-pair-2.jpg"
-        ],
+        "images": [],
         "is_featured": true,
         "rating": 4.8
     },
@@ -341,9 +333,7 @@
         "condition": "New",
         "stock": 6,
         "image_url": "/images/products/jbl-pa-speaker.jpg",
-        "images": [
-            "/images/products/jbl-pa-speaker-2.jpg"
-        ],
+        "images": [],
         "is_featured": true,
         "rating": 4.7
     },
@@ -357,9 +347,7 @@
         "condition": "New",
         "stock": 4,
         "image_url": "/images/products/yamaha-subwoofer.jpg",
-        "images": [
-            "/images/products/yamaha-subwoofer-2.jpg"
-        ],
+        "images": [],
         "is_featured": false,
         "rating": 4.6
     },
@@ -373,9 +361,7 @@
         "condition": "New",
         "stock": 12,
         "image_url": "/images/products/krk-rokit-studio-monitors.jpg",
-        "images": [
-            "/images/products/krk-rokit-studio-monitors-2.jpg"
-        ],
+        "images": [],
         "is_featured": false,
         "rating": 4.5
     },
@@ -389,9 +375,7 @@
         "condition": "New",
         "stock": 5,
         "image_url": "/images/products/pioneer-dj-controller.jpg",
-        "images": [
-            "/images/products/pioneer-dj-controller-2.jpg"
-        ],
+        "images": [],
         "is_featured": true,
         "rating": 4.9
     },
@@ -433,9 +417,7 @@
         "condition": "New",
         "stock": 8,
         "image_url": "/images/products/numark-dj-mixer.jpg",
-        "images": [
-            "/images/products/numark-dj-mixer-2.jpg"
-        ],
+        "images": [],
         "is_featured": false,
         "rating": 4.6
     },
@@ -607,9 +589,7 @@
         "condition": "New",
         "stock": 6,
         "image_url": "/images/products/roland-keyboard-amplifier.jpg",
-        "images": [
-            "/images/products/roland-keyboard-amplifier-2.jpg"
-        ],
+        "images": [],
         "is_featured": false,
         "rating": 4.6
     },
@@ -639,9 +619,7 @@
         "condition": "New",
         "stock": 30,
         "image_url": "/images/products/chauvet-led-par-can.jpg",
-        "images": [
-            "/images/products/chauvet-led-par-can-2.jpg"
-        ],
+        "images": [],
         "is_featured": true,
         "rating": 4.6
     },
@@ -753,9 +731,7 @@
         "condition": "New",
         "stock": 25,
         "image_url": "/images/products/microphone-boom-stand.jpg",
-        "images": [
-            "/images/products/microphone-boom-stand-2.jpg"
-        ],
+        "images": [],
         "is_featured": false,
         "rating": 4.4
     },

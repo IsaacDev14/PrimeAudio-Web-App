@@ -42,8 +42,8 @@ PRODUCT_IMAGE_SOURCES = {
         "remote": [f"{W}/d/de/Davison_Electric_Bass_Guitar.jpg", unsplash("1605020420620-20c943cc4669")],
     },
     "Ibanez Classical Guitar": {
-        "remote": [unsplash("1525201548942-d8732f6617a0"), unsplash("1516924962500-2b4b3b99ea02")],
-        "generate": "Ibanez nylon-string classical guitar natural cedar top, full body product photo on white background, ecommerce studio shot",
+        "remote": [],
+        "generate": "Ibanez nylon-string classical guitar full instrument only, no people, no hands, isolated product on pure white background, ecommerce studio photography",
     },
     "Taylor 12-String Guitar": {
         "remote": [unsplash("1525201548942-d8732f6617a0"), unsplash("1516924962500-2b4b3b99ea02")],
@@ -65,8 +65,8 @@ PRODUCT_IMAGE_SOURCES = {
         "remote": [unsplash("1552422535-c45813c61732"), unsplash("1614148375099-46959409df52")],
     },
     "Akai MIDI Controller": {
-        "remote": [unsplash("1598488035139-bdbb2231ce04"), unsplash("1552422535-c45813c61732")],
-        "generate": "Akai MPK Mini MIDI keyboard controller with pads and knobs, product photo white background",
+        "remote": [],
+        "generate": "Akai MPK Mini MIDI keyboard controller only, no people, no hands, isolated product on white background, ecommerce product photo",
     },
     "Yamaha Stage Piano": {
         "remote": [unsplash("1513883049090-d0b7439799bf"), unsplash("1520523839897-bd0b52f945a0")],
@@ -113,24 +113,28 @@ PRODUCT_IMAGE_SOURCES = {
         "generate": "Rode NT-USB studio condenser microphone with desk stand, product photo white background",
     },
     "Sennheiser Lavalier Microphone": {
-        "remote": [unsplash("1590602847861-f357a9332bbc"), unsplash("1589903308904-1010c2294adc")],
+        "remote": [],
+        "generate": "Sennheiser lavalier clip-on microphone with cable, product only, no people, white background, ecommerce photo",
     },
     "JBL Studio Monitor Pair": {
-        "remote": [unsplash("1545167622-3a6ac756afa4"), unsplash("1608043152269-423dbba4e7e1")],
+        "remote": [],
+        "generate": "Pair of JBL studio monitor speakers black, product only, no people, white background, ecommerce product photography",
     },
     "JBL PA Speaker": {
-        "remote": [unsplash("1558618666-fcd25c85cd64"), unsplash("1524368535928-5b5e00ddc76b")],
+        "remote": [],
+        "generate": "JBL powered PA speaker cabinet 15 inch, product only, no crowd, no people, white background, ecommerce shot",
     },
     "Yamaha Subwoofer": {
-        "remote": [unsplash("1558618666-fcd25c85cd64"), unsplash("1524368535928-5b5e00ddc76b")],
+        "remote": [],
+        "generate": "Yamaha powered subwoofer speaker cabinet black, product only, no people, white background, ecommerce photography",
     },
     "KRK Rokit Studio Monitors": {
-        "remote": [unsplash("1608043152269-423dbba4e7e1"), unsplash("1545167622-3a6ac756afa4")],
+        "remote": [],
+        "generate": "KRK Rokit studio monitor speakers pair yellow cones, product only, no people, white background, ecommerce product photo",
     },
     "Pioneer DJ Controller": {
         "remote": [
-            f"{W}/c/c4/Pioneer_DDJ-RX_DJ-Controller_%28front%29_with_computer_running_mixing_software_Rekordbox.jpg",
-            unsplash("1571327073757-71d13c24de30"),
+            wiki("c/c4/Pioneer_DDJ-RX_DJ-Controller_%28front%29_with_computer_running_mixing_software_Rekordbox.jpg"),
         ],
     },
     "Technics Turntable": {
@@ -140,7 +144,8 @@ PRODUCT_IMAGE_SOURCES = {
         "remote": [f"{W}/5/51/CDJ_2000-edit.jpg"],
     },
     "Numark DJ Mixer": {
-        "remote": [unsplash("1508700115892-45ecd05ae2ad"), unsplash("1571327073757-71d13c24de30")],
+        "remote": [],
+        "generate": "Numark DJ mixer console with faders and knobs, product only, no people, white background, ecommerce photography",
     },
     "Pioneer DDJ-1000 Controller": {
         "remote": [
@@ -165,19 +170,24 @@ PRODUCT_IMAGE_SOURCES = {
         "generate": "Behringer DI direct injection box metal housing XLR jacks, product photo white background",
     },
     "Audio-Technica Studio Headphones": {
-        "remote": [unsplash("1505740420928-5e560c06d30e")],
+        "remote": [],
+        "generate": "Audio-Technica studio headphones black over-ear, product only, no people, white background, ecommerce product photo",
     },
     "Pioneer DJ Headphones": {
-        "remote": [unsplash("1583394838336-acd977736f90")],
+        "remote": [],
+        "generate": "Pioneer DJ headphones black over-ear, product only, no people, white background, ecommerce shot",
     },
     "Shure In-Ear Monitors": {
-        "remote": [unsplash("1484704849700-f032a568e944")],
+        "remote": [],
+        "generate": "Shure in-ear monitor earphones with cable, product only, no people, white background, ecommerce photo",
     },
     "Sony Wireless Headphones": {
-        "remote": [unsplash("1599669454699-248893623440")],
+        "remote": [],
+        "generate": "Sony wireless over-ear headphones black, product only, no people, white background, ecommerce product photo",
     },
     "Beyerdynamic Reference Headphones": {
-        "remote": [unsplash("1546435770-a3e426bf472b")],
+        "remote": [],
+        "generate": "Beyerdynamic reference studio headphones gray, product only, no people, white background, ecommerce shot",
     },
     "Fender Guitar Amplifier": {
         "remote": [wiki("d/dc/Fender_Princeton_Reverb_Amp.jpg"), unsplash("1548123378-bde4eca81d2d")],
@@ -187,27 +197,28 @@ PRODUCT_IMAGE_SOURCES = {
         "remote": [unsplash("1611532736597-de2d4265fba3")],
     },
     "Roland Keyboard Amplifier": {
-        "remote": [unsplash("1545167622-3a6ac756afa4"), unsplash("1608043152269-423dbba4e7e1")],
+        "remote": [],
+        "generate": "Roland keyboard amplifier combo amp, product only, no people, white background, ecommerce product photo",
     },
     "Crown Power Amplifier": {
         "remote": [unsplash("1619983081563-430f63602796"), unsplash("1545167622-3a6ac756afa4")],
         "generate": "Crown professional rack-mount power amplifier black faceplate, product photo white background",
     },
     "Chauvet LED Par Can": {
-        "remote": [unsplash("1470225620780-dba8ba36b745"), unsplash("1492684223066-81342ee5ff30")],
-        "generate": "Professional Chauvet-style RGB LED par can stage light, black metal housing, product photo on white background, studio ecommerce shot",
+        "remote": [],
+        "generate": "Chauvet RGB LED par can stage light, product only, no people, white background, ecommerce studio shot",
     },
     "American DJ Moving Head Light": {
-        "remote": [unsplash("1492684223066-81342ee5ff30")],
-        "generate": "Professional moving head stage light fixture, American DJ style, product photo white background, sharp detail",
+        "remote": [],
+        "generate": "American DJ moving head stage light fixture, product only, no people, white background, sharp detail",
     },
     "Laser Light Show System": {
-        "remote": [unsplash("1506157786151-b8491531f063")],
-        "generate": "RGB laser light show projector for DJ events, product photo on dark background with laser beams, ecommerce product shot",
+        "remote": [],
+        "generate": "RGB laser light show projector unit, product only, no people, dark background with subtle laser beams, ecommerce shot",
     },
     "Strobe Light": {
-        "remote": [unsplash("1470225620780-dba8ba36b745")],
-        "generate": "Professional strobe light for club and stage, white flash unit, product photo white background",
+        "remote": [],
+        "generate": "Professional strobe light stage unit, product only, no people, white background, ecommerce product photo",
     },
     "DMX Light Controller": {
         "remote": [unsplash("1571015971758-5ef446c1137e")],
@@ -218,19 +229,20 @@ PRODUCT_IMAGE_SOURCES = {
         "generate": "Ernie Ball electric guitar strings sealed pack product photo white background",
     },
     "Professional Drum Sticks": {
-        "remote": [unsplash("1504898770365-14faca6a7320")],
+        "remote": [],
+        "generate": "Pair of wooden drumsticks Vic Firth style, product only, no people, white background, ecommerce product photo",
     },
     "XLR Cable Pack": {
-        "remote": [unsplash("1556761175-5973dc0f32e7")],
-        "generate": "Coiled XLR microphone cables pack with gold connectors, product photo white background",
+        "remote": [],
+        "generate": "Coiled XLR microphone cables with gold connectors, product only, no people, white background, ecommerce shot",
     },
     "Microphone Boom Stand": {
-        "remote": [unsplash("1589903308904-1010c2294adc"), f"{W}/5/5c/Shure_SM58.jpg"],
-        "generate": "Professional microphone boom stand with telescopic arm, black metal, product photo white background",
+        "remote": [],
+        "generate": "Professional microphone boom stand black metal telescopic arm, product only, no people, white background",
     },
     "Guitar Hard Case": {
-        "remote": [unsplash("1525201548942-d8732f6617a0")],
-        "generate": "Hard shell electric guitar flight case black tolex, product photo white background",
+        "remote": [],
+        "generate": "Hard shell electric guitar flight case black tolex, product only, no people, white background",
     },
     "Guitar Effects Pedal": {
         "remote": [f"{W}/d/dd/BOSS_PW-10_V-Wah_pedal.jpg", f"{W}/thumb/1/12/BOSS_guitar_pedals.jpg/960px-BOSS_guitar_pedals.jpg"],
@@ -250,7 +262,7 @@ def local_urls_for_product(name: str) -> dict:
     """Return image_url + images list using local public paths."""
     sources = PRODUCT_IMAGE_SOURCES.get(name, {})
     remote = sources.get("remote", [])
-    if not remote:
+    if not remote and "generate" not in sources:
         return {"image_url": "", "images": []}
 
     image_url = local_path(name, 0)
