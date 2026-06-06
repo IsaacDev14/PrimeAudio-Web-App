@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { Link, NavLink, Outlet, useNavigate, Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { API_URL } from '../config/api';
 import {
@@ -28,7 +28,7 @@ import {
 } from '../components/ui/dropdown-menu';
 
 const CustomerLayout = () => {
-    const { user, logout } = useAuth();
+    const { user, logout, loading } = useAuth();
     const navigate = useNavigate();
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [notifications, setNotifications] = useState([]);
@@ -68,6 +68,22 @@ const CustomerLayout = () => {
     ];
 
     const unreadCount = notifications.filter(n => !n.is_read).length;
+
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+                <div className="animate-spin w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full" />
+            </div>
+        );
+    }
+
+    if (!user) {
+        return <Navigate to="/login?redirect=/dashboard" replace />;
+    }
+
+    if (user.is_admin) {
+        return <Navigate to="/admin" replace />;
+    }
 
     return (
         <div className="min-h-screen bg-gray-50">

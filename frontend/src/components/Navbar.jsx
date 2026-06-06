@@ -140,7 +140,7 @@ const Navbar = () => {
                                     <div className="absolute right-0 top-full mt-2 w-80 bg-white rounded-xl shadow-xl border border-slate-100 overflow-hidden z-50">
                                         <div className="p-3 border-b border-slate-100 flex justify-between items-center">
                                             <h3 className="font-semibold text-slate-900">Notifications</h3>
-                                            <Link to="/profile?tab=notifications" className="text-xs text-blue-600 hover:underline">
+                                            <Link to="/dashboard/profile?tab=notifications" className="text-xs text-blue-600 hover:underline">
                                                 View All
                                             </Link>
                                         </div>
@@ -198,7 +198,7 @@ const Navbar = () => {
 
                         {user ? (
                             <Link
-                                to="/profile"
+                                to={user.is_admin ? '/admin' : '/dashboard'}
                                 className="hidden lg:flex items-center ml-1 p-1 rounded-full hover:bg-slate-100 transition-colors"
                             >
                                 <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-semibold text-sm">
@@ -255,7 +255,7 @@ const Navbar = () => {
 
                         {user ? (
                             <Link
-                                to="/profile"
+                                to={user.is_admin ? '/admin' : '/dashboard'}
                                 className="flex items-center justify-center gap-2 bg-slate-100 text-slate-900 px-4 py-3 rounded-xl font-medium"
                                 onClick={() => setMobileMenuOpen(false)}
                             >

@@ -42,7 +42,7 @@ const Register = () => {
         const result = await register(formData.email, formData.password, formData.fullName);
 
         if (result.success) {
-            navigate('/shop');
+            navigate('/dashboard');
         } else {
             setError(result.message);
         }

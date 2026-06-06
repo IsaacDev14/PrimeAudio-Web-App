@@ -37,9 +37,12 @@ const AdminLayout = () => {
         );
     }
 
-    // Redirect if not logged in or not admin
     if (!user) {
-        return <Navigate to="/login" replace />;
+        return <Navigate to="/login?redirect=/admin" replace />;
+    }
+
+    if (!user.is_admin) {
+        return <Navigate to="/dashboard" replace />;
     }
 
     return (
