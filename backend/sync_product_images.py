@@ -5,6 +5,7 @@ Uses Wikimedia + Unsplash sources from product_images.py; optional AI-generated 
 import asyncio
 import json
 import shutil
+import time
 from pathlib import Path
 
 import httpx
@@ -32,6 +33,8 @@ def resolve_generated_png(name: str) -> Path | None:
 
 async def download_url(client: httpx.AsyncClient, url: str, dest: Path) -> bool:
     try:
+        if "wikimedia.org" in url:
+            await asyncio.sleep(0.35)
         r = await client.get(url, headers=HEADERS, follow_redirects=True, timeout=60)
         r.raise_for_status()
         dest.parent.mkdir(parents=True, exist_ok=True)
