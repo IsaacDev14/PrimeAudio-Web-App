@@ -62,7 +62,7 @@ PRODUCT_IMAGE_SOURCES = {
         "remote": [unsplash("1520523839897-bd0b52f945a0"), unsplash("1513883049090-d0b7439799bf")],
     },
     "Korg Synthesizer": {
-        "remote": [unsplash("1552422535-c45813c61732"), unsplash("1614148375099-46959409df52")],
+        "remote": [unsplash("1552422535-c45813c61732"), unsplash("1520523839897-bd0b52f945a0")],
     },
     "Akai MIDI Controller": {
         "remote": [unsplash("1552422535-c45813c61732"), unsplash("1598488035139-bdbb2231ce04")],

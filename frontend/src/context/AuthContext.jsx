@@ -93,31 +93,41 @@ export const AuthProvider = ({ children }) => {
 
     const login = async (email, password) => {
         try {
-            console.log('Attempting login with:', email, password); // Debug log
-
             const formData = new URLSearchParams();
             formData.append('username', email.trim());
-            formData.append('password', password.trim());
+            formData.append('password', password);
 
             const response = await fetch(`${API_URL}/auth/token`, {
                 method: 'POST',
-                // Content-Type is set automatically by fetch when using URLSearchParams
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
                 body: formData,
             });
 
-            const data = await response.json();
+            let data = {};
+            try {
+                data = await response.json();
+            } catch {
+                data = {};
+            }
 
-            if (response.ok) {
+            if (response.ok && data.access_token) {
                 localStorage.setItem('token', data.access_token);
                 const user = await checkUser();
                 setLastActivity(Date.now());
                 return { success: true, user };
-            } else {
-                return { success: false, message: data.detail || 'Login failed' };
             }
+
+            const detail = data.detail;
+            const message = Array.isArray(detail)
+                ? detail.map((item) => item.msg).join(', ')
+                : detail || 'Incorrect email or password';
+
+            return { success: false, message };
         } catch (error) {
-            console.error("Login error:", error);
-            return { success: false, message: "Network error" };
+            console.error('Login error:', error);
+            return { success: false, message: 'Unable to reach the server. Please try again.' };
         }
     };
 

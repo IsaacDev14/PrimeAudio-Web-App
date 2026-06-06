@@ -73,16 +73,29 @@ const ProductCard = ({ product }) => {
         }
     };
 
-    // Navigation handlers
     const nextImage = (e) => {
         e.preventDefault();
+        e.stopPropagation();
+        if (images.length <= 1) return;
         setCurrentImageIndex((prev) => (prev + 1) % images.length);
     };
 
     const prevImage = (e) => {
         e.preventDefault();
+        e.stopPropagation();
+        if (images.length <= 1) return;
         setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length);
     };
+
+    const goToImage = (e, index) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setCurrentImageIndex(index);
+    };
+
+    useEffect(() => {
+        setCurrentImageIndex(0);
+    }, [product.id, images.length]);
 
     return (
         <motion.div
@@ -91,20 +104,24 @@ const ProductCard = ({ product }) => {
             onHoverEnd={() => setIsHovered(false)}
         >
             <div className="relative aspect-[4/3] overflow-hidden bg-slate-50 rounded-t-xl">
-                <Link to={`/shop/${product.id}`}>
-                    <AnimatePresence mode="wait">
-                        <motion.img
-                            key={currentImageIndex}
-                            src={images[currentImageIndex]}
-                            alt={product.name}
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            transition={{ duration: 0.3 }}
-                            className="absolute inset-0 w-full h-full object-contain p-3"
-                        />
-                    </AnimatePresence>
-                </Link>
+                <AnimatePresence mode="wait">
+                    <motion.img
+                        key={`${product.id}-${currentImageIndex}`}
+                        src={images[currentImageIndex]}
+                        alt={`${product.name} - view ${currentImageIndex + 1}`}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="absolute inset-0 w-full h-full object-contain p-3 pointer-events-none"
+                    />
+                </AnimatePresence>
+
+                <Link
+                    to={`/shop/${product.id}`}
+                    className="absolute inset-0 z-[5]"
+                    aria-label={`View ${product.name}`}
+                />
 
                 {/* Top Badges */}
                 {product.rating >= 4.8 && (
@@ -124,19 +141,21 @@ const ProductCard = ({ product }) => {
                     <Heart className={`w-4 h-4 stroke-2 ${isInWishlist ? 'fill-white' : ''}`} />
                 </button>
 
-                {/* Navigation Buttons (always visible for carousel UX) */}
+                {/* Navigation Buttons */}
                 <>
                     <button
+                        type="button"
                         onClick={prevImage}
-                        disabled={images.length <= 1}
-                        className="absolute top-1/2 left-2 -translate-y-1/2 p-1.5 bg-white/60 backdrop-blur-md hover:bg-white rounded-full text-slate-900 shadow-md transition-all z-20 disabled:opacity-40 disabled:pointer-events-none"
+                        className={`absolute top-1/2 left-2 -translate-y-1/2 p-1.5 bg-white/80 backdrop-blur-md hover:bg-white rounded-full text-slate-900 shadow-md transition-all z-20 ${images.length <= 1 ? 'opacity-40' : 'opacity-100'}`}
+                        aria-label="Previous image"
                     >
                         <ChevronLeft className="w-4 h-4" />
                     </button>
                     <button
+                        type="button"
                         onClick={nextImage}
-                        disabled={images.length <= 1}
-                        className="absolute top-1/2 right-2 -translate-y-1/2 p-1.5 bg-white/60 backdrop-blur-md hover:bg-white rounded-full text-slate-900 shadow-md transition-all z-20 disabled:opacity-40 disabled:pointer-events-none"
+                        className={`absolute top-1/2 right-2 -translate-y-1/2 p-1.5 bg-white/80 backdrop-blur-md hover:bg-white rounded-full text-slate-900 shadow-md transition-all z-20 ${images.length <= 1 ? 'opacity-40' : 'opacity-100'}`}
+                        aria-label="Next image"
                     >
                         <ChevronRight className="w-4 h-4" />
                     </button>
@@ -144,11 +163,14 @@ const ProductCard = ({ product }) => {
 
                 {/* Carousel Dots */}
                 {images.length > 1 && (
-                    <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
+                    <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 z-20">
                         {images.map((_, idx) => (
-                            <div
+                            <button
                                 key={idx}
-                                className={`w-1.5 h-1.5 rounded-full shadow-sm transition-all ${idx === currentImageIndex ? 'bg-white scale-125' : 'bg-white/50'}`}
+                                type="button"
+                                onClick={(e) => goToImage(e, idx)}
+                                aria-label={`Show image ${idx + 1}`}
+                                className={`w-1.5 h-1.5 rounded-full shadow-sm transition-all ${idx === currentImageIndex ? 'bg-white scale-125' : 'bg-white/50 hover:bg-white/80'}`}
                             />
                         ))}
                     </div>

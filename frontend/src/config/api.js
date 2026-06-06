@@ -13,7 +13,7 @@ export const api = {
 
     // Auth endpoints
     auth: {
-        login: `${API_URL}/auth/login`,
+        login: `${API_URL}/auth/token`,
         register: `${API_URL}/auth/register`,
         me: `${API_URL}/auth/me`,
         users: `${API_URL}/auth/users`,
