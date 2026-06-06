@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, useInView, AnimatePresence } from 'framer-motion';
+import { motion, useInView } from 'framer-motion';
 import {
     ArrowRight,
     Star,
@@ -183,213 +183,220 @@ function StatItem({ value, suffix, label, showDivider }) {
     );
 }
 
-const PROCESS_STEP_THEMES = [
-    {
-        gradient: 'from-[#FF5C00] via-[#FF7A33] to-[#FFB347]',
-        orb: 'bg-[#FF5C00]/30',
-        iconBg: 'from-orange-400/20 to-amber-500/10',
-        ring: 'ring-orange-400/40',
-    },
-    {
-        gradient: 'from-[#4F46E5] via-[#6366F1] to-[#818CF8]',
-        orb: 'bg-indigo-500/25',
-        iconBg: 'from-indigo-400/20 to-violet-500/10',
-        ring: 'ring-indigo-400/40',
-    },
-    {
-        gradient: 'from-[#0284C7] via-[#0EA5E9] to-[#38BDF8]',
-        orb: 'bg-sky-500/25',
-        iconBg: 'from-sky-400/20 to-cyan-500/10',
-        ring: 'ring-sky-400/40',
-    },
-    {
-        gradient: 'from-[#059669] via-[#10B981] to-[#34D399]',
-        orb: 'bg-emerald-500/25',
-        iconBg: 'from-emerald-400/20 to-teal-500/10',
-        ring: 'ring-emerald-400/40',
-    },
-];
+const STEP_DURATION = 0.7;
+const STEP_STAGGER = 0.55;
 
-const STEP_HOLD_MS = 2800;
-const STEP_TRANSITION = 0.85;
+function ProcessStepIcon({ icon: Icon, isActive, isComplete, index }) {
+    return (
+        <motion.div
+            animate={
+                isActive
+                    ? {
+                          scale: [1, 1.08, 1],
+                          boxShadow: [
+                              '0 0 0 0 rgba(255,92,0,0)',
+                              '0 0 0 8px rgba(255,92,0,0.15)',
+                              '0 0 0 0 rgba(255,92,0,0)',
+                          ],
+                      }
+                    : {}
+            }
+            transition={{ duration: 0.6, repeat: isActive ? Infinity : 0, repeatDelay: 1.2 }}
+            className={`relative w-16 h-16 rounded-xl flex items-center justify-center mx-auto transition-colors duration-500 ${
+                isComplete || isActive
+                    ? 'bg-[#FF5C00]/10 border-2 border-[#FF5C00]/40'
+                    : 'bg-slate-50 border border-slate-200'
+            }`}
+        >
+            <motion.div
+                animate={
+                    isActive && index === 2
+                        ? { x: [0, 4, 0] }
+                        : isActive && index === 0
+                          ? { rotate: [0, -8, 8, 0] }
+                          : isComplete && index === 3
+                            ? { scale: [1, 1.2, 1] }
+                            : {}
+                }
+                transition={{ duration: 0.5, repeat: isActive ? Infinity : 0, repeatDelay: 1 }}
+            >
+                <Icon
+                    className={`w-6 h-6 transition-colors duration-500 ${
+                        isComplete || isActive ? 'text-[#FF5C00]' : 'text-slate-400'
+                    }`}
+                    strokeWidth={1.5}
+                />
+            </motion.div>
+            <motion.span
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: index * STEP_STAGGER + 0.2, type: 'spring', stiffness: 260 }}
+                className={`absolute -top-1.5 -right-1.5 w-6 h-6 rounded-full text-white text-xs font-bold flex items-center justify-center transition-colors duration-500 ${
+                    isComplete || isActive ? 'bg-[#FF5C00]' : 'bg-slate-300'
+                }`}
+            >
+                {index + 1}
+            </motion.span>
+        </motion.div>
+    );
+}
+
+function ProcessConnector({ isFilled, direction = 'horizontal' }) {
+    if (direction === 'vertical') {
+        return (
+            <div className="w-0.5 h-10 bg-slate-200 relative overflow-hidden mx-auto">
+                <motion.div
+                    className="absolute inset-x-0 top-0 bg-[#FF5C00]"
+                    initial={{ height: '0%' }}
+                    animate={{ height: isFilled ? '100%' : '0%' }}
+                    transition={{ duration: STEP_DURATION, ease: 'easeInOut' }}
+                />
+            </div>
+        );
+    }
+
+    return (
+        <div className="hidden lg:flex flex-1 items-center px-2 pt-8">
+            <div className="w-full h-0.5 bg-slate-200 relative overflow-hidden rounded-full">
+                        <motion.div
+                    className="absolute inset-y-0 left-0 bg-gradient-to-r from-[#FF5C00] to-[#ff8c4d] rounded-full"
+                    initial={{ width: '0%' }}
+                    animate={{ width: isFilled ? '100%' : '0%' }}
+                    transition={{ duration: STEP_DURATION, ease: 'easeInOut' }}
+                />
+                {isFilled && (
+                        <motion.div
+                        className="absolute top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-[#FF5C00] shadow-[0_0_8px_rgba(255,92,0,0.6)]"
+                        initial={{ left: '0%', opacity: 0 }}
+                        animate={{ left: '100%', opacity: [0, 1, 1, 0] }}
+                        transition={{ duration: STEP_DURATION, ease: 'easeInOut' }}
+                    />
+                )}
+            </div>
+                    </div>
+    );
+}
 
 function ProcessFlow() {
     const ref = useRef(null);
-    const isInView = useInView(ref, { once: false, margin: '-60px' });
-    const [activeStep, setActiveStep] = useState(0);
-    const [progress, setProgress] = useState(0);
-    const [cycleKey, setCycleKey] = useState(0);
-    const jumpStepRef = useRef(null);
+    const isInView = useInView(ref, { once: true, margin: '-80px' });
+    const [activeStep, setActiveStep] = useState(-1);
 
     useEffect(() => {
         if (!isInView) return;
 
-        let stepIndex = jumpStepRef.current ?? 0;
-        jumpStepRef.current = null;
-        setActiveStep(stepIndex);
-        setProgress(0);
-
-        let frame;
-        let start = performance.now();
-
-        const tick = (now) => {
-            const elapsed = now - start;
-            const stepProgress = Math.min(elapsed / STEP_HOLD_MS, 1);
-            setProgress(stepProgress);
-
-            if (elapsed >= STEP_HOLD_MS) {
-                stepIndex = (stepIndex + 1) % PROCESS_STEPS.length;
-                setActiveStep(stepIndex);
-                start = now;
-                setProgress(0);
-            }
-
-            frame = requestAnimationFrame(tick);
+        let timers = [];
+        const runSequence = () => {
+            timers.forEach(clearTimeout);
+            timers = [];
+            setActiveStep(-1);
+            PROCESS_STEPS.forEach((_, i) => {
+                timers.push(
+                    setTimeout(() => setActiveStep(i), i * (STEP_STAGGER * 1000) + 300)
+                );
+            });
         };
 
-        frame = requestAnimationFrame(tick);
-        return () => cancelAnimationFrame(frame);
-    }, [isInView, cycleKey]);
+        runSequence();
+        const loop = setInterval(runSequence, 6000);
 
-    const theme = PROCESS_STEP_THEMES[activeStep];
-    const step = PROCESS_STEPS[activeStep];
-    const StepIcon = step.icon;
+        return () => {
+            timers.forEach(clearTimeout);
+            clearInterval(loop);
+        };
+    }, [isInView]);
 
     return (
         <div ref={ref} className="max-w-5xl mx-auto">
-            <div className="relative rounded-3xl overflow-hidden bg-[#0A1628] shadow-2xl shadow-[#0A1628]/20 border border-white/10">
-                {/* Animated gradient backdrop */}
-                <AnimatePresence mode="wait">
-                    <motion.div
-                        key={activeStep}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: STEP_TRANSITION }}
-                        className={`absolute inset-0 bg-gradient-to-br ${theme.gradient}`}
-                    />
-                </AnimatePresence>
+            {/* Desktop — horizontal animated flow */}
+            <div className="hidden lg:flex items-start">
+                {PROCESS_STEPS.map((step, i) => {
+                    const isActive = activeStep === i;
+                    const isComplete = activeStep > i;
 
-                {/* Soft blend orbs */}
-                <motion.div
-                    animate={{ x: [0, 30, 0], y: [0, -20, 0], scale: [1, 1.15, 1] }}
-                    transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-                    className={`absolute -top-20 -left-16 w-72 h-72 rounded-full blur-3xl ${theme.orb}`}
-                />
-                <motion.div
-                    animate={{ x: [0, -25, 0], y: [0, 25, 0], scale: [1.1, 1, 1.1] }}
-                    transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
-                    className="absolute -bottom-24 -right-12 w-80 h-80 rounded-full blur-3xl bg-[#0A1628]/50"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0A1628]/90 via-[#0A1628]/40 to-transparent" />
-                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(10,22,40,0.35)_100%)]" />
-
-                {/* Film strip top bar */}
-                <div className="relative z-10 flex items-center justify-between px-5 py-3 border-b border-white/10 bg-black/20 backdrop-blur-sm">
-                    <div className="flex items-center gap-2">
-                        <span className="relative flex h-2 w-2">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
-                            <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500" />
-                        </span>
-                        <span className="text-[10px] font-semibold uppercase tracking-widest text-white/70">
-                            Delivery workflow
-                        </span>
-                    </div>
-                    <span className="text-[10px] font-mono text-white/50 tabular-nums">
-                        {String(activeStep + 1).padStart(2, '0')} / {String(PROCESS_STEPS.length).padStart(2, '0')}
-                    </span>
-                </div>
-
-                {/* Main scene */}
-                <div className="relative z-10 px-6 py-10 md:py-14 min-h-[280px] md:min-h-[320px] flex flex-col items-center justify-center text-center">
-                    <AnimatePresence mode="wait">
-                        <motion.div
-                            key={activeStep}
-                            initial={{ opacity: 0, y: 24, scale: 0.96, filter: 'blur(8px)' }}
-                            animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
-                            exit={{ opacity: 0, y: -20, scale: 1.02, filter: 'blur(6px)' }}
-                            transition={{ duration: STEP_TRANSITION, ease: [0.22, 1, 0.36, 1] }}
-                            className="flex flex-col items-center max-w-md"
-                        >
+                    return (
+                        <div key={step.title} className="contents">
+                            {i > 0 && <ProcessConnector isFilled={activeStep >= i} />}
                             <motion.div
-                                initial={{ scale: 0.8 }}
-                                animate={{ scale: 1 }}
-                                transition={{ type: 'spring', stiffness: 260, damping: 20 }}
-                                className={`relative mb-6 w-20 h-20 md:w-24 md:h-24 rounded-2xl bg-gradient-to-br ${theme.iconBg} backdrop-blur-md ring-2 ${theme.ring} flex items-center justify-center shadow-lg shadow-black/20`}
+                                initial={{ opacity: 0, y: 24 }}
+                                animate={isInView ? { opacity: 1, y: 0 } : {}}
+                                transition={{ delay: i * STEP_STAGGER, duration: 0.5 }}
+                                className="flex-1 text-center min-w-0"
                             >
-                                <StepIcon className="w-9 h-9 md:w-10 md:h-10 text-white" strokeWidth={1.5} />
-                                <span className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-white text-[#0A1628] text-xs font-bold flex items-center justify-center shadow-md">
-                                    {activeStep + 1}
-                                </span>
-                            </motion.div>
-
-                            <h3 className="text-2xl md:text-3xl font-bold text-white mb-2 tracking-tight">
-                                {step.title}
-                            </h3>
-                            <p className="text-white/75 text-sm md:text-base leading-relaxed">
-                                {step.description}
-                            </p>
-                        </motion.div>
-                    </AnimatePresence>
-                </div>
-
-                {/* Timeline + progress */}
-                <div className="relative z-10 px-5 pb-5 pt-2 bg-black/25 backdrop-blur-md border-t border-white/10">
-                    <div className="flex gap-2 mb-4">
-                        {PROCESS_STEPS.map((s, i) => {
-                            const isActive = i === activeStep;
-                            const isDone = i < activeStep;
-                            const Icon = s.icon;
-
-                            return (
-                                <button
-                                    key={s.title}
-                                    type="button"
-                                    onClick={() => {
-                                        jumpStepRef.current = i;
-                                        setCycleKey((k) => k + 1);
+                                <ProcessStepIcon
+                                    icon={step.icon}
+                                    isActive={isActive}
+                                    isComplete={isComplete}
+                                    index={i}
+                                />
+                                <motion.h3
+                                    animate={{
+                                        color: isComplete || isActive ? '#0A1628' : '#94a3b8',
                                     }}
-                                    className={`flex-1 relative rounded-xl p-2.5 md:p-3 text-left transition-all duration-500 border ${
-                                        isActive
-                                            ? 'bg-white/15 border-white/30 shadow-lg shadow-black/20'
-                                            : isDone
-                                              ? 'bg-white/8 border-white/15'
-                                              : 'bg-white/5 border-white/5 hover:bg-white/10'
-                                    }`}
+                                    className="font-semibold mt-5 mb-1"
                                 >
-                                    <div className="flex items-center gap-2 mb-1.5">
-                                        <Icon
-                                            className={`w-3.5 h-3.5 shrink-0 ${
-                                                isActive ? 'text-white' : isDone ? 'text-white/70' : 'text-white/40'
-                                            }`}
-                                            strokeWidth={1.5}
-                                        />
-                                        <span
-                                            className={`text-[11px] md:text-xs font-semibold truncate ${
-                                                isActive ? 'text-white' : 'text-white/50'
-                                            }`}
-                                        >
-                                            {s.title}
-                                        </span>
-                                    </div>
-                                    <div className="h-1 rounded-full bg-white/10 overflow-hidden">
-                                        <motion.div
-                                            className={`h-full rounded-full bg-gradient-to-r ${PROCESS_STEP_THEMES[i].gradient}`}
-                                            animate={{
-                                                width: isDone ? '100%' : isActive ? `${progress * 100}%` : '0%',
-                                            }}
-                                            transition={{ duration: 0.15, ease: 'linear' }}
-                                        />
-                                    </div>
-                                </button>
-                            );
-                        })}
+                                    {step.title}
+                                </motion.h3>
+                                <motion.p
+                                animate={{
+                                        opacity: isComplete || isActive ? 1 : 0.55,
+                                    }}
+                                    className="text-slate-500 text-sm px-2"
+                                >
+                                    {step.description}
+                                </motion.p>
+                            </motion.div>
                     </div>
-
-                    <p className="text-center text-[11px] text-white/40 font-medium">
-                        From order to doorstep — automated, tracked, and on time
-                    </p>
+                    );
+                })}
                 </div>
+
+            {/* Mobile / tablet — vertical animated flow */}
+            <div className="lg:hidden flex flex-col items-center">
+                {PROCESS_STEPS.map((step, i) => {
+                    const isActive = activeStep === i;
+                    const isComplete = activeStep > i;
+
+                    return (
+                        <div key={step.title} className="flex flex-col items-center w-full max-w-xs">
+                            <motion.div
+                                initial={{ opacity: 0, x: -20 }}
+                                animate={isInView ? { opacity: 1, x: 0 } : {}}
+                                transition={{ delay: i * STEP_STAGGER, duration: 0.5 }}
+                                className="flex items-center gap-5 w-full"
+                            >
+                                <ProcessStepIcon
+                                    icon={step.icon}
+                                    isActive={isActive}
+                                    isComplete={isComplete}
+                                    index={i}
+                                />
+                                <div className="text-left flex-1">
+                                    <h3
+                                        className={`font-semibold mb-0.5 transition-colors duration-500 ${
+                                            isComplete || isActive ? 'text-slate-900' : 'text-slate-400'
+                                        }`}
+                                    >
+                                        {step.title}
+                                    </h3>
+                                    <p
+                                        className={`text-sm transition-opacity duration-500 ${
+                                            isComplete || isActive ? 'text-slate-500' : 'text-slate-400'
+                                        }`}
+                                    >
+                                        {step.description}
+                                    </p>
+                                </div>
+                            </motion.div>
+                            {i < PROCESS_STEPS.length - 1 && (
+                                <ProcessConnector
+                                    isFilled={activeStep > i}
+                                    direction="vertical"
+                                />
+                            )}
+                        </div>
+                    );
+                })}
             </div>
         </div>
     );
@@ -458,9 +465,9 @@ const Showcase = () => {
 
                 <div className="relative z-10 container mx-auto px-4 py-10 lg:py-14">
                     <div className="grid lg:grid-cols-2 gap-10 items-center">
-                        <motion.div
+                                    <motion.div
                             initial={{ opacity: 0, y: 30 }}
-                            animate={{ opacity: 1, y: 0 }}
+                                        animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.7 }}
                             className="max-w-xl"
                         >
@@ -490,7 +497,7 @@ const Showcase = () => {
                             </div>
                         </motion.div>
 
-                        <motion.div
+                                <motion.div
                             initial={{ opacity: 0, x: 30 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ duration: 0.7, delay: 0.15 }}
@@ -624,18 +631,15 @@ const Showcase = () => {
                         whileInView="visible"
                         viewport={{ once: true }}
                         variants={fadeUp}
-                        className="text-center mb-5"
+                        className="text-center mb-6"
                     >
                         <h2 className="text-2xl md:text-3xl font-bold text-[#0A1628]">
                             Four Steps to Flawless Delivery
                         </h2>
-                        <p className="text-slate-500 text-sm mt-1.5">
-                            Watch how every order moves from click to doorstep
-                        </p>
                     </motion.div>
 
                     <ProcessFlow />
-                </div>
+                        </div>
             </section>
 
             {/* Testimonials */}
@@ -655,11 +659,11 @@ const Showcase = () => {
 
                     <div className="grid md:grid-cols-3 gap-6">
                         {TESTIMONIALS.map((t, i) => (
-                            <motion.div
+                                <motion.div
                                 key={t.name}
                                 initial="hidden"
                                 whileInView="visible"
-                                viewport={{ once: true }}
+                                    viewport={{ once: true }}
                                 variants={fadeUp}
                                 transition={{ delay: i * 0.08 }}
                                 className="bg-white rounded-2xl p-7 border border-slate-200 shadow-sm hover:shadow-md transition-shadow"
@@ -675,15 +679,15 @@ const Showcase = () => {
                                 <div className="flex items-center gap-3 pt-5 border-t border-slate-100">
                                     <div className="w-10 h-10 rounded-full bg-[#FF5C00] flex items-center justify-center text-white font-semibold text-xs">
                                         {t.initials}
-                                    </div>
-                                    <div>
+                                        </div>
+                                        <div>
                                         <div className="font-semibold text-slate-900 text-sm">{t.name}</div>
                                         <div className="text-xs text-slate-500">{t.company}</div>
                                     </div>
-                                </div>
-                            </motion.div>
-                        ))}
-                    </div>
+                                    </div>
+                                </motion.div>
+                            ))}
+                        </div>
                 </div>
             </section>
 
@@ -703,13 +707,13 @@ const Showcase = () => {
                         <p className="text-white/90 mb-8 text-base">
                             Let&apos;s handle your next delivery like it&apos;s our own — from Nairobi to anywhere in Kenya.
                         </p>
-                        <Link
-                            to="/contact"
+                            <Link
+                                to="/contact"
                             className="inline-flex items-center gap-2 px-8 py-4 bg-[#0A1628] hover:bg-[#0F1D32] text-white rounded-lg font-semibold transition-colors"
                         >
                             Contact Us Today
                             <ArrowRight className="w-4 h-4" />
-                        </Link>
+                            </Link>
                     </motion.div>
                 </div>
             </section>
