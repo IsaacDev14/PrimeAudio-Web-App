@@ -49,7 +49,7 @@ PRODUCT_IMAGE_SOURCES = {
         "remote": [unsplash("1525201548942-d8732f6617a0"), unsplash("1516924962500-2b4b3b99ea02")],
     },
     "Martin Ukulele": {
-        "remote": [unsplash("1516924962500-2b4b3b99ea02")],
+        "remote": [unsplash("1516924962500-2b4b3b99ea02"), unsplash("1493225457124-a3eb161ffa5f")],
         "generate": "Martin soprano ukulele mahogany body, product photo on white background, sharp ecommerce shot",
     },
     "PRS Custom 24 Electric Guitar": {
@@ -65,7 +65,7 @@ PRODUCT_IMAGE_SOURCES = {
         "remote": [unsplash("1552422535-c45813c61732"), unsplash("1614148375099-46959409df52")],
     },
     "Akai MIDI Controller": {
-        "remote": [],
+        "remote": [unsplash("1552422535-c45813c61732"), unsplash("1598488035139-bdbb2231ce04")],
         "generate": "Akai MPK Mini MIDI keyboard controller only, no people, no hands, isolated product on white background, ecommerce product photo",
     },
     "Yamaha Stage Piano": {
@@ -113,23 +113,23 @@ PRODUCT_IMAGE_SOURCES = {
         "generate": "Rode NT-USB studio condenser microphone with desk stand, product photo white background",
     },
     "Sennheiser Lavalier Microphone": {
-        "remote": [],
+        "remote": [unsplash("1598488035139-bdbb2231ce04"), unsplash("1485576913031-6413a8b3d2f7")],
         "generate": "Sennheiser lavalier clip-on microphone with cable, product only, no people, white background, ecommerce photo",
     },
     "JBL Studio Monitor Pair": {
-        "remote": [],
+        "remote": [unsplash("1545167622-3a6ac756afa4"), unsplash("1619983081563-430f63602796")],
         "generate": "Pair of JBL studio monitor speakers black, product only, no people, white background, ecommerce product photography",
     },
     "JBL PA Speaker": {
-        "remote": [],
+        "remote": [unsplash("1545167622-3a6ac756afa4"), unsplash("1571266028247-4d862b7b0a84")],
         "generate": "JBL powered PA speaker cabinet 15 inch, product only, no crowd, no people, white background, ecommerce shot",
     },
     "Yamaha Subwoofer": {
-        "remote": [],
+        "remote": [unsplash("1545167622-3a6ac756afa4"), unsplash("1619983081563-430f63602796")],
         "generate": "Yamaha powered subwoofer speaker cabinet black, product only, no people, white background, ecommerce photography",
     },
     "KRK Rokit Studio Monitors": {
-        "remote": [],
+        "remote": [unsplash("1545167622-3a6ac756afa4"), unsplash("1619983081563-430f63602796")],
         "generate": "KRK Rokit studio monitor speakers pair yellow cones, product only, no people, white background, ecommerce product photo",
     },
     "Pioneer DJ Controller": {
@@ -144,7 +144,7 @@ PRODUCT_IMAGE_SOURCES = {
         "remote": [f"{W}/5/51/CDJ_2000-edit.jpg"],
     },
     "Numark DJ Mixer": {
-        "remote": [],
+        "remote": [unsplash("1571327073757-71d13c24de30"), unsplash("1571015971758-5ef446c1137e")],
         "generate": "Numark DJ mixer console with faders and knobs, product only, no people, white background, ecommerce photography",
     },
     "Pioneer DDJ-1000 Controller": {
@@ -197,7 +197,7 @@ PRODUCT_IMAGE_SOURCES = {
         "remote": [unsplash("1611532736597-de2d4265fba3")],
     },
     "Roland Keyboard Amplifier": {
-        "remote": [],
+        "remote": [unsplash("1619983081563-430f63602796"), unsplash("1548123378-bde4eca81d2d")],
         "generate": "Roland keyboard amplifier combo amp, product only, no people, white background, ecommerce product photo",
     },
     "Crown Power Amplifier": {
@@ -205,7 +205,7 @@ PRODUCT_IMAGE_SOURCES = {
         "generate": "Crown professional rack-mount power amplifier black faceplate, product photo white background",
     },
     "Chauvet LED Par Can": {
-        "remote": [],
+        "remote": [unsplash("1571015971758-5ef446c1137e"), unsplash("1470229722913-7c0e2dbbafd3")],
         "generate": "Chauvet RGB LED par can stage light, product only, no people, white background, ecommerce studio shot",
     },
     "American DJ Moving Head Light": {
@@ -237,7 +237,7 @@ PRODUCT_IMAGE_SOURCES = {
         "generate": "Coiled XLR microphone cables with gold connectors, product only, no people, white background, ecommerce shot",
     },
     "Microphone Boom Stand": {
-        "remote": [],
+        "remote": [unsplash("1485576913031-6413a8b3d2f7"), unsplash("1598488035139-bdbb2231ce04")],
         "generate": "Professional microphone boom stand black metal telescopic arm, product only, no people, white background",
     },
     "Guitar Hard Case": {
