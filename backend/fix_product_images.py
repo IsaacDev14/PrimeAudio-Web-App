@@ -10,7 +10,7 @@ from sqlalchemy import select
 
 from database import AsyncSessionLocal
 import models
-from product_images import PRODUCT_IMAGES
+from product_images import PRODUCT_IMAGE_SOURCES, local_urls_for_product
 
 PRODUCTS_JSON = Path("cache_data/products.json")
 
@@ -24,8 +24,8 @@ async def fix_database():
         products = result.scalars().all()
 
         for product in products:
-            mapping = PRODUCT_IMAGES.get(product.name)
-            if not mapping:
+            mapping = local_urls_for_product(product.name)
+            if not mapping["image_url"]:
                 missing.append(product.name)
                 continue
 
@@ -48,8 +48,8 @@ def fix_products_json():
     updated = 0
     missing = []
     for p in products:
-        mapping = PRODUCT_IMAGES.get(p.get("name"))
-        if not mapping:
+        mapping = local_urls_for_product(p.get("name"))
+        if not mapping["image_url"]:
             missing.append(p.get("name"))
             continue
         p["image_url"] = mapping["image_url"]
