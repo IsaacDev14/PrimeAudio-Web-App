@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import { useNavigate, Link, useSearchParams, Navigate } from 'react-router-dom';
@@ -35,6 +35,14 @@ const Login = () => {
     const toast = useToast();
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
+
+    useEffect(() => {
+        const logoutMessage = sessionStorage.getItem('logoutMessage');
+        if (logoutMessage) {
+            toast.info(logoutMessage);
+            sessionStorage.removeItem('logoutMessage');
+        }
+    }, [toast]);
 
     // Get redirect URL from query params - default to /dashboard for customers
     const redirectTo = searchParams.get('redirect') || '/dashboard';

@@ -133,7 +133,7 @@ const ProductCard = ({ product }) => {
                 <button
                     onClick={toggleWishlist}
                     disabled={isWishlistLoading}
-                    className={`absolute top-3 right-3 p-2 backdrop-blur-md rounded-full transition-all z-10 ${isInWishlist
+                    className={`absolute top-3 right-3 p-2 backdrop-blur-md rounded-full transition-all z-20 ${isInWishlist
                         ? 'bg-red-500 hover:bg-red-600 text-white'
                         : 'bg-black/50 hover:bg-black/70 text-white'
                         } ${isWishlistLoading ? 'opacity-50' : ''}`}

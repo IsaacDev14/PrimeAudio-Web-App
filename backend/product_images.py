@@ -249,11 +249,11 @@ PRODUCT_IMAGE_SOURCES = {
         "remote": [f"{W}/d/dd/BOSS_PW-10_V-Wah_pedal.jpg", f"{W}/thumb/1/12/BOSS_guitar_pedals.jpg/960px-BOSS_guitar_pedals.jpg"],
     },
     "Clip-On Guitar Tuner": {
-        "remote": [unsplash("1511379938544-6d6a8132e1a5")],
+        "remote": [unsplash("1511379938544-6d6a8132e1a5"), unsplash("1564186763535-ebb21ef5277f")],
         "generate": "Korg clip-on chromatic guitar tuner on headstock, product photo white background",
     },
     "Music Stand": {
-        "remote": [unsplash("1519898963993-f44ef2512d88")],
+        "remote": [unsplash("1519898963993-f44ef2512d88"), unsplash("1511379938544-6d6a8132e1a5")],
         "generate": "Black foldable orchestral music stand with sheet music, product photo white background",
     },
 }
