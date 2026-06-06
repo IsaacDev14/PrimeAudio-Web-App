@@ -143,7 +143,7 @@ function ShowcaseImage({ src, alt, className, wrapperClassName = 'relative w-ful
                 onLoad={() => setLoaded(true)}
                 className={`${className} transition-opacity duration-700 ${loaded ? 'opacity-100' : 'opacity-0'}`}
             />
-        </div>
+                    </div>
     );
 }
 
@@ -186,8 +186,8 @@ function StatItem({ value, suffix, label, showDivider }) {
                 <p className="mt-3 text-white/50 text-sm font-medium tracking-wide uppercase">
                     {label}
                 </p>
-            </div>
-        </div>
+                        </div>
+                    </div>
     );
 }
 
@@ -228,7 +228,7 @@ function PortfolioCard({ item, index }) {
                     {item.title}
                 </h3>
                 <p className="text-white/55 text-sm leading-relaxed">{item.description}</p>
-            </div>
+                </div>
         </motion.article>
     );
 }
@@ -271,7 +271,7 @@ const Showcase = () => {
                                 <span className="text-[#FF5C00] text-xs font-bold uppercase tracking-[0.2em]">
                                     Prime Audio Solutions
                                 </span>
-                            </div>
+                    </div>
                             <h1
                                 className="font-black leading-[1.02] mb-6"
                                 style={{ fontSize: 'clamp(3rem, 7.5vw, 5.75rem)' }}
@@ -294,17 +294,17 @@ const Showcase = () => {
                                     See Our Work
                                     <ChevronDown className="w-5 h-5 group-hover:translate-y-1 transition-transform" />
                                 </button>
-                                <Link
+                                    <Link
                                     to="/contact"
                                     className="px-8 py-4 bg-white/8 hover:bg-white/15 text-white border border-white/20 hover:border-white/35 rounded-full font-bold text-base transition-all backdrop-blur-md flex items-center justify-center gap-2"
-                                >
+                                    >
                                     Get a Quote
                                     <ArrowRight className="w-5 h-5" />
-                                </Link>
-                            </div>
-                        </motion.div>
+                                    </Link>
+                                </div>
+                            </motion.div>
 
-                        <motion.div
+                                    <motion.div
                             initial={{ opacity: 0, x: 40 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ duration: 0.8, delay: 0.2 }}
@@ -339,8 +339,8 @@ const Showcase = () => {
                         <StatItem value={120} suffix="+" label="Happy Clients" showDivider />
                         <StatItem value={15} suffix="" label="Cities Covered" showDivider />
                         <StatItem value={98} suffix="%" label="Satisfaction Rate" showDivider />
-                    </div>
-                </div>
+                                </div>
+                            </div>
             </section>
 
             {/* Portfolio */}
@@ -441,9 +441,9 @@ const Showcase = () => {
                                         <div className="text-[11px] text-white/45 mt-1.5 font-semibold uppercase tracking-wide">
                                             {s.label}
                                         </div>
-                                    </div>
-                                ))}
-                            </div>
+                                </div>
+                            ))}
+                        </div>
 
                             <blockquote className="relative pl-6 border-l-2 border-[#FF5C00]">
                                 <p className="text-white/75 italic leading-relaxed mb-4 text-base">
@@ -492,13 +492,13 @@ const Showcase = () => {
                             {PROCESS_STEPS.map((step, i) => {
                                 const Icon = step.icon;
                                 return (
-                                    <motion.div
+                            <motion.div
                                         key={step.title}
                                         initial="hidden"
                                         whileInView="visible"
-                                        viewport={{ once: true }}
+                                viewport={{ once: true }}
                                         variants={fadeUp}
-                                        transition={{ delay: i * 0.1 }}
+                                transition={{ delay: i * 0.1 }}
                                         className="relative text-center"
                                     >
                                         <div className="relative inline-block mb-7">
@@ -508,12 +508,12 @@ const Showcase = () => {
                                             <span className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-[#FF5C00] text-white text-xs font-black flex items-center justify-center shadow-lg">
                                                 {i + 1}
                                             </span>
-                                        </div>
+                                </div>
                                         <h3 className="text-lg font-bold text-white mb-2">{step.title}</h3>
                                         <p className="text-white/50 text-sm leading-relaxed max-w-[180px] mx-auto">
                                             {step.description}
                                         </p>
-                                    </motion.div>
+                            </motion.div>
                                 );
                             })}
                         </div>
@@ -544,11 +544,11 @@ const Showcase = () => {
 
                     <div className="grid md:grid-cols-3 gap-7">
                         {TESTIMONIALS.map((t, i) => (
-                            <motion.div
+                                <motion.div
                                 key={t.name}
                                 initial="hidden"
                                 whileInView="visible"
-                                viewport={{ once: true }}
+                                    viewport={{ once: true }}
                                 variants={fadeUp}
                                 transition={{ delay: i * 0.1 }}
                                 className="bg-[#0A1628] rounded-3xl p-8 border border-white/6 hover:border-[#FF5C00]/25 transition-all duration-500 hover:-translate-y-1"
@@ -567,15 +567,15 @@ const Showcase = () => {
                                 <div className="flex items-center gap-4 pt-6 border-t border-white/6">
                                     <div className="w-11 h-11 rounded-full bg-gradient-to-br from-[#FF5C00] to-[#e65200] flex items-center justify-center text-white font-bold text-sm">
                                         {t.initials}
-                                    </div>
-                                    <div>
+                                        </div>
+                                        <div>
                                         <div className="font-bold text-white text-sm">{t.name}</div>
                                         <div className="text-xs text-white/40">{t.company}</div>
                                     </div>
-                                </div>
-                            </motion.div>
-                        ))}
-                    </div>
+                                    </div>
+                                </motion.div>
+                            ))}
+                        </div>
                 </div>
             </section>
 
@@ -605,13 +605,13 @@ const Showcase = () => {
                         >
                             Let&apos;s handle your next delivery like it&apos;s our own.
                         </p>
-                        <Link
-                            to="/contact"
+                            <Link
+                                to="/contact"
                             className="inline-flex items-center gap-3 px-10 py-5 bg-[#0A1628] hover:bg-[#0F1D32] text-white rounded-full font-bold text-lg transition-all shadow-[0_12px_40px_rgba(10,22,40,0.45)] hover:scale-105"
                         >
                             Contact Us Today
                             <ArrowRight className="w-5 h-5" />
-                        </Link>
+                            </Link>
                     </motion.div>
                 </div>
             </section>
