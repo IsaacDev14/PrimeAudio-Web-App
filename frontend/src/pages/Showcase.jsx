@@ -452,7 +452,7 @@ const Showcase = () => {
             />
 
             {/* Hero */}
-            <section className="relative -mt-20 pt-20 min-h-[85vh] flex items-center">
+            <section className="relative -mt-20 pt-20 min-h-[70vh] flex items-center">
                 <ShowcaseImage
                     src={IMAGES.hero}
                     alt="Kenyan delivery team loading packages in Nairobi"
@@ -463,7 +463,7 @@ const Showcase = () => {
                 <div className="absolute inset-0 bg-gradient-to-r from-white/90 via-white/55 to-transparent" />
                 <div className="absolute inset-0 bg-gradient-to-t from-white/40 via-transparent to-transparent" />
 
-                <div className="relative z-10 container mx-auto px-4 py-16 lg:py-20">
+                <div className="relative z-10 container mx-auto px-4 py-10 lg:py-14">
                     <div className="grid lg:grid-cols-2 gap-10 items-center">
                         <motion.div
                             initial={{ opacity: 0, y: 30 }}
@@ -523,7 +523,7 @@ const Showcase = () => {
             </section>
 
             {/* Stats */}
-            <section className="py-14 bg-slate-50 border-y border-slate-200">
+            <section className="py-8 bg-slate-50 border-y border-slate-200">
                 <div className="container mx-auto px-4">
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-0">
                         <StatItem value={500} suffix="+" label="Deliveries Completed" />
@@ -535,22 +535,19 @@ const Showcase = () => {
             </section>
 
             {/* Portfolio */}
-            <section id="our-work" className="py-20 md:py-28">
+            <section id="our-work" className="py-10 md:py-14">
                 <div className="container mx-auto px-4">
                     <motion.div
                         initial="hidden"
                         whileInView="visible"
                         viewport={{ once: true }}
                         variants={fadeUp}
-                        className="mb-14"
+                        className="mb-6"
                     >
-                        <p className="text-[#FF5C00] font-semibold uppercase tracking-widest text-xs mb-3">
-                            Portfolio
-                        </p>
-                        <h2 className="text-3xl md:text-4xl font-bold text-[#0A1628] mb-4">
+                        <h2 className="text-2xl md:text-3xl font-bold text-[#0A1628] mb-2">
                             Our Work in Action
                         </h2>
-                        <p className="text-slate-500 max-w-2xl text-base leading-relaxed">
+                        <p className="text-slate-500 max-w-2xl text-sm leading-relaxed">
                             Real projects across Nairobi and beyond — setups, deliveries, and logistics for clients who trust us with their gear.
                         </p>
                     </motion.div>
@@ -564,9 +561,9 @@ const Showcase = () => {
             </section>
 
             {/* Featured Project */}
-            <section className="py-20 md:py-28 bg-slate-50">
+            <section className="py-10 md:py-14 bg-slate-50">
                 <div className="container mx-auto px-4">
-                    <div className="grid lg:grid-cols-2 gap-12 items-center">
+                    <div className="grid lg:grid-cols-2 gap-8 items-center">
                         <motion.div
                             initial="hidden"
                             whileInView="visible"
@@ -588,20 +585,17 @@ const Showcase = () => {
                             variants={fadeUp}
                             transition={{ delay: 0.1 }}
                         >
-                            <p className="text-[#FF5C00] font-semibold uppercase tracking-widest text-xs mb-4">
-                                Featured Project
-                            </p>
-                            <h2 className="text-2xl md:text-3xl font-bold text-[#0A1628] mb-5 leading-tight">
+                            <h2 className="text-xl md:text-2xl font-bold text-[#0A1628] mb-3 leading-tight">
                                 How We Delivered 300 Orders in One Weekend
                             </h2>
-                            <p className="text-slate-600 leading-relaxed mb-8">
+                            <p className="text-slate-600 text-sm leading-relaxed mb-5">
                                 Harmony Retail Group launched a flash sale on premium audio gear — and 300 orders hit
                                 their system in 48 hours. We mobilised our full Nairobi warehouse team, extended dispatch
                                 hours, and coordinated 12 delivery routes across the city. Every item was
                                 quality-checked, packed, and delivered before Monday morning.
                             </p>
 
-                            <div className="grid grid-cols-3 gap-3 mb-8">
+                            <div className="grid grid-cols-3 gap-3 mb-5">
                                 {[
                                     { stat: '300', label: 'Orders Fulfilled' },
                                     { stat: '0', label: 'Returns' },
@@ -630,19 +624,16 @@ const Showcase = () => {
             </section>
 
             {/* Process */}
-            <section id="process" className="py-20 md:py-28">
+            <section id="process" className="py-10 md:py-14">
                 <div className="container mx-auto px-4">
                     <motion.div
                         initial="hidden"
                         whileInView="visible"
                         viewport={{ once: true }}
                         variants={fadeUp}
-                        className="text-center mb-14"
+                        className="text-center mb-6"
                     >
-                        <p className="text-[#FF5C00] font-semibold uppercase tracking-widest text-xs mb-3">
-                            How We Work
-                        </p>
-                        <h2 className="text-3xl md:text-4xl font-bold text-[#0A1628]">
+                        <h2 className="text-2xl md:text-3xl font-bold text-[#0A1628]">
                             Four Steps to Flawless Delivery
                         </h2>
                     </motion.div>
@@ -652,19 +643,16 @@ const Showcase = () => {
             </section>
 
             {/* Testimonials */}
-            <section className="py-20 md:py-28 bg-slate-50">
+            <section className="py-10 md:py-14 bg-slate-50">
                 <div className="container mx-auto px-4">
                     <motion.div
                         initial="hidden"
                         whileInView="visible"
                         viewport={{ once: true }}
                         variants={fadeUp}
-                        className="text-center mb-12"
+                        className="text-center mb-6"
                     >
-                        <p className="text-[#FF5C00] font-semibold uppercase tracking-widest text-xs mb-3">
-                            Testimonials
-                        </p>
-                        <h2 className="text-3xl md:text-4xl font-bold text-[#0A1628]">
+                        <h2 className="text-2xl md:text-3xl font-bold text-[#0A1628]">
                             Clients Who Trust Us
                         </h2>
                     </motion.div>

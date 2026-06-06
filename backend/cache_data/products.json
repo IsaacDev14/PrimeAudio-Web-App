@@ -57,7 +57,9 @@
         "condition": "New",
         "stock": 10,
         "image_url": "/images/products/ibanez-classical-guitar.jpg",
-        "images": [],
+        "images": [
+            "/images/products/ibanez-classical-guitar-2.jpg"
+        ],
         "is_featured": false,
         "rating": 4.5
     },
@@ -87,7 +89,9 @@
         "condition": "New",
         "stock": 20,
         "image_url": "/images/products/martin-ukulele.jpg",
-        "images": [],
+        "images": [
+            "/images/products/martin-ukulele-2.jpg"
+        ],
         "is_featured": false,
         "rating": 4.3
     },
@@ -131,7 +135,9 @@
         "condition": "New",
         "stock": 15,
         "image_url": "/images/products/akai-midi-controller.jpg",
-        "images": [],
+        "images": [
+            "/images/products/akai-midi-controller-2.jpg"
+        ],
         "is_featured": false,
         "rating": 4.6
     },
@@ -319,7 +325,9 @@
         "condition": "New",
         "stock": 8,
         "image_url": "/images/products/jbl-studio-monitor-pair.jpg",
-        "images": [],
+        "images": [
+            "/images/products/jbl-studio-monitor-pair-2.jpg"
+        ],
         "is_featured": true,
         "rating": 4.8
     },
@@ -347,7 +355,9 @@
         "condition": "New",
         "stock": 4,
         "image_url": "/images/products/yamaha-subwoofer.jpg",
-        "images": [],
+        "images": [
+            "/images/products/yamaha-subwoofer-2.jpg"
+        ],
         "is_featured": false,
         "rating": 4.6
     },
@@ -361,7 +371,9 @@
         "condition": "New",
         "stock": 12,
         "image_url": "/images/products/krk-rokit-studio-monitors.jpg",
-        "images": [],
+        "images": [
+            "/images/products/krk-rokit-studio-monitors-2.jpg"
+        ],
         "is_featured": false,
         "rating": 4.5
     },
@@ -591,7 +603,9 @@
         "condition": "New",
         "stock": 6,
         "image_url": "/images/products/roland-keyboard-amplifier.jpg",
-        "images": [],
+        "images": [
+            "/images/products/roland-keyboard-amplifier-2.jpg"
+        ],
         "is_featured": false,
         "rating": 4.6
     },
@@ -621,7 +635,9 @@
         "condition": "New",
         "stock": 30,
         "image_url": "/images/products/chauvet-led-par-can.jpg",
-        "images": [],
+        "images": [
+            "/images/products/chauvet-led-par-can-2.jpg"
+        ],
         "is_featured": true,
         "rating": 4.6
     },
@@ -733,7 +749,9 @@
         "condition": "New",
         "stock": 25,
         "image_url": "/images/products/microphone-boom-stand.jpg",
-        "images": [],
+        "images": [
+            "/images/products/microphone-boom-stand-2.jpg"
+        ],
         "is_featured": false,
         "rating": 4.4
     },

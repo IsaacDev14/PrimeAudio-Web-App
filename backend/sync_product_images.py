@@ -84,6 +84,21 @@ async def sync_files():
     return ok, fail
 
 
+def merge_carousel(existing: list | None, mapped: list[str]) -> list[str]:
+    """Keep mapped gallery paths plus any existing URLs whose files still exist."""
+    merged = list(mapped)
+    for url in existing or []:
+        if url in merged:
+            continue
+        if url.startswith("http"):
+            merged.append(url)
+            continue
+        file_part = url.split("/")[-1]
+        if (PUBLIC_DIR / file_part).exists():
+            merged.append(url)
+    return merged
+
+
 async def update_database():
     updated = 0
     async with AsyncSessionLocal() as session:
@@ -101,12 +116,11 @@ async def update_database():
                     print(f"  SKIP DB (no file): {product.name}")
                     continue
             product.image_url = mapping["image_url"]
-            carousel = []
-            for p in mapping["images"]:
-                file_part = p.split("/")[-1]
-                if (PUBLIC_DIR / file_part).exists():
-                    carousel.append(p)
-            product.images = carousel
+            mapped = [
+                p for p in mapping["images"]
+                if (PUBLIC_DIR / p.split("/")[-1]).exists()
+            ]
+            product.images = merge_carousel(product.images, mapped)
             updated += 1
         await session.commit()
     return updated
@@ -130,8 +144,8 @@ def update_products_json():
                 continue
         else:
             p["image_url"] = mapping["image_url"]
-        carousel = [u for u in mapping["images"] if (PUBLIC_DIR / u.split("/")[-1]).exists()]
-        p["images"] = carousel
+        mapped = [u for u in mapping["images"] if (PUBLIC_DIR / u.split("/")[-1]).exists()]
+        p["images"] = merge_carousel(p.get("images"), mapped)
         updated += 1
     with open(PRODUCTS_JSON, "w", encoding="utf-8") as f:
         json.dump(products, f, indent=4, ensure_ascii=False)
