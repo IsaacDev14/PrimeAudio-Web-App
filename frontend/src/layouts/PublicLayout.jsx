@@ -9,7 +9,7 @@ const PublicLayout = () => {
         <div className="bg-white min-h-screen text-gray-900 font-sans selection:bg-prime-red selection:text-white">
             <Navbar />
             <PromoBanner />
-            <main className="pt-20">
+            <main className="pt-16 lg:pt-[4.5rem]">
                 <Outlet />
             </main>
             <Footer />

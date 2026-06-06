@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Search, X, Loader2 } from 'lucide-react';
 import { API_URL } from '../config/api';
 
-const SearchAutocomplete = ({ className = "" }) => {
+const SearchAutocomplete = ({ className = "", compact = false }) => {
     const [query, setQuery] = useState('');
     const [results, setResults] = useState([]);
     const [isOpen, setIsOpen] = useState(false);
@@ -78,7 +78,7 @@ const SearchAutocomplete = ({ className = "" }) => {
     return (
         <div ref={containerRef} className={`relative ${className}`}>
             <div className="relative">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
+                <Search className={`absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 ${compact ? 'w-4 h-4' : 'w-5 h-5'}`} />
                 <input
                     ref={inputRef}
                     type="text"
@@ -87,7 +87,11 @@ const SearchAutocomplete = ({ className = "" }) => {
                     onKeyDown={handleKeyDown}
                     onFocus={() => query.length >= 2 && setIsOpen(true)}
                     placeholder="Search products..."
-                    className="w-full pl-12 pr-10 py-3 bg-slate-100 dark:bg-slate-800 border-0 rounded-xl text-slate-900 dark:text-white placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500 focus:bg-white dark:focus:bg-slate-700 transition-all"
+                    className={`w-full pl-10 pr-9 bg-slate-50 border border-slate-200/80 text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 focus:bg-white transition-all ${
+                        compact
+                            ? 'py-2 text-sm rounded-full'
+                            : 'py-3 rounded-xl dark:bg-slate-800 dark:text-white dark:focus:bg-slate-700'
+                    }`}
                 />
                 {query && (
                     <button

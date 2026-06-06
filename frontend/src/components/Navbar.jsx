@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { ShoppingCart, User, Menu, X, Sun, Moon, Search, Bell } from 'lucide-react';
+import { ShoppingCart, User, Menu, X, Sun, Moon, Bell } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useTheme } from '../context/ThemeContext';
 import { useAuth } from '../context/AuthContext';
@@ -12,7 +12,6 @@ const Navbar = () => {
     const { isDark, toggleTheme } = useTheme();
     const location = useLocation();
 
-    // Notification State
     const [notifications, setNotifications] = useState([]);
     const [unreadCount, setUnreadCount] = useState(0);
     const [showNotifications, setShowNotifications] = useState(false);
@@ -35,7 +34,6 @@ const Navbar = () => {
         return location.pathname === path;
     };
 
-    // Fetch notifications
     const fetchNotifications = async () => {
         if (!user) return;
         try {
@@ -70,82 +68,96 @@ const Navbar = () => {
 
     useEffect(() => {
         fetchNotifications();
-        // Poll every 60 seconds
         const interval = setInterval(fetchNotifications, 60000);
         return () => clearInterval(interval);
     }, [user]);
 
+    useEffect(() => {
+        setMobileMenuOpen(false);
+    }, [location.pathname]);
+
     const handleNotificationClick = () => {
         if (!showNotifications) {
             loadNotificationList();
-            // Mark all locally read for UI UX immediately? Maybe not.
         }
         setShowNotifications(!showNotifications);
     };
 
+    const iconButtonClass =
+        "p-2.5 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-full transition-colors";
+
     return (
-        <nav className="bg-white border-b border-gray-100 fixed top-0 left-0 w-full z-[100]">
-            <div className="container mx-auto px-2">
-                <div className="flex items-center justify-between h-20">
+        <nav className="bg-white/95 backdrop-blur-md border-b border-slate-200/80 fixed top-0 left-0 w-full z-[100] shadow-sm">
+            <div className="container mx-auto px-4 lg:px-6">
+                <div className="flex items-center gap-4 lg:gap-6 h-16 lg:h-[4.5rem]">
                     {/* Logo */}
-                    <Link to="/shop" className="flex items-center gap-2">
-                        <img src="/logo.png" alt="Prime Audio" className="h-10 w-auto object-contain" />
-                        <span className="font-bold text-xl tracking-tight text-slate-900 hidden sm:block">
-                            Prime<span className="text-blue-600">Audio</span>
-                        </span>
+                    <Link to="/shop" className="shrink-0 flex items-center">
+                        <img
+                            src="/logo.png"
+                            alt="Prime Audio Solutions"
+                            className="h-10 sm:h-11 w-auto object-contain"
+                        />
                     </Link>
 
-                    {/* Desktop Navigation */}
-                    <div className="hidden lg:flex items-center gap-1">
+                    {/* Desktop navigation */}
+                    <div className="hidden lg:flex items-center gap-0.5 shrink-0">
                         {navLinks.map((link) => (
                             <Link
                                 key={link.name}
                                 to={link.path}
-                                className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${isActive(link.path)
-                                    ? "bg-slate-100 text-blue-600"
-                                    : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
-                                    }`}
+                                className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors whitespace-nowrap ${
+                                    isActive(link.path)
+                                        ? "text-blue-700 bg-blue-50"
+                                        : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
+                                }`}
                             >
                                 {link.name}
                             </Link>
                         ))}
                     </div>
 
-                    {/* Search Bar - Desktop with Autocomplete */}
-                    <div className="hidden lg:flex flex-1 max-w-sm mx-8">
-                        <SearchAutocomplete className="w-full" />
+                    {/* Search */}
+                    <div className="hidden md:flex flex-1 min-w-0 max-w-md lg:max-w-sm xl:max-w-md ml-auto lg:ml-0">
+                        <SearchAutocomplete className="w-full" compact />
                     </div>
 
-                    {/* Right Actions */}
-                    <div className="flex items-center gap-2">
-                        {/* Notifications */}
+                    {/* Actions */}
+                    <div className="flex items-center gap-0.5 shrink-0 ml-auto md:ml-0">
                         {user && (
                             <div className="relative">
                                 <button
                                     onClick={handleNotificationClick}
-                                    className="p-3 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-full transition-colors relative"
+                                    className={`${iconButtonClass} relative`}
                                     aria-label="Notifications"
                                 >
-                                    <Bell className="w-5 h-5 text-slate-600" />
+                                    <Bell className="w-5 h-5" />
                                     {unreadCount > 0 && (
-                                        <span className="absolute top-2 right-2 w-2.5 h-2.5 bg-red-600 rounded-full border-2 border-white"></span>
+                                        <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white" />
                                     )}
                                 </button>
 
-                                {/* Dropdown */}
                                 {showNotifications && (
                                     <div className="absolute right-0 top-full mt-2 w-80 bg-white rounded-xl shadow-xl border border-slate-100 overflow-hidden z-50">
                                         <div className="p-3 border-b border-slate-100 flex justify-between items-center">
                                             <h3 className="font-semibold text-slate-900">Notifications</h3>
-                                            <Link to="/profile?tab=notifications" className="text-xs text-blue-600 hover:underline">View All</Link>
+                                            <Link to="/profile?tab=notifications" className="text-xs text-blue-600 hover:underline">
+                                                View All
+                                            </Link>
                                         </div>
                                         <div className="max-h-80 overflow-y-auto">
                                             {notifications.length > 0 ? (
                                                 notifications.map((notif) => (
-                                                    <div key={notif.id} className={`p-3 border-b border-slate-50 hover:bg-slate-50 transition-colors ${!notif.is_read ? 'bg-blue-50/50' : ''}`}>
+                                                    <div
+                                                        key={notif.id}
+                                                        className={`p-3 border-b border-slate-50 hover:bg-slate-50 transition-colors ${
+                                                            !notif.is_read ? 'bg-blue-50/50' : ''
+                                                        }`}
+                                                    >
                                                         <p className="text-sm font-medium text-slate-800">{notif.title}</p>
                                                         <p className="text-xs text-slate-500 mt-1 line-clamp-2">{notif.message}</p>
-                                                        <p className="text-[10px] text-slate-400 mt-1">{new Date(notif.created_at).toLocaleDateString()}</p>
+                                                        <p className="text-[10px] text-slate-400 mt-1">
+                                                            {new Date(notif.created_at).toLocaleDateString()}
+                                                        </p>
                                                     </div>
                                                 ))
                                             ) : (
@@ -159,53 +171,54 @@ const Navbar = () => {
                             </div>
                         )}
 
-                        {/* Dark Mode Toggle */}
                         <button
                             onClick={toggleTheme}
-                            className="p-3 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-full transition-colors"
+                            className={iconButtonClass}
                             aria-label="Toggle dark mode"
                         >
                             {isDark ? (
-                                <Sun className="w-5 h-5 text-yellow-500" />
+                                <Sun className="w-5 h-5 text-amber-500" />
                             ) : (
-                                <Moon className="w-5 h-5 text-slate-600" />
+                                <Moon className="w-5 h-5" />
                             )}
                         </button>
 
-                        {/* Cart */}
-                        <Link to="/cart" id="cart-icon" className="relative p-3 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-full transition-colors group">
-                            <ShoppingCart className="w-5 h-5 text-slate-600 dark:text-slate-300 group-hover:text-blue-600 transition-colors" />
+                        <Link
+                            to="/cart"
+                            id="cart-icon"
+                            className={`${iconButtonClass} relative group`}
+                        >
+                            <ShoppingCart className="w-5 h-5 group-hover:text-blue-600 transition-colors" />
                             {cartItemsCount > 0 && (
-                                <span className="absolute top-1 right-1 bg-blue-600 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold ring-2 ring-white">
+                                <span className="absolute -top-0.5 -right-0.5 bg-blue-600 text-white text-[10px] min-w-[1.125rem] h-[1.125rem] px-1 rounded-full flex items-center justify-center font-bold ring-2 ring-white">
                                     {cartItemsCount}
                                 </span>
                             )}
                         </Link>
 
-                        {/* Login - More balanced, less aggressive */}
                         {user ? (
                             <Link
                                 to="/profile"
-                                className="hidden lg:flex items-center gap-2 px-2 py-2 rounded-full font-medium text-sm hover:bg-slate-100 transition-colors"
+                                className="hidden lg:flex items-center ml-1 p-1 rounded-full hover:bg-slate-100 transition-colors"
                             >
-                                <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold">
-                                    {user.full_name ? user.full_name[0] : 'U'}
+                                <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-semibold text-sm">
+                                    {user.full_name ? user.full_name[0].toUpperCase() : 'U'}
                                 </div>
                             </Link>
                         ) : (
                             <Link
                                 to="/login"
-                                className="hidden lg:flex items-center gap-2 px-5 py-2.5 rounded-full font-medium text-sm transition-all bg-prime-red text-white hover:bg-red-600 shadow-sm hover:shadow active:scale-95"
+                                className="hidden lg:flex items-center gap-1.5 ml-2 px-4 py-2 rounded-full text-sm font-semibold bg-prime-red text-white hover:bg-red-600 transition-colors"
                             >
                                 <User className="w-4 h-4" />
-                                <span>Login</span>
+                                Login
                             </Link>
                         )}
 
-                        {/* Mobile Menu Button */}
                         <button
-                            className="lg:hidden p-2 hover:bg-slate-100 rounded-md transition-colors"
+                            className="lg:hidden p-2 hover:bg-slate-100 rounded-lg transition-colors ml-1"
                             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                            aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
                         >
                             {mobileMenuOpen ? (
                                 <X className="w-6 h-6 text-slate-700" />
@@ -217,49 +230,48 @@ const Navbar = () => {
                 </div>
             </div>
 
-            {/* Mobile Menu */}
+            {/* Mobile menu */}
             {mobileMenuOpen && (
-                <div className="lg:hidden border-t border-gray-100 bg-white absolute w-full shadow-lg">
+                <div className="lg:hidden border-t border-slate-100 bg-white absolute w-full shadow-lg max-h-[calc(100vh-4rem)] overflow-y-auto">
                     <div className="container mx-auto px-4 py-4 space-y-4">
-                        <div className="relative">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" />
-                            <input
-                                type="text"
-                                placeholder="Search products..."
-                                className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500"
-                            />
-                        </div>
-                        <div className="flex flex-col gap-1">
+                        <SearchAutocomplete className="w-full md:hidden" compact />
+
+                        <div className="grid grid-cols-2 gap-1 sm:flex sm:flex-wrap">
                             {navLinks.map((link) => (
                                 <Link
                                     key={link.name}
                                     to={link.path}
-                                    className="px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 font-medium transition-colors"
+                                    className={`px-3 py-2.5 rounded-lg text-sm font-medium transition-colors text-center sm:text-left ${
+                                        isActive(link.path)
+                                            ? "text-blue-700 bg-blue-50"
+                                            : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                                    }`}
                                     onClick={() => setMobileMenuOpen(false)}
                                 >
                                     {link.name}
                                 </Link>
                             ))}
-                            {user ? (
-                                <Link
-                                    to="/profile"
-                                    className="mt-2 flex items-center justify-center gap-2 bg-slate-100 text-slate-900 px-4 py-3 rounded-lg font-medium"
-                                    onClick={() => setMobileMenuOpen(false)}
-                                >
-                                    <User className="w-4 h-4" />
-                                    Account
-                                </Link>
-                            ) : (
-                                <Link
-                                    to="/login"
-                                    className="mt-2 flex items-center justify-center gap-2 bg-slate-900 text-white px-4 py-3 rounded-lg font-medium"
-                                    onClick={() => setMobileMenuOpen(false)}
-                                >
-                                    <User className="w-4 h-4" />
-                                    Login
-                                </Link>
-                            )}
                         </div>
+
+                        {user ? (
+                            <Link
+                                to="/profile"
+                                className="flex items-center justify-center gap-2 bg-slate-100 text-slate-900 px-4 py-3 rounded-xl font-medium"
+                                onClick={() => setMobileMenuOpen(false)}
+                            >
+                                <User className="w-4 h-4" />
+                                My Account
+                            </Link>
+                        ) : (
+                            <Link
+                                to="/login"
+                                className="flex items-center justify-center gap-2 bg-prime-red text-white px-4 py-3 rounded-xl font-semibold"
+                                onClick={() => setMobileMenuOpen(false)}
+                            >
+                                <User className="w-4 h-4" />
+                                Login
+                            </Link>
+                        )}
                     </div>
                 </div>
             )}
@@ -268,4 +280,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-
