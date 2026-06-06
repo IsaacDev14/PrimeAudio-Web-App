@@ -121,7 +121,9 @@
         "condition": "New",
         "stock": 4,
         "image_url": "/images/products/korg-synthesizer.jpg",
-        "images": [],
+        "images": [
+            "/images/products/korg-synthesizer-2.jpg"
+        ],
         "is_featured": true,
         "rating": 4.9
     },
@@ -183,7 +185,9 @@
         "condition": "New",
         "stock": 4,
         "image_url": "/images/products/pearl-acoustic-drum-kit.jpg",
-        "images": [],
+        "images": [
+            "/images/products/pearl-acoustic-drum-kit-2.jpg"
+        ],
         "is_featured": true,
         "rating": 4.8
     },
@@ -197,7 +201,9 @@
         "condition": "New",
         "stock": 6,
         "image_url": "/images/products/roland-electronic-drum-kit.jpg",
-        "images": [],
+        "images": [
+            "/images/products/roland-electronic-drum-kit-2.jpg"
+        ],
         "is_featured": true,
         "rating": 4.7
     },
@@ -211,7 +217,9 @@
         "condition": "New",
         "stock": 10,
         "image_url": "/images/products/tama-snare-drum.jpg",
-        "images": [],
+        "images": [
+            "/images/products/tama-snare-drum-2.jpg"
+        ],
         "is_featured": false,
         "rating": 4.6
     },
@@ -225,7 +233,9 @@
         "condition": "New",
         "stock": 8,
         "image_url": "/images/products/african-djembe.jpg",
-        "images": [],
+        "images": [
+            "/images/products/african-djembe-2.jpg"
+        ],
         "is_featured": false,
         "rating": 4.5
     },
@@ -255,7 +265,9 @@
         "condition": "New",
         "stock": 25,
         "image_url": "/images/products/shure-sm58-microphone.jpg",
-        "images": [],
+        "images": [
+            "/images/products/shure-sm58-microphone-2.jpg"
+        ],
         "is_featured": true,
         "rating": 4.9
     },
@@ -269,7 +281,9 @@
         "condition": "New",
         "stock": 12,
         "image_url": "/images/products/audio-technica-condenser-microphone.jpg",
-        "images": [],
+        "images": [
+            "/images/products/audio-technica-condenser-microphone-2.jpg"
+        ],
         "is_featured": true,
         "rating": 4.8
     },
@@ -283,7 +297,9 @@
         "condition": "New",
         "stock": 8,
         "image_url": "/images/products/shure-wireless-microphone-system.jpg",
-        "images": [],
+        "images": [
+            "/images/products/shure-wireless-microphone-system-2.jpg"
+        ],
         "is_featured": false,
         "rating": 4.7
     },
@@ -297,7 +313,9 @@
         "condition": "New",
         "stock": 15,
         "image_url": "/images/products/rode-usb-microphone.jpg",
-        "images": [],
+        "images": [
+            "/images/products/rode-usb-microphone-2.jpg"
+        ],
         "is_featured": false,
         "rating": 4.6
     },
@@ -311,7 +329,9 @@
         "condition": "New",
         "stock": 18,
         "image_url": "/images/products/sennheiser-lavalier-microphone.jpg",
-        "images": [],
+        "images": [
+            "/images/products/sennheiser-lavalier-microphone-2.jpg"
+        ],
         "is_featured": false,
         "rating": 4.5
     },
@@ -341,7 +361,9 @@
         "condition": "New",
         "stock": 6,
         "image_url": "/images/products/jbl-pa-speaker.jpg",
-        "images": [],
+        "images": [
+            "/images/products/jbl-pa-speaker-2.jpg"
+        ],
         "is_featured": true,
         "rating": 4.7
     },
@@ -403,7 +425,9 @@
         "condition": "New",
         "stock": 4,
         "image_url": "/images/products/technics-turntable.jpg",
-        "images": [],
+        "images": [
+            "/images/products/technics-turntable-2.jpg"
+        ],
         "is_featured": true,
         "rating": 4.9
     },
@@ -417,7 +441,9 @@
         "condition": "New",
         "stock": 6,
         "image_url": "/images/products/pioneer-cdj-player.jpg",
-        "images": [],
+        "images": [
+            "/images/products/pioneer-cdj-player-2.jpg"
+        ],
         "is_featured": false,
         "rating": 4.8
     },
@@ -431,7 +457,9 @@
         "condition": "New",
         "stock": 8,
         "image_url": "/images/products/numark-dj-mixer.jpg",
-        "images": [],
+        "images": [
+            "/images/products/numark-dj-mixer-2.jpg"
+        ],
         "is_featured": false,
         "rating": 4.6
     },
@@ -461,7 +489,9 @@
         "condition": "New",
         "stock": 6,
         "image_url": "/images/products/steinberg-thunderbolt-interface.jpg",
-        "images": [],
+        "images": [
+            "/images/products/steinberg-thunderbolt-interface-2.jpg"
+        ],
         "is_featured": false,
         "rating": 4.7
     },
@@ -475,7 +505,9 @@
         "condition": "New",
         "stock": 18,
         "image_url": "/images/products/m-audio-portable-interface.jpg",
-        "images": [],
+        "images": [
+            "/images/products/m-audio-portable-interface-2.jpg"
+        ],
         "is_featured": false,
         "rating": 4.5
     },
@@ -489,7 +521,9 @@
         "condition": "New",
         "stock": 25,
         "image_url": "/images/products/behringer-di-box.jpg",
-        "images": [],
+        "images": [
+            "/images/products/behringer-di-box-2.jpg"
+        ],
         "is_featured": false,
         "rating": 4.3
     },
@@ -503,7 +537,9 @@
         "condition": "New",
         "stock": 20,
         "image_url": "/images/products/audio-technica-studio-headphones.jpg",
-        "images": [],
+        "images": [
+            "/images/products/audio-technica-studio-headphones-2.jpg"
+        ],
         "is_featured": true,
         "rating": 4.8
     },
@@ -517,7 +553,9 @@
         "condition": "New",
         "stock": 12,
         "image_url": "/images/products/pioneer-dj-headphones.jpg",
-        "images": [],
+        "images": [
+            "/images/products/pioneer-dj-headphones-2.jpg"
+        ],
         "is_featured": false,
         "rating": 4.7
     },
@@ -531,7 +569,9 @@
         "condition": "New",
         "stock": 8,
         "image_url": "/images/products/shure-in-ear-monitors.jpg",
-        "images": [],
+        "images": [
+            "/images/products/shure-in-ear-monitors-2.jpg"
+        ],
         "is_featured": true,
         "rating": 4.9
     },
@@ -545,7 +585,9 @@
         "condition": "New",
         "stock": 15,
         "image_url": "/images/products/sony-wireless-headphones.jpg",
-        "images": [],
+        "images": [
+            "/images/products/sony-wireless-headphones-2.jpg"
+        ],
         "is_featured": false,
         "rating": 4.6
     },
@@ -559,7 +601,9 @@
         "condition": "New",
         "stock": 5,
         "image_url": "/images/products/beyerdynamic-reference-headphones.jpg",
-        "images": [],
+        "images": [
+            "/images/products/beyerdynamic-reference-headphones-2.jpg"
+        ],
         "is_featured": false,
         "rating": 4.8
     },
@@ -589,7 +633,9 @@
         "condition": "New",
         "stock": 4,
         "image_url": "/images/products/ampeg-bass-amplifier.jpg",
-        "images": [],
+        "images": [
+            "/images/products/ampeg-bass-amplifier-2.jpg"
+        ],
         "is_featured": false,
         "rating": 4.8
     },
@@ -651,7 +697,9 @@
         "condition": "New",
         "stock": 10,
         "image_url": "/images/products/american-dj-moving-head-light.jpg",
-        "images": [],
+        "images": [
+            "/images/products/american-dj-moving-head-light-2.jpg"
+        ],
         "is_featured": true,
         "rating": 4.7
     },
@@ -665,7 +713,9 @@
         "condition": "New",
         "stock": 12,
         "image_url": "/images/products/laser-light-show-system.jpg",
-        "images": [],
+        "images": [
+            "/images/products/laser-light-show-system-2.jpg"
+        ],
         "is_featured": false,
         "rating": 4.5
     },
@@ -679,7 +729,9 @@
         "condition": "New",
         "stock": 20,
         "image_url": "/images/products/strobe-light.jpg",
-        "images": [],
+        "images": [
+            "/images/products/strobe-light-2.jpg"
+        ],
         "is_featured": false,
         "rating": 4.4
     },
@@ -693,7 +745,9 @@
         "condition": "New",
         "stock": 8,
         "image_url": "/images/products/dmx-light-controller.jpg",
-        "images": [],
+        "images": [
+            "/images/products/dmx-light-controller-2.jpg"
+        ],
         "is_featured": false,
         "rating": 4.6
     },
@@ -707,7 +761,9 @@
         "condition": "New",
         "stock": 100,
         "image_url": "/images/products/guitar-strings-pack.jpg",
-        "images": [],
+        "images": [
+            "/images/products/guitar-strings-pack-2.jpg"
+        ],
         "is_featured": false,
         "rating": 4.7
     },
@@ -721,7 +777,9 @@
         "condition": "New",
         "stock": 80,
         "image_url": "/images/products/professional-drum-sticks.jpg",
-        "images": [],
+        "images": [
+            "/images/products/professional-drum-sticks-2.jpg"
+        ],
         "is_featured": false,
         "rating": 4.6
     },
@@ -735,7 +793,9 @@
         "condition": "New",
         "stock": 50,
         "image_url": "/images/products/xlr-cable-pack.jpg",
-        "images": [],
+        "images": [
+            "/images/products/xlr-cable-pack-2.jpg"
+        ],
         "is_featured": false,
         "rating": 4.5
     },
@@ -765,7 +825,9 @@
         "condition": "New",
         "stock": 15,
         "image_url": "/images/products/guitar-hard-case.jpg",
-        "images": [],
+        "images": [
+            "/images/products/guitar-hard-case-2.jpg"
+        ],
         "is_featured": false,
         "rating": 4.6
     },
@@ -795,7 +857,9 @@
         "condition": "New",
         "stock": 40,
         "image_url": "/images/products/clip-on-guitar-tuner.jpg",
-        "images": [],
+        "images": [
+            "/images/products/clip-on-guitar-tuner-2.jpg"
+        ],
         "is_featured": false,
         "rating": 4.5
     },
