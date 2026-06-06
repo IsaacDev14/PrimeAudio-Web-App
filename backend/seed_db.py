@@ -1,8 +1,12 @@
 import asyncio
 import json
 from datetime import datetime
+from passlib.context import CryptContext
+from sqlalchemy import select
 from database import AsyncSessionLocal
 import models
+
+pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
 
 def parse_date(date_val):
     if not date_val:
@@ -30,30 +34,44 @@ async def seed():
         content = json.load(f)
         
     async with AsyncSessionLocal() as session:
-        # 1. Create default admin and regular users for demo/testing
+        # 1. Create default admin and demo customer for login testing
         print("Creating seed users...")
-        admin = models.User(
-            email="admin@primeaudio.com",
-            hashed_password="hashed_password",  # or simple password since it's testing
-            full_name="Admin User",
-            phone="0711111111",
-            avatar_url="",
-            is_admin=True,
-            is_active=True,
-            created_at=datetime.utcnow()
-        )
-        test_user = models.User(
-            email="test@example.com",
-            hashed_password="hashed_password",
-            full_name="Test User",
-            phone="0722222222",
-            avatar_url="",
-            is_admin=False,
-            is_active=True,
-            created_at=datetime.utcnow()
-        )
-        session.add(admin)
-        session.add(test_user)
+        demo_accounts = [
+            {
+                "email": "admin@primeaudio.co.ke",
+                "password": "Admin@123",
+                "full_name": "Admin User",
+                "phone": "0712345678",
+                "is_admin": True,
+            },
+            {
+                "email": "customer@demo.com",
+                "password": "Demo@123",
+                "full_name": "Demo Customer",
+                "phone": "0723456789",
+                "is_admin": False,
+            },
+        ]
+        for account in demo_accounts:
+            result = await session.execute(
+                select(models.User).where(models.User.email == account["email"])
+            )
+            existing = result.scalars().first()
+            if existing:
+                existing.hashed_password = pwd_context.hash(account["password"])
+                existing.is_active = True
+            else:
+                session.add(
+                    models.User(
+                        email=account["email"],
+                        hashed_password=pwd_context.hash(account["password"]),
+                        full_name=account["full_name"],
+                        phone=account["phone"],
+                        is_admin=account["is_admin"],
+                        is_active=True,
+                        created_at=datetime.utcnow(),
+                    )
+                )
         await session.flush()
         print("Seed users created.")
 
