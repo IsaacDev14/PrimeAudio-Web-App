@@ -13,8 +13,7 @@ const ProductCard = ({ product }) => {
     const [isInWishlist, setIsInWishlist] = useState(false);
     const [isWishlistLoading, setIsWishlistLoading] = useState(false);
 
-    // Define images with fallback
-    const images = (product.images && product.images.length > 0) ? product.images : [product.image_url];
+    const images = getProductImages(product);
 
     // Check if product is in wishlist
     useEffect(() => {
@@ -125,23 +124,23 @@ const ProductCard = ({ product }) => {
                     <Heart className={`w-4 h-4 stroke-2 ${isInWishlist ? 'fill-white' : ''}`} />
                 </button>
 
-                {/* Navigation Buttons */}
-                {images.length > 1 && (
+                {/* Navigation Buttons (always visible for carousel UX) */}
                 <>
                     <button
                         onClick={prevImage}
-                        className="absolute top-1/2 left-2 -translate-y-1/2 p-1.5 bg-white/60 backdrop-blur-md hover:bg-white rounded-full text-slate-900 shadow-md transition-all z-20 disabled:opacity-50"
+                        disabled={images.length <= 1}
+                        className="absolute top-1/2 left-2 -translate-y-1/2 p-1.5 bg-white/60 backdrop-blur-md hover:bg-white rounded-full text-slate-900 shadow-md transition-all z-20 disabled:opacity-40 disabled:pointer-events-none"
                     >
                         <ChevronLeft className="w-4 h-4" />
                     </button>
                     <button
                         onClick={nextImage}
-                        className="absolute top-1/2 right-2 -translate-y-1/2 p-1.5 bg-white/60 backdrop-blur-md hover:bg-white rounded-full text-slate-900 shadow-md transition-all z-20"
+                        disabled={images.length <= 1}
+                        className="absolute top-1/2 right-2 -translate-y-1/2 p-1.5 bg-white/60 backdrop-blur-md hover:bg-white rounded-full text-slate-900 shadow-md transition-all z-20 disabled:opacity-40 disabled:pointer-events-none"
                     >
                         <ChevronRight className="w-4 h-4" />
                     </button>
                 </>
-                )}
 
                 {/* Carousel Dots */}
                 {images.length > 1 && (

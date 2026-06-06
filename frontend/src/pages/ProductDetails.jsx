@@ -58,8 +58,7 @@ const ProductDetails = () => {
         setTimeout(() => setAdded(false), 2000);
     };
 
-    // Get images array
-    const images = product?.images?.length > 0 ? product.images : [product?.image_url].filter(Boolean);
+    const images = getProductImages(product);
 
     const nextImage = () => {
         setCurrentImageIndex((prev) => (prev + 1) % images.length);

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ShoppingCart, Heart, Star, ChevronLeft, ChevronRight, Check } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import { getProductImages } from '../utils/productImages';
 
 const QuickViewModal = ({ product, isOpen, onClose }) => {
     const { addToCart } = useCart();
@@ -9,9 +10,8 @@ const QuickViewModal = ({ product, isOpen, onClose }) => {
     const [currentImage, setCurrentImage] = useState(0);
     const [isAdded, setIsAdded] = useState(false);
 
-    const images = product?.images?.length > 0
-        ? product.images
-        : [product?.image_url || '/placeholder.jpg'];
+    const productImages = getProductImages(product);
+    const images = productImages.length > 0 ? productImages : ['/placeholder.jpg'];
 
     useEffect(() => {
         if (isOpen) {

@@ -375,7 +375,9 @@
         "condition": "New",
         "stock": 5,
         "image_url": "/images/products/pioneer-dj-controller.jpg",
-        "images": [],
+        "images": [
+            "/images/products/pioneer-dj-controller-2.jpg"
+        ],
         "is_featured": true,
         "rating": 4.9
     },

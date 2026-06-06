@@ -42,7 +42,7 @@ PRODUCT_IMAGE_SOURCES = {
         "remote": [f"{W}/d/de/Davison_Electric_Bass_Guitar.jpg", unsplash("1605020420620-20c943cc4669")],
     },
     "Ibanez Classical Guitar": {
-        "remote": [],
+        "remote": [unsplash("1516924962500-2b4b3b99ea02"), unsplash("1525201548942-d8732f6617a0")],
         "generate": "Ibanez nylon-string classical guitar full instrument only, no people, no hands, isolated product on pure white background, ecommerce studio photography",
     },
     "Taylor 12-String Guitar": {
