@@ -4,6 +4,7 @@ import { Star, Heart, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { API_URL } from '../config/api';
+import { getProductImages } from '../utils/productImages';
 
 const ProductCard = ({ product }) => {
     const { isAuthenticated } = useAuth();

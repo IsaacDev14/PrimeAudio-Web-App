@@ -183,6 +183,225 @@ function StatItem({ value, suffix, label, showDivider }) {
     );
 }
 
+const STEP_DURATION = 0.7;
+const STEP_STAGGER = 0.55;
+
+function ProcessStepIcon({ icon: Icon, isActive, isComplete, index }) {
+    return (
+        <motion.div
+            animate={
+                isActive
+                    ? {
+                          scale: [1, 1.08, 1],
+                          boxShadow: [
+                              '0 0 0 0 rgba(255,92,0,0)',
+                              '0 0 0 8px rgba(255,92,0,0.15)',
+                              '0 0 0 0 rgba(255,92,0,0)',
+                          ],
+                      }
+                    : {}
+            }
+            transition={{ duration: 0.6, repeat: isActive ? Infinity : 0, repeatDelay: 1.2 }}
+            className={`relative w-16 h-16 rounded-xl flex items-center justify-center mx-auto transition-colors duration-500 ${
+                isComplete || isActive
+                    ? 'bg-[#FF5C00]/10 border-2 border-[#FF5C00]/40'
+                    : 'bg-slate-50 border border-slate-200'
+            }`}
+        >
+            <motion.div
+                animate={
+                    isActive && index === 2
+                        ? { x: [0, 4, 0] }
+                        : isActive && index === 0
+                          ? { rotate: [0, -8, 8, 0] }
+                          : isComplete && index === 3
+                            ? { scale: [1, 1.2, 1] }
+                            : {}
+                }
+                transition={{ duration: 0.5, repeat: isActive ? Infinity : 0, repeatDelay: 1 }}
+            >
+                <Icon
+                    className={`w-6 h-6 transition-colors duration-500 ${
+                        isComplete || isActive ? 'text-[#FF5C00]' : 'text-slate-400'
+                    }`}
+                    strokeWidth={1.5}
+                />
+            </motion.div>
+            <motion.span
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: index * STEP_STAGGER + 0.2, type: 'spring', stiffness: 260 }}
+                className={`absolute -top-1.5 -right-1.5 w-6 h-6 rounded-full text-white text-xs font-bold flex items-center justify-center transition-colors duration-500 ${
+                    isComplete || isActive ? 'bg-[#FF5C00]' : 'bg-slate-300'
+                }`}
+            >
+                {index + 1}
+            </motion.span>
+        </motion.div>
+    );
+}
+
+function ProcessConnector({ isFilled, direction = 'horizontal' }) {
+    if (direction === 'vertical') {
+        return (
+            <div className="w-0.5 h-10 bg-slate-200 relative overflow-hidden mx-auto">
+                <motion.div
+                    className="absolute inset-x-0 top-0 bg-[#FF5C00]"
+                    initial={{ height: '0%' }}
+                    animate={{ height: isFilled ? '100%' : '0%' }}
+                    transition={{ duration: STEP_DURATION, ease: 'easeInOut' }}
+                />
+            </div>
+        );
+    }
+
+    return (
+        <div className="hidden lg:flex flex-1 items-center px-2 pt-8">
+            <div className="w-full h-0.5 bg-slate-200 relative overflow-hidden rounded-full">
+                <motion.div
+                    className="absolute inset-y-0 left-0 bg-gradient-to-r from-[#FF5C00] to-[#ff8c4d] rounded-full"
+                    initial={{ width: '0%' }}
+                    animate={{ width: isFilled ? '100%' : '0%' }}
+                    transition={{ duration: STEP_DURATION, ease: 'easeInOut' }}
+                />
+                {isFilled && (
+                    <motion.div
+                        className="absolute top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-[#FF5C00] shadow-[0_0_8px_rgba(255,92,0,0.6)]"
+                        initial={{ left: '0%', opacity: 0 }}
+                        animate={{ left: '100%', opacity: [0, 1, 1, 0] }}
+                        transition={{ duration: STEP_DURATION, ease: 'easeInOut' }}
+                    />
+                )}
+            </div>
+        </div>
+    );
+}
+
+function ProcessFlow() {
+    const ref = useRef(null);
+    const isInView = useInView(ref, { once: true, margin: '-80px' });
+    const [activeStep, setActiveStep] = useState(-1);
+
+    useEffect(() => {
+        if (!isInView) return;
+
+        let timers = [];
+        const runSequence = () => {
+            timers.forEach(clearTimeout);
+            timers = [];
+            setActiveStep(-1);
+            PROCESS_STEPS.forEach((_, i) => {
+                timers.push(
+                    setTimeout(() => setActiveStep(i), i * (STEP_STAGGER * 1000) + 300)
+                );
+            });
+        };
+
+        runSequence();
+        const loop = setInterval(runSequence, 6000);
+
+        return () => {
+            timers.forEach(clearTimeout);
+            clearInterval(loop);
+        };
+    }, [isInView]);
+
+    return (
+        <div ref={ref} className="max-w-5xl mx-auto">
+            {/* Desktop — horizontal animated flow */}
+            <div className="hidden lg:flex items-start">
+                {PROCESS_STEPS.map((step, i) => {
+                    const isActive = activeStep === i;
+                    const isComplete = activeStep > i;
+
+                    return (
+                        <div key={step.title} className="contents">
+                            {i > 0 && <ProcessConnector isFilled={activeStep >= i} />}
+                            <motion.div
+                                initial={{ opacity: 0, y: 24 }}
+                                animate={isInView ? { opacity: 1, y: 0 } : {}}
+                                transition={{ delay: i * STEP_STAGGER, duration: 0.5 }}
+                                className="flex-1 text-center min-w-0"
+                            >
+                                <ProcessStepIcon
+                                    icon={step.icon}
+                                    isActive={isActive}
+                                    isComplete={isComplete}
+                                    index={i}
+                                />
+                                <motion.h3
+                                    animate={{
+                                        color: isComplete || isActive ? '#0A1628' : '#94a3b8',
+                                    }}
+                                    className="font-semibold mt-5 mb-1"
+                                >
+                                    {step.title}
+                                </motion.h3>
+                                <motion.p
+                                    animate={{
+                                        opacity: isComplete || isActive ? 1 : 0.55,
+                                    }}
+                                    className="text-slate-500 text-sm px-2"
+                                >
+                                    {step.description}
+                                </motion.p>
+                            </motion.div>
+                        </div>
+                    );
+                })}
+            </div>
+
+            {/* Mobile / tablet — vertical animated flow */}
+            <div className="lg:hidden flex flex-col items-center">
+                {PROCESS_STEPS.map((step, i) => {
+                    const isActive = activeStep === i;
+                    const isComplete = activeStep > i;
+
+                    return (
+                        <div key={step.title} className="flex flex-col items-center w-full max-w-xs">
+                            <motion.div
+                                initial={{ opacity: 0, x: -20 }}
+                                animate={isInView ? { opacity: 1, x: 0 } : {}}
+                                transition={{ delay: i * STEP_STAGGER, duration: 0.5 }}
+                                className="flex items-center gap-5 w-full"
+                            >
+                                <ProcessStepIcon
+                                    icon={step.icon}
+                                    isActive={isActive}
+                                    isComplete={isComplete}
+                                    index={i}
+                                />
+                                <div className="text-left flex-1">
+                                    <h3
+                                        className={`font-semibold mb-0.5 transition-colors duration-500 ${
+                                            isComplete || isActive ? 'text-slate-900' : 'text-slate-400'
+                                        }`}
+                                    >
+                                        {step.title}
+                                    </h3>
+                                    <p
+                                        className={`text-sm transition-opacity duration-500 ${
+                                            isComplete || isActive ? 'text-slate-500' : 'text-slate-400'
+                                        }`}
+                                    >
+                                        {step.description}
+                                    </p>
+                                </div>
+                            </motion.div>
+                            {i < PROCESS_STEPS.length - 1 && (
+                                <ProcessConnector
+                                    isFilled={activeStep > i}
+                                    direction="vertical"
+                                />
+                            )}
+                        </div>
+                    );
+                })}
+            </div>
+        </div>
+    );
+}
+
 function PortfolioCard({ item, index }) {
     return (
         <motion.article
@@ -411,7 +630,7 @@ const Showcase = () => {
             </section>
 
             {/* Process */}
-            <section className="py-20 md:py-28">
+            <section id="process" className="py-20 md:py-28">
                 <div className="container mx-auto px-4">
                     <motion.div
                         initial="hidden"
@@ -428,36 +647,7 @@ const Showcase = () => {
                         </h2>
                     </motion.div>
 
-                    <div className="relative max-w-4xl mx-auto">
-                        <div className="hidden lg:block absolute top-10 left-[12%] right-[12%] h-px bg-slate-200" />
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
-                            {PROCESS_STEPS.map((step, i) => {
-                                const Icon = step.icon;
-                                return (
-                                    <motion.div
-                                        key={step.title}
-                                        initial="hidden"
-                                        whileInView="visible"
-                                        viewport={{ once: true }}
-                                        variants={fadeUp}
-                                        transition={{ delay: i * 0.08 }}
-                                        className="text-center"
-                                    >
-                                        <div className="relative inline-block mb-5">
-                                            <div className="w-16 h-16 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center mx-auto">
-                                                <Icon className="w-6 h-6 text-[#FF5C00]" strokeWidth={1.5} />
-                                            </div>
-                                            <span className="absolute -top-1.5 -right-1.5 w-6 h-6 rounded-full bg-[#FF5C00] text-white text-xs font-bold flex items-center justify-center">
-                                                {i + 1}
-                                            </span>
-                                        </div>
-                                        <h3 className="font-semibold text-slate-900 mb-1">{step.title}</h3>
-                                        <p className="text-slate-500 text-sm">{step.description}</p>
-                                    </motion.div>
-                                );
-                            })}
-                        </div>
-                    </div>
+                    <ProcessFlow />
                 </div>
             </section>
 

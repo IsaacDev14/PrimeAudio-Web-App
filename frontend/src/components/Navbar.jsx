@@ -23,8 +23,8 @@ const Navbar = () => {
         { name: "Shop", path: "/shop" },
         { name: "Our Work", path: "/showcase" },
         { name: "About", path: "/about" },
-        { name: "Contact", path: "/contact" },
         { name: "Track Order", path: "/track-order" },
+        { name: "Contact", path: "/contact" },
     ];
 
     const isActive = (path) => {

@@ -11,6 +11,7 @@ import ProductReviews from '../components/ProductReviews';
 import SEO from '../components/SEO';
 import { ProductDetailsSkeleton } from '../components/ui/skeleton';
 import { API_URL } from '../config/api';
+import { getProductImages } from '../utils/productImages';
 
 const ProductDetails = () => {
     // ... existing hook calls ...
