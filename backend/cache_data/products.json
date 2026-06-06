@@ -873,7 +873,9 @@
         "condition": "New",
         "stock": 35,
         "image_url": "/images/products/music-stand.jpg",
-        "images": [],
+        "images": [
+            "/images/products/music-stand-2.jpg"
+        ],
         "is_featured": false,
         "rating": 4.3
     },
@@ -919,7 +921,9 @@
         "condition": "Used - Like New",
         "stock": 1,
         "image_url": "/images/products/used-roland-juno-synth.jpg",
-        "images": [],
+        "images": [
+            "/images/products/used-roland-juno-synth-2.jpg"
+        ],
         "is_featured": false,
         "rating": 4.7
     },

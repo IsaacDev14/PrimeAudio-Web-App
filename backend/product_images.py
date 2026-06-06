@@ -75,7 +75,7 @@ PRODUCT_IMAGE_SOURCES = {
         "remote": [unsplash("1552422535-c45813c61732"), unsplash("1598488035139-bdbb2231ce04")],
     },
     "Used Roland Juno Synth": {
-        "remote": [unsplash("1552422535-c45813c61732"), unsplash("1614148375099-46959409df52")],
+        "remote": [unsplash("1552422535-c45813c61732"), unsplash("1520523839897-bd0b52f945a0")],
     },
     "Yamaha Montage Workstation": {
         "remote": [unsplash("1520523839897-bd0b52f945a0"), unsplash("1513883049090-d0b7439799bf")],
@@ -253,7 +253,7 @@ PRODUCT_IMAGE_SOURCES = {
         "generate": "Korg clip-on chromatic guitar tuner on headstock, product photo white background",
     },
     "Music Stand": {
-        "remote": [unsplash("1519898963993-f44ef2512d88"), unsplash("1511379938544-6d6a8132e1a5")],
+        "remote": [unsplash("1519898963993-f44ef2512d88"), unsplash("1564186763535-ebb21ef5277f")],
         "generate": "Black foldable orchestral music stand with sheet music, product photo white background",
     },
 }
