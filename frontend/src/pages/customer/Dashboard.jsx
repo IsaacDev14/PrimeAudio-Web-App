@@ -164,7 +164,7 @@ const CustomerDashboard = () => {
                         <div className="p-8 text-center text-gray-400">Loading...</div>
                     ) : recentOrders.length === 0 ? (
                         <div className="p-8 text-center">
-                            <ShoppingBag className="w-12 h-12 mx-auto text-gray-300 mb-3" />
+                            <AppIcon icon={ShoppingBag} size="2xl" className="text-slate-300 mx-auto mb-3" />
                             <p className="text-gray-500">No orders yet</p>
                             <Link to="/shop" className="text-blue-600 text-sm hover:underline">
                                 Start shopping
@@ -215,7 +215,7 @@ const CustomerDashboard = () => {
 
                     {notifications.length === 0 ? (
                         <div className="p-8 text-center">
-                            <Bell className="w-12 h-12 mx-auto text-gray-300 mb-3" />
+                            <AppIcon icon={Bell} size="2xl" className="text-slate-300 mx-auto mb-3" />
                             <p className="text-gray-500 text-sm">No notifications</p>
                         </div>
                     ) : (

@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Trash2, ArrowRight, ShoppingBag, Plus, Minus } from 'lucide-react';
+import { AppIcon } from '../components/ui/app-icon';
 import { useCart } from '../context/CartContext';
 import { useToast } from '../context/ToastContext';
 import { useState } from 'react';
@@ -27,9 +28,7 @@ const Cart = () => {
     if (cart.length === 0) {
         return (
             <div className="pt-32 pb-20 container mx-auto px-4 text-center bg-gray-50 min-h-screen">
-                <div className="inline-flex items-center justify-center w-24 h-24 bg-gray-100 rounded-full mb-6">
-                    <ShoppingBag size={40} className="text-gray-400" />
-                </div>
+                <AppIcon icon={ShoppingBag} size="2xl" className="text-slate-400 mb-6 mx-auto" />
                 <h1 className="text-3xl font-bold text-gray-900 mb-4">Your Cart is Empty</h1>
                 <p className="text-gray-500 mb-8 max-w-md mx-auto">
                     Looks like you haven't added any instruments to your cart yet. Browse our shop to find your perfect sound.

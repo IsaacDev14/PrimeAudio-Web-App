@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageCircle, X, Send } from 'lucide-react';
+import { MessageCircle, X, Send, Package, RotateCcw, Music, Headphones } from 'lucide-react';
+import { AppIcon } from './ui/app-icon';
 import { useAuth } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
 
@@ -10,10 +11,10 @@ const FloatingChatButton = () => {
     const [message, setMessage] = useState('');
 
     const quickActions = [
-        { label: "Track my order", icon: "📦" },
-        { label: "Return policy", icon: "↩️" },
-        { label: "Product inquiry", icon: "🎧" },
-        { label: "Talk to support", icon: "💬" }
+        { label: 'Track my order', icon: Package },
+        { label: 'Return policy', icon: RotateCcw },
+        { label: 'Product inquiry', icon: Music },
+        { label: 'Talk to support', icon: Headphones },
     ];
 
     return (
@@ -67,7 +68,7 @@ const FloatingChatButton = () => {
                     >
                         {/* Header */}
                         <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-4 text-white">
-                            <h3 className="font-bold text-lg">👋 Hi there!</h3>
+                            <h3 className="font-bold text-lg">Hi there!</h3>
                             <p className="text-sm text-blue-100">How can we help you today?</p>
                         </div>
 
@@ -86,7 +87,7 @@ const FloatingChatButton = () => {
                                         }
                                     }}
                                 >
-                                    <span className="text-xl">{action.icon}</span>
+                                    <AppIcon icon={action.icon} size="md" />
                                     <span className="text-sm font-medium text-slate-700 dark:text-slate-200">
                                         {action.label}
                                     </span>

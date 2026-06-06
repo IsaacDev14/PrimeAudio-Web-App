@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { useToast } from '../../context/ToastContext';
 import { API_URL } from '../../config/api';
+import { AppIcon } from '../../components/ui/app-icon';
 
 const AdminOffers = () => {
     const toast = useToast();
@@ -657,9 +658,7 @@ const AdminOffers = () => {
                             onClick={e => e.stopPropagation()}
                         >
                             <div className="text-center">
-                                <div className="mx-auto w-14 h-14 bg-red-100 rounded-full flex items-center justify-center mb-4">
-                                    <Trash2 className="w-7 h-7 text-red-600" />
-                                </div>
+                                <AppIcon icon={Trash2} size="2xl" className="text-red-600 mx-auto mb-4" />
                                 <h3 className="text-xl font-bold text-gray-900 mb-2">Delete Offer?</h3>
                                 <p className="text-gray-500 mb-6">
                                     Are you sure you want to delete "<span className="font-semibold text-gray-700">{deleteConfirm.offerTitle}</span>"?
@@ -704,9 +703,7 @@ const AdminOffers = () => {
                             onClick={e => e.stopPropagation()}
                         >
                             <div className="text-center">
-                                <div className="mx-auto w-14 h-14 bg-red-100 rounded-full flex items-center justify-center mb-4">
-                                    <Trash2 className="w-7 h-7 text-red-600" />
-                                </div>
+                                <AppIcon icon={Trash2} size="2xl" className="text-red-600 mx-auto mb-4" />
                                 <h3 className="text-xl font-bold text-gray-900 mb-2">Clear All Offers?</h3>
                                 <p className="text-gray-500 mb-2">
                                     This will permanently delete <span className="font-bold text-red-600">{offers.length}</span> offer{offers.length !== 1 ? 's' : ''}.

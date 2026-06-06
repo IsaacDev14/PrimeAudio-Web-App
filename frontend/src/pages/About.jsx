@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { Award, Users, Music, History } from 'lucide-react';
+import { AppIcon } from '../components/ui/app-icon';
 
 const About = () => {
     return (
@@ -60,7 +61,7 @@ const About = () => {
                             { icon: Music, value: "50+", label: "Global Brands" }
                         ].map((stat, idx) => (
                             <div key={idx} className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 text-center">
-                                <stat.icon className="w-8 h-8 text-blue-600 mx-auto mb-4" />
+                                <AppIcon icon={stat.icon} size="xl" className="mx-auto mb-4" />
                                 <div className="text-3xl font-bold text-slate-900 mb-1">{stat.value}</div>
                                 <div className="text-sm text-slate-500 uppercase tracking-wide">{stat.label}</div>
                             </div>

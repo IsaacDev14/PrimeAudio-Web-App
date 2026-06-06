@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { Package, CreditCard, CheckCircle, Truck, Home, XCircle } from 'lucide-react';
+import { AppIcon } from './ui/app-icon';
 
 const ORDER_STEPS = [
     { key: 'pending', label: 'Order Placed', icon: Package },
@@ -33,9 +34,7 @@ const OrderTimeline = ({ status, createdAt, updatedAt, className = "" }) => {
     if (isCancelled) {
         return (
             <div className={`flex items-center gap-4 p-4 bg-red-50 dark:bg-red-900/20 rounded-xl ${className}`}>
-                <div className="w-12 h-12 bg-red-100 dark:bg-red-900 rounded-full flex items-center justify-center">
-                    <XCircle className="w-6 h-6 text-red-600" />
-                </div>
+                <AppIcon icon={XCircle} size="lg" className="text-red-600" />
                 <div>
                     <p className="font-medium text-red-700 dark:text-red-400">Order Cancelled</p>
                     <p className="text-sm text-red-600/70">This order has been cancelled</p>
