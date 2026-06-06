@@ -107,7 +107,7 @@ const Navbar = () => {
                                 to={link.path}
                                 className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors whitespace-nowrap ${
                                     isActive(link.path)
-                                        ? "text-blue-700 bg-blue-50"
+                                        ? "bg-blue-600 text-white shadow-sm"
                                         : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
                                 }`}
                             >
@@ -243,7 +243,7 @@ const Navbar = () => {
                                     to={link.path}
                                     className={`px-3 py-2.5 rounded-lg text-sm font-medium transition-colors text-center sm:text-left ${
                                         isActive(link.path)
-                                            ? "text-blue-700 bg-blue-50"
+                                            ? "bg-blue-600 text-white shadow-sm"
                                             : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
                                     }`}
                                     onClick={() => setMobileMenuOpen(false)}
