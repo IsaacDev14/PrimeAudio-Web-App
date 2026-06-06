@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { CartProvider } from './context/CartContext';
 import { AuthProvider } from './context/AuthContext';
 import { ToastProvider } from './context/ToastContext';
@@ -10,7 +10,7 @@ import AdminLayout from './layouts/AdminLayout';
 import CustomerLayout from './layouts/CustomerLayout';
 
 // Public Pages
-import Home from './pages/Home';
+import Showcase from './pages/Showcase';
 import Shop from './pages/Shop';
 import ProductDetails from './pages/ProductDetails';
 import Cart from './pages/Cart';
@@ -57,8 +57,9 @@ function App() {
                   <Routes>
                     {/* Public Routes */}
                     <Route element={<PublicLayout />}>
-                      <Route path="/" element={<Home />} />
+                      <Route path="/" element={<Navigate to="/shop" replace />} />
                       <Route path="/shop" element={<Shop />} />
+                      <Route path="/showcase" element={<Showcase />} />
                       <Route path="/shop/:id" element={<ProductDetails />} />
                       <Route path="/product/:id" element={<ProductDetails />} />
                       <Route path="/cart" element={<Cart />} />

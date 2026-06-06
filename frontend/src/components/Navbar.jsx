@@ -21,14 +21,19 @@ const Navbar = () => {
     const cartItemsCount = cart.reduce((total, item) => total + item.quantity, 0);
 
     const navLinks = [
-        { name: "Home", path: "/" },
         { name: "Shop", path: "/shop" },
+        { name: "Our Work", path: "/showcase" },
         { name: "About", path: "/about" },
         { name: "Contact", path: "/contact" },
         { name: "Track Order", path: "/track-order" },
     ];
 
-    const isActive = (path) => location.pathname === path;
+    const isActive = (path) => {
+        if (path === "/shop") {
+            return location.pathname === "/shop" || location.pathname.startsWith("/shop/");
+        }
+        return location.pathname === path;
+    };
 
     // Fetch notifications
     const fetchNotifications = async () => {
@@ -83,7 +88,7 @@ const Navbar = () => {
             <div className="container mx-auto px-2">
                 <div className="flex items-center justify-between h-20">
                     {/* Logo */}
-                    <Link to="/" className="flex items-center gap-2">
+                    <Link to="/shop" className="flex items-center gap-2">
                         <img src="/logo.png" alt="Prime Audio" className="h-10 w-auto object-contain" />
                         <span className="font-bold text-xl tracking-tight text-slate-900 hidden sm:block">
                             Prime<span className="text-blue-600">Audio</span>

@@ -92,7 +92,7 @@ const HeroProductCard = ({ product, rotateDuration }) => {
     );
 };
 
-const Home = () => {
+const Showcase = () => {
     const [featuredProducts, setFeaturedProducts] = useState([]);
     const [testimonials, setTestimonials] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -142,9 +142,9 @@ const Home = () => {
     return (
         <div className="bg-white">
             <SEO
-                title="Premium Audio Gear Store"
-                description="Shop the best in premium audio gear. Headphones, speakers, microphones, and more at Prime Audio."
-                keywords="audio, headphones, speakers, sound gear, nairobi audio store"
+                title="Our Work & Installations"
+                description="See Prime Audio in action — client setups, professional installations, deliveries, and real-world projects across East Africa."
+                keywords="audio installations, client projects, professional audio setup, prime audio portfolio, nairobi audio"
             />
             {/* Quantum Hero Section */}
             <section className="relative min-h-[95vh] flex items-center overflow-hidden bg-slate-950">
@@ -490,4 +490,4 @@ const Home = () => {
     );
 };
 
-export default Home;
+export default Showcase;

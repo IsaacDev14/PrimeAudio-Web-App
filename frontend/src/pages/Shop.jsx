@@ -243,17 +243,15 @@ const Shop = () => {
     return (
         <div className="min-h-screen bg-slate-50">
             <SEO
-                title="Shop Audio Equipment"
-                description="Browse our extensive collection of high-quality headphones, speakers, and audio accessories."
-                keywords="buy audio gear, online audio shop, headphones sale"
+                title="Shop Professional Audio Equipment"
+                description="Browse guitars, keyboards, microphones, speakers, DJ gear and more. East Africa's premier online audio store."
+                keywords="buy audio gear, online audio shop, headphones sale, nairobi music store"
             />
             {/* Page Header */}
             <div className="bg-white border-b border-slate-200 py-6">
                 <div className="container mx-auto px-4">
                     <div className="flex items-center gap-2 text-sm text-slate-500 mb-4">
-                        <span>Home</span>
-                        <ChevronRight className="w-4 h-4" />
-                        <span>Shop</span>
+                        <span className="text-slate-900 font-medium">Shop</span>
                         {activeCategory && (
                             <>
                                 <ChevronRight className="w-4 h-4" />
@@ -334,7 +332,7 @@ const Shop = () => {
             <div className="container mx-auto px-4 py-8">
                 <div className="flex gap-8">
                     {/* Desktop Sidebar */}
-                    <div className="hidden lg:block">
+                    <div className="hidden lg:block self-start sticky top-24 max-h-[calc(100vh-6rem)] overflow-y-auto">
                         <Sidebar />
                     </div>
 

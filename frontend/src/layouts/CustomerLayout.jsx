@@ -204,7 +204,7 @@ const CustomerLayout = () => {
                     >
                         <Menu className="w-6 h-6" />
                     </button>
-                    <Link to="/" className="flex items-center gap-2">
+                    <Link to="/shop" className="flex items-center gap-2">
                         <img src="/logo.png" alt="Prime Audio" className="h-8 w-auto" />
                         <span className="font-bold text-gray-900">Prime Audio</span>
                     </Link>
@@ -238,7 +238,7 @@ const CustomerLayout = () => {
                 {/* Sidebar Header */}
                 <div className="p-6 border-b border-gray-200">
                     <div className="flex items-center justify-between">
-                        <Link to="/" className="flex items-center gap-2">
+                        <Link to="/shop" className="flex items-center gap-2">
                             <img src="/logo.png" alt="Prime Audio" className="h-10 w-auto" />
                             <span className="font-bold text-gray-900 text-lg">Prime Audio</span>
                         </Link>

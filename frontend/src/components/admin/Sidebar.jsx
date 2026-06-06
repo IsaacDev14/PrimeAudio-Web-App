@@ -42,7 +42,7 @@ const Sidebar = ({ isOpen, onClose }) => {
         <div className="h-screen w-64 bg-white text-gray-700 border-r border-gray-200 flex flex-col">
             {/* Logo */}
             <div className="p-4 md:p-6 border-b border-gray-200 flex items-center justify-between">
-                <Link to="/" className="flex items-center gap-2 md:gap-3" onClick={handleNavClick}>
+                <Link to="/shop" className="flex items-center gap-2 md:gap-3" onClick={handleNavClick}>
                     <img src="/logo.png" alt="Prime Audio" className="h-8 md:h-10 w-auto" />
                     <div>
                         <span className="text-base md:text-lg font-bold text-gray-900">Prime Audio</span>
