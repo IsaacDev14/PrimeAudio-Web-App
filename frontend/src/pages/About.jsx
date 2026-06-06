@@ -1,244 +1,312 @@
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import {
-    ArrowRight,
-    Award,
-    Building2,
-    CheckCircle2,
-    Globe2,
-    Headphones,
-    ShieldCheck,
-    Truck,
-    Users,
-    Wrench,
-} from 'lucide-react';
 import SEO from '../components/SEO';
 
-const STATS = [
-    { value: '15+', label: 'Years in operation' },
-    { value: '5,000+', label: 'Artists & venues served' },
-    { value: '50+', label: 'Authorised brand partners' },
-    { value: '98%', label: 'On-time delivery rate' },
+const IMAGES = {
+    hero: '/about/hero.png',
+    consultation: '/about/consultation.png',
+    operations: '/about/operations.png',
+    installations: '/about/installations.png',
+};
+
+const METRICS = [
+    { value: '15+', label: 'Years operating in East Africa' },
+    { value: '5,000+', label: 'Clients across Kenya' },
+    { value: '50+', label: 'Authorised brand lines' },
+    { value: '98%', label: 'On-time fulfilment rate' },
 ];
 
-const PILLARS = [
+const SERVICES = [
     {
-        icon: ShieldCheck,
-        title: 'Authorised distribution',
-        description: 'Official channels for leading global audio brands with full manufacturer warranty coverage.',
+        title: 'Equipment supply',
+        description:
+            'Authorised distribution of instruments, pro-audio, DJ, and studio gear with manufacturer warranty and genuine product sourcing.',
     },
     {
-        icon: Wrench,
-        title: 'Technical expertise',
-        description: 'In-house specialists for studio design, live sound, and instrument setup across East Africa.',
+        title: 'Technical advisory',
+        description:
+            'Specification support for studios, venues, schools, and corporate installations — from room acoustics to system design.',
     },
     {
-        icon: Truck,
-        title: 'Regional logistics',
-        description: 'Same-day dispatch in Nairobi and structured delivery to studios, retailers, and event sites.',
+        title: 'Logistics & fulfilment',
+        description:
+            'Same-day dispatch in Nairobi, tracked nationwide delivery, and structured handling for bulk and institutional orders.',
     },
     {
-        icon: Headphones,
-        title: 'After-sales support',
-        description: 'Dedicated service desk for repairs, returns, and ongoing equipment guidance.',
+        title: 'After-sales service',
+        description:
+            'Warranty registration, repair coordination, and ongoing account management for retail and B2B partners.',
     },
 ];
 
 const MILESTONES = [
-    { year: '2010', title: 'Founded in Nairobi CBD', detail: 'Opened our first showroom on Luthuli Avenue serving local musicians.' },
-    { year: '2014', title: 'Expanded product catalogue', detail: 'Added pro audio, DJ, and studio lines from international manufacturers.' },
-    { year: '2018', title: 'Corporate & events division', detail: 'Began supplying PA systems and backline for festivals and corporate launches.' },
-    { year: '2022', title: 'Digital commerce launch', detail: 'Rolled out nationwide ordering with tracked fulfilment and showroom pickup.' },
-    { year: '2025', title: 'Regional growth', detail: 'Serving clients across Kenya with dedicated B2B accounts and install projects.' },
+    {
+        year: '2010',
+        title: 'Nairobi showroom established',
+        detail: 'Opened on Luthuli Avenue as a specialist instrument and audio retailer serving local musicians.',
+    },
+    {
+        year: '2014',
+        title: 'Catalogue expansion',
+        detail: 'Added studio, live sound, and DJ lines from international manufacturers through official channels.',
+    },
+    {
+        year: '2018',
+        title: 'Events & corporate division',
+        detail: 'Launched PA and backline supply for festivals, conferences, and venue installations.',
+    },
+    {
+        year: '2022',
+        title: 'E-commerce platform',
+        detail: 'Introduced online ordering with inventory visibility, order tracking, and showroom pickup.',
+    },
+    {
+        year: '2025',
+        title: 'Regional B2B growth',
+        detail: 'Expanded corporate accounts, institutional procurement, and cross-border client support.',
+    },
 ];
 
 const CAPABILITIES = [
-    'Studio & broadcast equipment sourcing',
-    'Live event PA and backline rental support',
-    'Retail display and in-store demo setups',
-    'Bulk procurement for schools and institutions',
-    'Warranty registration and repair coordination',
-    'Custom quotes for corporate accounts',
+    'Studio and broadcast equipment procurement',
+    'Live event PA and backline coordination',
+    'Retail display and in-store demo programmes',
+    'Bulk supply for schools and institutions',
+    'Warranty and repair management',
+    'Corporate account quoting and invoicing',
 ];
 
-const BRANDS = ['Yamaha', 'Shure', 'Pioneer', 'Roland', 'Focusrite', 'JBL', 'Fender', 'Audio-Technica'];
-
-const fadeUp = {
-    hidden: { opacity: 0, y: 16 },
-    visible: { opacity: 1, y: 0 },
-};
+const PARTNERS = [
+    'Yamaha',
+    'Shure',
+    'Pioneer',
+    'Roland',
+    'Focusrite',
+    'JBL',
+    'Fender',
+    'Audio-Technica',
+    'Pearl',
+    'Sennheiser',
+];
 
 const About = () => {
     return (
-        <div className="bg-white min-h-screen">
+        <div className="bg-white min-h-screen text-slate-900">
             <SEO
                 title="About Prime Audio"
-                description="Prime Audio Solutions — East Africa's trusted partner for professional musical instruments, pro audio, and technical support since 2010."
-                keywords="about prime audio, pro audio kenya, music equipment nairobi, audio distributor east africa"
+                description="Prime Audio Solutions Ltd. — East Africa's professional audio distributor since 2010. Authorised gear, technical expertise, and reliable fulfilment from Nairobi."
+                keywords="about prime audio, pro audio distributor kenya, music equipment nairobi, audio solutions east africa"
             />
 
             {/* Hero */}
-            <section className="relative border-b border-slate-200 bg-[#0A1628]">
-                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgba(59,130,246,0.12),_transparent_55%)]" />
-                <div className="container mx-auto px-4 lg:px-6 py-12 md:py-14 relative">
-                    <motion.div
-                        initial="hidden"
-                        animate="visible"
-                        variants={fadeUp}
-                        transition={{ duration: 0.4 }}
-                        className="max-w-3xl"
-                    >
-                        <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-blue-400 mb-3">
-                            Company Overview
-                        </p>
-                        <h1 className="text-2xl md:text-[1.75rem] font-semibold text-white leading-snug mb-3">
-                            Professional audio solutions built for East Africa
-                        </h1>
-                        <p className="text-sm md:text-[15px] text-slate-400 leading-relaxed max-w-2xl">
-                            Prime Audio Solutions Ltd. supplies musicians, studios, venues, and retailers with
-                            authenticated gear, technical guidance, and reliable fulfilment — from our Nairobi
-                            headquarters since 2010.
-                        </p>
-                        <div className="flex flex-wrap gap-3 mt-6">
-                            <Link
-                                to="/shop"
-                                className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
-                            >
-                                Browse catalogue
-                                <ArrowRight className="w-3.5 h-3.5" />
-                            </Link>
-                            <Link
-                                to="/contact"
-                                className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium border border-slate-600 hover:border-slate-500 text-slate-200 rounded-lg transition-colors"
-                            >
-                                Contact our team
-                            </Link>
-                        </div>
-                    </motion.div>
-                </div>
-            </section>
-
-            {/* Stats bar */}
-            <section className="border-b border-slate-200 bg-slate-50">
-                <div className="container mx-auto px-4 lg:px-6 py-8">
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
-                        {STATS.map((stat) => (
-                            <div key={stat.label} className="text-center lg:text-left">
-                                <p className="text-xl md:text-2xl font-semibold text-slate-900">{stat.value}</p>
-                                <p className="text-xs text-slate-500 mt-1">{stat.label}</p>
+            <section className="border-b border-slate-200">
+                <div className="container mx-auto px-4 lg:px-6">
+                    <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center py-10 md:py-12">
+                        <div className="max-w-lg">
+                            <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-slate-500 mb-3">
+                                About Prime Audio Solutions
+                            </p>
+                            <h1 className="text-xl md:text-2xl font-semibold text-slate-900 leading-snug mb-4">
+                                Professional audio distribution for East Africa
+                            </h1>
+                            <p className="text-sm text-slate-600 leading-relaxed mb-6">
+                                Since 2010, we have supplied musicians, studios, venues, and retailers with
+                                authenticated equipment, technical guidance, and dependable fulfilment from our
+                                Nairobi headquarters.
+                            </p>
+                            <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
+                                <Link
+                                    to="/shop"
+                                    className="font-medium text-blue-700 hover:text-blue-800 underline underline-offset-4 decoration-blue-700/30 hover:decoration-blue-800"
+                                >
+                                    View catalogue
+                                </Link>
+                                <span className="text-slate-300 hidden sm:inline">|</span>
+                                <Link
+                                    to="/contact"
+                                    className="font-medium text-slate-700 hover:text-slate-900 underline underline-offset-4 decoration-slate-300 hover:decoration-slate-500"
+                                >
+                                    Contact sales
+                                </Link>
                             </div>
-                        ))}
+                        </div>
+                        <div className="relative aspect-[4/3] lg:aspect-[16/11] overflow-hidden border border-slate-200 bg-slate-100">
+                            <img
+                                src={IMAGES.hero}
+                                alt="Prime Audio professional equipment showroom"
+                                className="w-full h-full object-cover"
+                            />
+                        </div>
                     </div>
                 </div>
             </section>
 
-            {/* Mission & vision */}
-            <section className="py-12 md:py-14">
-                <div className="container mx-auto px-4 lg:px-6">
-                    <div className="grid lg:grid-cols-2 gap-10 lg:gap-14 items-center">
-                        <div>
-                            <p className="text-[11px] font-semibold uppercase tracking-wider text-blue-600 mb-2">
-                                Who we are
-                            </p>
-                            <h2 className="text-lg md:text-xl font-semibold text-slate-900 mb-4">
-                                Empowering sound creators across the region
-                            </h2>
-                            <p className="text-sm text-slate-600 leading-relaxed mb-3">
-                                What began as a specialist instrument shop in Nairobi has evolved into a full-service
-                                audio partner trusted by artists, production houses, houses of worship, and retail chains.
-                            </p>
-                            <p className="text-sm text-slate-600 leading-relaxed">
-                                We combine curated inventory with hands-on expertise — helping clients select, deploy,
-                                and maintain equipment that meets professional standards.
-                            </p>
-                        </div>
-                        <div className="grid sm:grid-cols-2 gap-4">
-                            <div className="bg-slate-50 border border-slate-200 rounded-xl p-5">
-                                <Building2 className="w-5 h-5 text-blue-600 mb-3" />
-                                <h3 className="text-sm font-semibold text-slate-900 mb-2">Our mission</h3>
-                                <p className="text-xs text-slate-600 leading-relaxed">
-                                    Deliver authentic pro-audio and musical instruments with expert advice and
-                                    dependable after-sales care at every stage.
-                                </p>
+            {/* Metrics */}
+            <section className="border-b border-slate-200 bg-slate-50/80">
+                <div className="container mx-auto px-4 lg:px-6 py-7">
+                    <dl className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-10">
+                        {METRICS.map((item) => (
+                            <div key={item.label}>
+                                <dt className="text-lg font-semibold text-slate-900 tabular-nums">{item.value}</dt>
+                                <dd className="text-xs text-slate-500 mt-1 leading-relaxed">{item.label}</dd>
                             </div>
-                            <div className="bg-slate-50 border border-slate-200 rounded-xl p-5 sm:mt-6">
-                                <Globe2 className="w-5 h-5 text-blue-600 mb-3" />
-                                <h3 className="text-sm font-semibold text-slate-900 mb-2">Our vision</h3>
-                                <p className="text-xs text-slate-600 leading-relaxed">
-                                    To be East Africa's most trusted name in professional audio — known for quality,
-                                    integrity, and long-term client partnerships.
-                                </p>
-                            </div>
-                            <div className="sm:col-span-2 relative rounded-xl overflow-hidden border border-slate-200 aspect-[16/7]">
+                        ))}
+                    </dl>
+                </div>
+            </section>
+
+            {/* Company profile */}
+            <section className="border-b border-slate-200">
+                <div className="container mx-auto px-4 lg:px-6 py-12 md:py-14">
+                    <div className="grid lg:grid-cols-12 gap-10 lg:gap-14 items-start">
+                        <div className="lg:col-span-5">
+                            <div className="aspect-[4/5] overflow-hidden border border-slate-200 bg-slate-100">
                                 <img
-                                    src="/showcase/portfolio-retail.png"
-                                    alt="Prime Audio retail setup"
+                                    src={IMAGES.consultation}
+                                    alt="Technical consultation at Prime Audio"
                                     className="w-full h-full object-cover"
                                     loading="lazy"
                                 />
                             </div>
                         </div>
+                        <div className="lg:col-span-7">
+                            <h2 className="text-base md:text-lg font-semibold text-slate-900 mb-4">
+                                Who we are
+                            </h2>
+                            <div className="space-y-4 text-sm text-slate-600 leading-relaxed max-w-2xl">
+                                <p>
+                                    Prime Audio Solutions Ltd. began as a specialist instrument retailer in Nairobi
+                                    and has grown into a full-service partner for professional audio across Kenya
+                                    and the wider region.
+                                </p>
+                                <p>
+                                    We work with artists, production companies, houses of worship, educational
+                                    institutions, and retail chains — combining curated inventory with the technical
+                                    depth required for serious deployments.
+                                </p>
+                            </div>
+
+                            <div className="mt-10 grid sm:grid-cols-2 gap-8 pt-8 border-t border-slate-200">
+                                <div>
+                                    <h3 className="text-sm font-semibold text-slate-900 mb-2">Mission</h3>
+                                    <p className="text-xs text-slate-600 leading-relaxed">
+                                        Deliver authentic pro-audio and musical instruments with expert guidance and
+                                        dependable after-sales support at every stage of the client relationship.
+                                    </p>
+                                </div>
+                                <div>
+                                    <h3 className="text-sm font-semibold text-slate-900 mb-2">Vision</h3>
+                                    <p className="text-xs text-slate-600 leading-relaxed">
+                                        To be East Africa's most trusted name in professional audio — recognised for
+                                        product integrity, technical competence, and long-term partnerships.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
 
-            {/* Pillars */}
-            <section className="py-12 md:py-14 bg-slate-50 border-y border-slate-200">
-                <div className="container mx-auto px-4 lg:px-6">
-                    <div className="text-center max-w-xl mx-auto mb-10">
-                        <p className="text-[11px] font-semibold uppercase tracking-wider text-blue-600 mb-2">
-                            Why Prime Audio
-                        </p>
-                        <h2 className="text-lg md:text-xl font-semibold text-slate-900">
-                            Built on four operational pillars
+            {/* Services */}
+            <section className="border-b border-slate-200 bg-white">
+                <div className="container mx-auto px-4 lg:px-6 py-12 md:py-14">
+                    <div className="max-w-2xl mb-10">
+                        <h2 className="text-base md:text-lg font-semibold text-slate-900 mb-3">
+                            What we deliver
                         </h2>
+                        <p className="text-sm text-slate-600 leading-relaxed">
+                            End-to-end support from product selection through deployment and ongoing maintenance.
+                        </p>
                     </div>
-                    <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-                        {PILLARS.map((pillar, idx) => (
-                            <motion.div
-                                key={pillar.title}
-                                initial="hidden"
-                                whileInView="visible"
-                                viewport={{ once: true, margin: '-40px' }}
-                                variants={fadeUp}
-                                transition={{ delay: idx * 0.05 }}
-                                className="bg-white border border-slate-200 rounded-xl p-5 hover:border-blue-200 hover:shadow-sm transition-all"
-                            >
-                                <div className="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center mb-3">
-                                    <pillar.icon className="w-4 h-4 text-blue-600" />
-                                </div>
-                                <h3 className="text-sm font-semibold text-slate-900 mb-1.5">{pillar.title}</h3>
-                                <p className="text-xs text-slate-600 leading-relaxed">{pillar.description}</p>
-                            </motion.div>
+
+                    <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-px bg-slate-200 border border-slate-200">
+                        {SERVICES.map((service) => (
+                            <div key={service.title} className="bg-white p-5 md:p-6">
+                                <h3 className="text-sm font-semibold text-slate-900 mb-2">{service.title}</h3>
+                                <p className="text-xs text-slate-600 leading-relaxed">{service.description}</p>
+                            </div>
                         ))}
                     </div>
+
+                    <div className="mt-10 grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+                        <div className="aspect-[16/10] overflow-hidden border border-slate-200 bg-slate-100">
+                            <img
+                                src={IMAGES.operations}
+                                alt="Prime Audio warehouse and fulfilment operations"
+                                className="w-full h-full object-cover"
+                                loading="lazy"
+                            />
+                        </div>
+                        <div>
+                            <h3 className="text-sm font-semibold text-slate-900 mb-3">
+                                Operations & fulfilment
+                            </h3>
+                            <p className="text-sm text-slate-600 leading-relaxed mb-3">
+                                Our Nairobi facility handles receiving, quality checks, and dispatch for retail,
+                                e-commerce, and B2B orders. Inventory is managed against live stock levels with
+                                structured packing for fragile and high-value equipment.
+                            </p>
+                            <p className="text-sm text-slate-600 leading-relaxed">
+                                Regional delivery is coordinated through trusted carriers with tracking provided
+                                for every shipment leaving our warehouse.
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </section>
 
-            {/* Timeline + capabilities */}
-            <section className="py-12 md:py-14">
-                <div className="container mx-auto px-4 lg:px-6">
-                    <div className="grid lg:grid-cols-5 gap-10 lg:gap-14">
-                        <div className="lg:col-span-3">
-                            <p className="text-[11px] font-semibold uppercase tracking-wider text-blue-600 mb-2">
-                                Our journey
-                            </p>
-                            <h2 className="text-lg md:text-xl font-semibold text-slate-900 mb-8">
-                                Milestones that shaped our growth
+            {/* Installations */}
+            <section className="border-b border-slate-200 bg-slate-50/50">
+                <div className="container mx-auto px-4 lg:px-6 py-12 md:py-14">
+                    <div className="grid lg:grid-cols-2 gap-10 lg:gap-14 items-center">
+                        <div className="order-2 lg:order-1">
+                            <h2 className="text-base md:text-lg font-semibold text-slate-900 mb-3">
+                                Installations & live events
                             </h2>
-                            <div className="space-y-0">
-                                {MILESTONES.map((item, idx) => (
-                                    <div key={item.year} className="flex gap-5 pb-8 last:pb-0 relative">
-                                        {idx < MILESTONES.length - 1 && (
-                                            <div className="absolute left-[2.125rem] top-8 bottom-0 w-px bg-slate-200" />
-                                        )}
-                                        <div className="shrink-0 w-[4.25rem] text-right">
-                                            <span className="text-xs font-semibold text-blue-600">{item.year}</span>
-                                        </div>
-                                        <div className="relative shrink-0 mt-1">
-                                            <div className="w-2.5 h-2.5 rounded-full bg-blue-600 ring-4 ring-blue-50" />
-                                        </div>
-                                        <div className="pb-1">
+                            <p className="text-sm text-slate-600 leading-relaxed mb-4">
+                                Beyond retail supply, we support corporate launches, festivals, and venue
+                                installations with PA systems, backline, and on-site technical coordination.
+                            </p>
+                            <p className="text-sm text-slate-600 leading-relaxed">
+                                Our team works to specification, load-in schedules, and post-event breakdown
+                                requirements — ensuring equipment is tested, tuned, and ready before doors open.
+                            </p>
+                            <Link
+                                to="/showcase"
+                                className="inline-block mt-5 text-sm font-medium text-blue-700 hover:text-blue-800 underline underline-offset-4 decoration-blue-700/30"
+                            >
+                                See project portfolio
+                            </Link>
+                        </div>
+                        <div className="order-1 lg:order-2 aspect-[16/10] overflow-hidden border border-slate-200 bg-slate-100">
+                            <img
+                                src={IMAGES.installations}
+                                alt="Corporate event audio installation by Prime Audio"
+                                className="w-full h-full object-cover"
+                                loading="lazy"
+                            />
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* Timeline & capabilities */}
+            <section className="border-b border-slate-200">
+                <div className="container mx-auto px-4 lg:px-6 py-12 md:py-14">
+                    <div className="grid lg:grid-cols-12 gap-10 lg:gap-16">
+                        <div className="lg:col-span-7">
+                            <h2 className="text-base md:text-lg font-semibold text-slate-900 mb-8">
+                                Company history
+                            </h2>
+                            <div className="space-y-6">
+                                {MILESTONES.map((item) => (
+                                    <div
+                                        key={item.year}
+                                        className="grid grid-cols-[3.5rem_1fr] gap-4 pb-6 border-b border-slate-100 last:border-0 last:pb-0"
+                                    >
+                                        <span className="text-xs font-medium text-slate-400 pt-0.5 tabular-nums">
+                                            {item.year}
+                                        </span>
+                                        <div>
                                             <h3 className="text-sm font-semibold text-slate-900">{item.title}</h3>
                                             <p className="text-xs text-slate-600 mt-1 leading-relaxed">{item.detail}</p>
                                         </div>
@@ -246,43 +314,35 @@ const About = () => {
                                 ))}
                             </div>
                         </div>
-                        <div className="lg:col-span-2">
-                            <div className="bg-[#0A1628] rounded-xl p-6 text-white h-full">
-                                <Award className="w-5 h-5 text-blue-400 mb-3" />
-                                <h3 className="text-sm font-semibold mb-4">Core capabilities</h3>
-                                <ul className="space-y-3">
-                                    {CAPABILITIES.map((item) => (
-                                        <li key={item} className="flex items-start gap-2.5 text-xs text-slate-300">
-                                            <CheckCircle2 className="w-3.5 h-3.5 text-blue-400 shrink-0 mt-0.5" />
-                                            {item}
-                                        </li>
-                                    ))}
-                                </ul>
-                                <Link
-                                    to="/showcase"
-                                    className="inline-flex items-center gap-1.5 mt-6 text-xs font-medium text-blue-400 hover:text-blue-300 transition-colors"
-                                >
-                                    View our work
-                                    <ArrowRight className="w-3 h-3" />
-                                </Link>
-                            </div>
+
+                        <div className="lg:col-span-5">
+                            <h2 className="text-base md:text-lg font-semibold text-slate-900 mb-6">
+                                Core capabilities
+                            </h2>
+                            <ul className="divide-y divide-slate-200 border border-slate-200 bg-white">
+                                {CAPABILITIES.map((item) => (
+                                    <li
+                                        key={item}
+                                        className="px-4 py-3 text-xs text-slate-600 leading-relaxed"
+                                    >
+                                        {item}
+                                    </li>
+                                ))}
+                            </ul>
                         </div>
                     </div>
                 </div>
             </section>
 
-            {/* Brand partners */}
-            <section className="py-10 border-t border-slate-200 bg-slate-50">
-                <div className="container mx-auto px-4 lg:px-6">
-                    <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 text-center mb-6">
-                        Authorised partners include
+            {/* Partners */}
+            <section className="border-b border-slate-200 bg-slate-50/80">
+                <div className="container mx-auto px-4 lg:px-6 py-8">
+                    <p className="text-xs text-slate-500 mb-5">
+                        Authorised distribution and partner lines include
                     </p>
-                    <div className="flex flex-wrap justify-center gap-x-8 gap-y-3">
-                        {BRANDS.map((brand) => (
-                            <span
-                                key={brand}
-                                className="text-sm font-medium text-slate-400 hover:text-slate-600 transition-colors"
-                            >
+                    <div className="flex flex-wrap gap-x-6 gap-y-2">
+                        {PARTNERS.map((brand) => (
+                            <span key={brand} className="text-xs font-medium text-slate-400">
                                 {brand}
                             </span>
                         ))}
@@ -291,34 +351,30 @@ const About = () => {
             </section>
 
             {/* CTA */}
-            <section className="py-12 md:py-14">
-                <div className="container mx-auto px-4 lg:px-6">
-                    <div className="rounded-xl border border-slate-200 bg-gradient-to-br from-slate-50 to-white p-8 md:p-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-                        <div className="flex items-start gap-4">
-                            <div className="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center shrink-0">
-                                <Users className="w-5 h-5 text-white" />
-                            </div>
-                            <div>
-                                <h2 className="text-base md:text-lg font-semibold text-slate-900 mb-1">
-                                    Ready to equip your next project?
-                                </h2>
-                                <p className="text-sm text-slate-600 max-w-md">
-                                    Speak with our sales team for quotes, bulk orders, or technical recommendations.
-                                </p>
-                            </div>
+            <section>
+                <div className="container mx-auto px-4 lg:px-6 py-12 md:py-14">
+                    <div className="border border-slate-200 px-6 py-8 md:px-10 md:py-9 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+                        <div className="max-w-xl">
+                            <h2 className="text-base font-semibold text-slate-900 mb-2">
+                                Discuss your next project
+                            </h2>
+                            <p className="text-sm text-slate-600 leading-relaxed">
+                                Contact our sales desk for quotations, bulk procurement, or technical recommendations
+                                tailored to your requirements.
+                            </p>
                         </div>
                         <div className="flex flex-wrap gap-3 shrink-0">
                             <Link
                                 to="/contact"
-                                className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+                                className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium bg-slate-900 hover:bg-slate-800 text-white transition-colors"
                             >
-                                Get in touch
+                                Contact us
                             </Link>
                             <Link
                                 to="/shop"
-                                className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-lg transition-colors"
+                                className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium border border-slate-300 hover:border-slate-400 text-slate-700 transition-colors"
                             >
-                                Shop now
+                                Browse shop
                             </Link>
                         </div>
                     </div>

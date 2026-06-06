@@ -163,7 +163,7 @@ function AnimatedCounter({ end, suffix = '+', duration = 2000 }) {
 
     return (
         <span ref={ref}>
-            {count}
+            {count.toLocaleString()}
             {suffix}
         </span>
     );
@@ -172,12 +172,12 @@ function AnimatedCounter({ end, suffix = '+', duration = 2000 }) {
 function StatItem({ value, suffix, label, showDivider }) {
     return (
         <div className="flex items-center flex-1">
-            {showDivider && <div className="hidden lg:block w-px h-16 bg-slate-200 mx-10" />}
-            <div className="flex-1 text-center lg:text-left">
-                <div className="text-3xl md:text-4xl font-bold text-[#0A1628] leading-none">
+            {showDivider && <div className="hidden lg:block w-px h-10 bg-slate-200 mx-4" />}
+            <div className="flex-1 text-center lg:text-left py-1">
+                <div className="text-xl md:text-2xl font-bold text-[#0A1628] leading-none tabular-nums">
                     <AnimatedCounter end={value} suffix={suffix} />
                 </div>
-                <p className="mt-2 text-slate-500 text-sm font-medium">{label}</p>
+                <p className="mt-1 text-slate-500 text-xs font-medium">{label}</p>
             </div>
         </div>
     );
@@ -523,12 +523,12 @@ const Showcase = () => {
             </section>
 
             {/* Stats */}
-            <section className="py-8 bg-slate-50 border-y border-slate-200">
+            <section className="py-4 bg-slate-50 border-y border-slate-200">
                 <div className="container mx-auto px-4">
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-0">
-                        <StatItem value={500} suffix="+" label="Deliveries Completed" />
-                        <StatItem value={120} suffix="+" label="Happy Clients" showDivider />
-                        <StatItem value={15} suffix="+" label="Towns Across Kenya" showDivider />
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-0">
+                        <StatItem value={4200} suffix="+" label="Deliveries Completed" />
+                        <StatItem value={850} suffix="+" label="Happy Clients" showDivider />
+                        <StatItem value={28} suffix="+" label="Towns Across Kenya" showDivider />
                         <StatItem value={98} suffix="%" label="Satisfaction Rate" showDivider />
                     </div>
                 </div>
