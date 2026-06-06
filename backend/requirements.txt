@@ -3,6 +3,7 @@ uvicorn
 sqlalchemy
 asyncpg
 pydantic
+email-validator
 python-jose[cryptography]
 passlib[argon2]
 argon2-cffi
