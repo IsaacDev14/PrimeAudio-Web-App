@@ -1,4 +1,5 @@
 import { MapPin, Phone, Mail, Clock } from 'lucide-react';
+import { AppIcon } from '../components/ui/app-icon';
 
 const Contact = () => {
     return (
@@ -18,9 +19,7 @@ const Contact = () => {
                             <h2 className="text-2xl font-bold text-slate-900 mb-6">Visit Our Showroom</h2>
                             <div className="space-y-6">
                                 <div className="flex items-start gap-4">
-                                    <div className="bg-blue-100 p-3 rounded-full text-blue-600 shrink-0">
-                                        <MapPin className="w-5 h-5" />
-                                    </div>
+                                    <AppIcon icon={MapPin} className="mt-0.5" />
                                     <div>
                                         <h3 className="font-semibold text-slate-900">Prime Audio Head Office</h3>
                                         <p className="text-slate-600 mt-1">Moi Avenue, Nairobi CBD<br />Kenya Cinema Plaza, 2nd Floor</p>
@@ -28,9 +27,7 @@ const Contact = () => {
                                 </div>
 
                                 <div className="flex items-start gap-4">
-                                    <div className="bg-green-100 p-3 rounded-full text-green-600 shrink-0">
-                                        <Phone className="w-5 h-5" />
-                                    </div>
+                                    <AppIcon icon={Phone} className="mt-0.5" />
                                     <div>
                                         <h3 className="font-semibold text-slate-900">Call Us</h3>
                                         <p className="text-slate-600 mt-1">+254 700 123 456<br />+254 722 987 654</p>
@@ -38,9 +35,7 @@ const Contact = () => {
                                 </div>
 
                                 <div className="flex items-start gap-4">
-                                    <div className="bg-purple-100 p-3 rounded-full text-purple-600 shrink-0">
-                                        <Mail className="w-5 h-5" />
-                                    </div>
+                                    <AppIcon icon={Mail} className="mt-0.5" />
                                     <div>
                                         <h3 className="font-semibold text-slate-900">Email Us</h3>
                                         <p className="text-slate-600 mt-1">sales@primeaudio.co.ke<br />support@primeaudio.co.ke</p>
@@ -48,9 +43,7 @@ const Contact = () => {
                                 </div>
 
                                 <div className="flex items-start gap-4">
-                                    <div className="bg-orange-100 p-3 rounded-full text-orange-600 shrink-0">
-                                        <Clock className="w-5 h-5" />
-                                    </div>
+                                    <AppIcon icon={Clock} className="mt-0.5" />
                                     <div>
                                         <h3 className="font-semibold text-slate-900">Opening Hours</h3>
                                         <p className="text-slate-600 mt-1">Mon - Sat: 8:00 AM - 6:00 PM<br />Sunday: Closed</p>

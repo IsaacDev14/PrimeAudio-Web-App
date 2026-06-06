@@ -12,6 +12,7 @@ import {
     CheckCircle
 } from 'lucide-react';
 import { API_URL } from '../../config/api';
+import { AppIcon } from '../../components/ui/app-icon';
 
 const CustomerAddresses = () => {
     const [addresses, setAddresses] = useState([]);
@@ -195,9 +196,7 @@ const CustomerAddresses = () => {
                                 )}
 
                                 <div className="flex items-start gap-3">
-                                    <div className="p-3 bg-gray-100 rounded-lg">
-                                        <LabelIcon className="w-5 h-5 text-gray-600" />
-                                    </div>
+                                    <AppIcon icon={LabelIcon} className="mt-0.5" />
                                     <div className="flex-1">
                                         <h3 className="font-semibold text-gray-900">{address.label}</h3>
                                         <p className="text-gray-700 mt-1">{address.full_name}</p>

@@ -5,6 +5,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '.
 import { Badge } from '../../components/ui/badge';
 import { Button } from '../../components/ui/button';
 import { API_URL } from '../../config/api';
+import { AppIcon } from '../../components/ui/app-icon';
 
 const Dashboard = () => {
     const [stats, setStats] = useState(null);
@@ -82,37 +83,37 @@ const Dashboard = () => {
             title: 'Total Revenue',
             value: formatCurrency(stats.total_revenue),
             icon: DollarSign,
-            color: 'text-green-600 bg-green-100',
+            color: 'text-slate-700',
             description: `From ${stats.total_orders} orders`
         },
         {
             title: 'Total Orders',
             value: stats.total_orders?.toLocaleString() || '0',
             icon: ShoppingBag,
-            color: 'text-blue-600 bg-blue-100',
+            color: 'text-slate-700',
             description: 'All orders in period'
         },
         {
             title: 'Products in Stock',
             value: stats.products_in_stock?.toLocaleString() || '0',
             icon: Package,
-            color: 'text-purple-600 bg-purple-100',
+            color: 'text-slate-700',
             description: 'Total inventory'
         },
         {
             title: 'Active Users',
             value: stats.active_users?.toLocaleString() || '0',
             icon: Users,
-            color: 'text-orange-600 bg-orange-100',
+            color: 'text-slate-700',
             description: 'Registered accounts'
         },
     ] : [];
 
     const orderStatCards = stats ? [
-        { title: 'Pending Approval', value: stats.pending_orders || 0, icon: Clock, color: 'text-yellow-600' },
-        { title: 'Approved', value: stats.approved_orders || 0, icon: CheckCircle, color: 'text-blue-600' },
-        { title: 'Shipped', value: stats.shipped_orders || 0, icon: Truck, color: 'text-indigo-600' },
-        { title: 'Delivered', value: stats.delivered_orders || 0, icon: PackageCheck, color: 'text-green-600' },
+        { title: 'Pending Approval', value: stats.pending_orders || 0, icon: Clock },
+        { title: 'Approved', value: stats.approved_orders || 0, icon: CheckCircle },
+        { title: 'Shipped', value: stats.shipped_orders || 0, icon: Truck },
+        { title: 'Delivered', value: stats.delivered_orders || 0, icon: PackageCheck },
     ] : [];
 
     if (isLoading && !stats) {
@@ -173,9 +174,7 @@ const Dashboard = () => {
                                 <CardTitle className="text-sm font-medium">
                                     {stat.title}
                                 </CardTitle>
-                                <div className={`p-2 rounded-lg ${stat.color}`}>
-                                    <Icon className="h-4 w-4" />
-                                </div>
+                                <AppIcon icon={Icon} size="md" className={stat.color} />
                             </CardHeader>
                             <CardContent>
                                 <div className="text-2xl font-bold">{stat.value}</div>
@@ -200,7 +199,7 @@ const Dashboard = () => {
                                         <p className="text-sm text-muted-foreground">{stat.title}</p>
                                         <p className="text-2xl font-bold">{stat.value}</p>
                                     </div>
-                                    <Icon className={`h-8 w-8 ${stat.color}`} />
+                                    <AppIcon icon={Icon} size="xl" />
                                 </div>
                             </CardContent>
                         </Card>

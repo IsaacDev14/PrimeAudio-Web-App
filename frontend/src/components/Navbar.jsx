@@ -201,7 +201,7 @@ const Navbar = () => {
                                 to={user.is_admin ? '/admin' : '/dashboard'}
                                 className="hidden lg:flex items-center ml-1 p-1 rounded-full hover:bg-slate-100 transition-colors"
                             >
-                                <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-semibold text-sm">
+                                <div className="w-8 h-8 rounded-full border border-slate-200 bg-white flex items-center justify-center text-slate-700 font-semibold text-sm">
                                     {user.full_name ? user.full_name[0].toUpperCase() : 'U'}
                                 </div>
                             </Link>

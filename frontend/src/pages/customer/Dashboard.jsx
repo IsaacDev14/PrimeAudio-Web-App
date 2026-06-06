@@ -13,6 +13,7 @@ import {
     Bell
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import { AppIcon } from '../../components/ui/app-icon';
 
 const CustomerDashboard = () => {
     const { user } = useAuth();
@@ -110,9 +111,7 @@ const CustomerDashboard = () => {
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 <Link to="/dashboard/orders" className="bg-white p-5 rounded-xl border border-gray-200 hover:shadow-md transition-shadow">
                     <div className="flex items-center gap-3">
-                        <div className="p-3 bg-blue-100 rounded-lg">
-                            <ShoppingBag className="w-6 h-6 text-blue-600" />
-                        </div>
+                        <AppIcon icon={ShoppingBag} size="lg" />
                         <div>
                             <p className="text-2xl font-bold text-gray-900">{stats.totalOrders}</p>
                             <p className="text-sm text-gray-500">Total Orders</p>
@@ -122,9 +121,7 @@ const CustomerDashboard = () => {
 
                 <Link to="/dashboard/orders?status=pending" className="bg-white p-5 rounded-xl border border-gray-200 hover:shadow-md transition-shadow">
                     <div className="flex items-center gap-3">
-                        <div className="p-3 bg-yellow-100 rounded-lg">
-                            <Clock className="w-6 h-6 text-yellow-600" />
-                        </div>
+                        <AppIcon icon={Clock} size="lg" />
                         <div>
                             <p className="text-2xl font-bold text-gray-900">{stats.pendingOrders}</p>
                             <p className="text-sm text-gray-500">Pending</p>
@@ -134,9 +131,7 @@ const CustomerDashboard = () => {
 
                 <Link to="/dashboard/orders?status=delivered" className="bg-white p-5 rounded-xl border border-gray-200 hover:shadow-md transition-shadow">
                     <div className="flex items-center gap-3">
-                        <div className="p-3 bg-green-100 rounded-lg">
-                            <CheckCircle className="w-6 h-6 text-green-600" />
-                        </div>
+                        <AppIcon icon={CheckCircle} size="lg" />
                         <div>
                             <p className="text-2xl font-bold text-gray-900">{stats.deliveredOrders}</p>
                             <p className="text-sm text-gray-500">Delivered</p>
@@ -146,9 +141,7 @@ const CustomerDashboard = () => {
 
                 <Link to="/dashboard/wishlist" className="bg-white p-5 rounded-xl border border-gray-200 hover:shadow-md transition-shadow">
                     <div className="flex items-center gap-3">
-                        <div className="p-3 bg-red-100 rounded-lg">
-                            <Heart className="w-6 h-6 text-red-600" />
-                        </div>
+                        <AppIcon icon={Heart} size="lg" />
                         <div>
                             <p className="text-2xl font-bold text-gray-900">{stats.wishlistItems}</p>
                             <p className="text-sm text-gray-500">Wishlist</p>
@@ -188,9 +181,7 @@ const CustomerDashboard = () => {
                                         className="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors"
                                     >
                                         <div className="flex items-center gap-3">
-                                            <div className="p-2 bg-gray-100 rounded-lg">
-                                                <StatusIcon className="w-5 h-5 text-gray-600" />
-                                            </div>
+                                            <AppIcon icon={StatusIcon} />
                                             <div>
                                                 <p className="font-medium text-gray-900">
                                                     Order #{order.tracking_id || order.id}
@@ -252,28 +243,28 @@ const CustomerDashboard = () => {
                     to="/shop"
                     className="flex items-center gap-3 p-4 bg-white border border-gray-200 rounded-xl hover:shadow-md transition-shadow"
                 >
-                    <TrendingUp className="w-5 h-5 text-blue-600" />
+                    <AppIcon icon={TrendingUp} />
                     <span className="font-medium text-gray-700">Browse Products</span>
                 </Link>
                 <Link
                     to="/dashboard/messages"
                     className="flex items-center gap-3 p-4 bg-white border border-gray-200 rounded-xl hover:shadow-md transition-shadow"
                 >
-                    <MessageSquare className="w-5 h-5 text-green-600" />
+                    <AppIcon icon={MessageSquare} />
                     <span className="font-medium text-gray-700">Contact Support</span>
                 </Link>
                 <Link
                     to="/track-order"
                     className="flex items-center gap-3 p-4 bg-white border border-gray-200 rounded-xl hover:shadow-md transition-shadow"
                 >
-                    <Truck className="w-5 h-5 text-purple-600" />
+                    <AppIcon icon={Truck} />
                     <span className="font-medium text-gray-700">Track Order</span>
                 </Link>
                 <Link
                     to="/dashboard/profile"
                     className="flex items-center gap-3 p-4 bg-white border border-gray-200 rounded-xl hover:shadow-md transition-shadow"
                 >
-                    <Package className="w-5 h-5 text-orange-600" />
+                    <AppIcon icon={Package} />
                     <span className="font-medium text-gray-700">Edit Profile</span>
                 </Link>
             </div>

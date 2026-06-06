@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Star, ThumbsUp, MessageSquare, User } from 'lucide-react';
+import { AppIcon } from './ui/app-icon';
 import { useAuth } from '../context/AuthContext';
 import { API_URL } from '../config/api';
 
@@ -232,8 +233,8 @@ const ProductReviews = ({ productId }) => {
                         <div key={review.id} className="border-b border-gray-100 pb-6">
                             <div className="flex items-start justify-between">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                                        <User className="w-5 h-5 text-blue-600" />
+                                    <div className="w-10 h-10 border border-slate-200 rounded-full flex items-center justify-center bg-white">
+                                        <AppIcon icon={User} size="md" />
                                     </div>
                                     <div>
                                         <p className="font-medium text-gray-900">{review.user_name}</p>

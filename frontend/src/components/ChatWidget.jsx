@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageSquare, X, Send, Bot, RotateCcw, Home } from 'lucide-react';
+import { MessageSquare, X, Send, Bot, RotateCcw, Home, Music, Package, Shield, Info } from 'lucide-react';
+import { AppIcon } from './ui/app-icon';
 import ReactMarkdown from 'react-markdown';
 import { API_URL } from '../config/api';
 
@@ -156,17 +157,17 @@ const ChatWidget = () => {
                             {messages.length === 1 && (
                                 <div className="grid grid-cols-2 gap-2 mt-2">
                                     {[
-                                        { text: "About Us", emoji: "🎵", color: "bg-blue-50 border-blue-200 hover:bg-blue-100" },
-                                        { text: "Our Products", emoji: "🎸", color: "bg-green-50 border-green-200 hover:bg-green-100" },
-                                        { text: "Track Order", emoji: "📦", color: "bg-orange-50 border-orange-200 hover:bg-orange-100" },
-                                        { text: "Warranty Info", emoji: "🛡️", color: "bg-purple-50 border-purple-200 hover:bg-purple-100" }
+                                        { text: 'About Us', icon: Info },
+                                        { text: 'Our Products', icon: Music },
+                                        { text: 'Track Order', icon: Package },
+                                        { text: 'Warranty Info', icon: Shield },
                                     ].map((item, idx) => (
                                         <button
                                             key={idx}
                                             onClick={() => sendMessage(item.text)}
-                                            className={`p-3 border rounded-xl text-sm text-gray-700 transition-colors shadow-sm cursor-pointer flex items-center gap-2 ${item.color}`}
+                                            className="p-3 border border-slate-200 rounded-xl text-sm text-gray-700 hover:bg-slate-50 transition-colors shadow-sm cursor-pointer flex items-center gap-2"
                                         >
-                                            <span className="text-lg">{item.emoji}</span>
+                                            <AppIcon icon={item.icon} size="sm" />
                                             <span className="font-medium">{item.text}</span>
                                         </button>
                                     ))}
